@@ -20,7 +20,7 @@ export function TabBarIcon<T extends React.ComponentType<any>>({
   IconComponent,
   name,
   color,
-  size = 28,
+  size = 22,
   style,
   ...rest
 }: TabBarIconProps<T>) {
