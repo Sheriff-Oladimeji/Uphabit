@@ -3,16 +3,18 @@ import React from 'react';
 import { Ionicons, AntDesign, FontAwesome } from "@expo/vector-icons";
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: "light",
+        tabBarActiveTintColor:"white",
         headerShown: false,
+        tabBarStyle: {
+          backgroundColor: 'black',
+        },
       }}
     >
       <Tabs.Screen

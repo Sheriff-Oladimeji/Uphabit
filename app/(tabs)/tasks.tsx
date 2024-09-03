@@ -1,13 +1,12 @@
 import { View, Text, SafeAreaView } from 'react-native'
 import React from 'react'
+import Container from '@/components/Container';
 
 const Tasks = () => {
   return (
-    <View>
-      <SafeAreaView style={{margin: 50}}>
-        <Text className="text-white bg-blue-500">tasks</Text>
-      </SafeAreaView>
-    </View>
+    <Container>
+      <Text className="text-white bg-blue-500">tasks</Text>
+    </Container>
   );
 }
 
