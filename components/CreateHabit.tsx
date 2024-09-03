@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Modal } from "react-native";
+import { View, Text, TouchableOpacity, Modal, StyleSheet } from "react-native";
 
 type CreateHabitModalProps = {
   isVisible: boolean;
@@ -18,8 +18,14 @@ export function CreateHabitModal({
       transparent={true}
       visible={isVisible}
       onRequestClose={onClose}
-    >
-      <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
+      >
+           <View style={styles.overlay}>
+        <TouchableOpacity
+          style={styles.overlay}
+          activeOpacity={1}
+          onPress={onClose}
+        />
+      <View className="bg-darkBg z-50 p-5 absolute bottom-24 w-[90%] left-[10%] rounded-xl">
         <View className="bg-white p-6 rounded-lg w-4/5">
           <Text className="text-xl font-bold mb-4 text-center">
             Create a Habit
@@ -44,7 +50,18 @@ export function CreateHabitModal({
             <Text className="text-blue-500 text-center">Cancel</Text>
           </TouchableOpacity>
         </View>
-      </View>
+              </View>
+              </View>
     </Modal>
   );
 }
+
+const styles = StyleSheet.create({
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(29, 29, 29, 0.2)",
+    justifyContent: "flex-end",
+    zIndex: 1,
+    height: "100%",
+  },
+});

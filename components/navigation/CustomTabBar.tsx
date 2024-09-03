@@ -66,12 +66,10 @@ export function CustomTabBar({
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    backgroundColor: "#0f172a", // Dark navy blue background color
+    backgroundColor: "#050a15", // Dark navy blue background color
     height: 70,
     alignItems: "center",
     justifyContent: "space-around",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
     paddingBottom: 5,
     shadowColor: "#000",
     shadowOffset: {
@@ -92,7 +90,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 15, // Adjusted margin to match the floating effect
+    marginBottom: 30, // Adjusted margin to match the floating effect
   },
   createButton: {
     backgroundColor: "#3b82f6", // Blue color for the button
