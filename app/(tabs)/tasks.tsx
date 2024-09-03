@@ -5,7 +5,8 @@ const tasks = () => {
   return (
     <View>
       <SafeAreaView style={{margin: 50}}>
-        <Text style={{ color: "white" }}>tasks</Text>
+        <Text className="text-white bg-blue-500">tasks</Text>
+        
       </SafeAreaView>
     </View>
   );
