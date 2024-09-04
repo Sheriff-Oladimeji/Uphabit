@@ -1,19 +1,32 @@
 import React, { useState, useRef, useCallback, useMemo } from "react";
-import { View, Text, TouchableOpacity, FlatList, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  Dimensions,
+  ListRenderItem,
+} from "react-native";
 import { format, addDays, isSameDay, differenceInDays } from "date-fns";
-import { FontAwesome, FontAwesome5 } from '@expo/vector-icons'; 
+import { FontAwesome5 } from "@expo/vector-icons";
 
-const ITEM_WIDTH = 60;
-const SCREEN_WIDTH = Dimensions.get('window').width;
+const ITEM_WIDTH = 50;
+const SCREEN_WIDTH = Dimensions.get("window").width;
 const INITIAL_INDEX = 365;
 
-const InteractiveCalendar = () => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const flatListRef = useRef<FlatList>(null);
+interface CalendarItem {
+  date: Date;
+}
 
-  const dates = useMemo(() => {
+const InteractiveCalendar: React.FC = () => {
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const flatListRef = useRef<FlatList<CalendarItem>>(null);
+
+  const dates: CalendarItem[] = useMemo(() => {
     const today = new Date();
-    return Array.from({ length: 365 * 2 }, (_, i) => addDays(today, i - 365));
+    return Array.from({ length: 365 * 2 }, (_, i) => ({
+      date: addDays(today, i - 365),
+    }));
   }, []);
 
   const scrollToDate = useCallback((date: Date) => {
@@ -27,55 +40,59 @@ const InteractiveCalendar = () => {
     scrollToDate(today);
   }, [scrollToDate]);
 
-  const handleDatePress = useCallback((date: Date) => {
-    setSelectedDate(date);
-    // Use requestAnimationFrame to delay the scroll until after the state update
-    requestAnimationFrame(() => {
-      scrollToDate(date);
-    });
-  }, [scrollToDate]);
+  const handleDatePress = useCallback(
+    (date: Date) => {
+      setSelectedDate(date);
+      requestAnimationFrame(() => {
+        scrollToDate(date);
+      });
+    },
+    [scrollToDate]
+  );
 
-  const renderItem = useCallback(({ item: date }: { item: Date }) => {
-    const isSelected = isSameDay(date, selectedDate);
-    const isToday = isSameDay(date, new Date());
-    return (
-      <TouchableOpacity
-        onPress={() => handleDatePress(date)}
-        style={{ width: ITEM_WIDTH, alignItems: 'center', padding: 5 }}
-      >
-        <Text
-          className={`${
-            isSelected
-              ? "text-blue-500 font-bold text-lg"
-              : isToday
-              ? "text-green-500 font-bold text-lg"
-              : "text-white text-base"
+  const renderItem: ListRenderItem<CalendarItem> = useCallback(
+    ({ item }) => {
+      const isSelected = isSameDay(item.date, selectedDate);
+      const isToday = isSameDay(item.date, new Date());
+      return (
+        <TouchableOpacity
+          onPress={() => handleDatePress(item.date)}
+          className={`w-[50px] items-center p-1 ${
+            isSelected ? "bg-gray-800 rounded-lg" : ""
           }`}
         >
-          {format(date, "d")}
-        </Text>
-        <Text
-          className={`${
-            isSelected ? "text-blue-500 font-bold" : 
-            isToday ? "text-green-500 font-bold" :
-            "text-white text-base"
-          }`}
-        >
-          {format(date, "EEE")}
-        </Text>
-      </TouchableOpacity>
-    );
-  }, [selectedDate, handleDatePress]);
+          <Text
+            className={`${
+              isSelected
+                ? "text-white font-bold"
+                : isToday
+                ? "text-blue-500 font-bold"
+                : "text-white"
+            } text-base`}
+          >
+            {format(item.date, "d")}
+          </Text>
+          <Text
+            className={`${
+              isSelected
+                ? "text-white font-bold"
+                : isToday
+                ? "text-blue-500 font-bold"
+                : "text-gray-400"
+            } text-xs`}
+          >
+            {format(item.date, "EEE")}
+          </Text>
+        </TouchableOpacity>
+      );
+    },
+    [selectedDate, handleDatePress]
+  );
 
   return (
-    <View className="w-full bg-gray-[#111827] p-4 pt-8 ">
+    <View className="w-full bg-gray-900 p-4 pt-8">
       <View className="flex-row justify-between items-center mb-4">
-        <TouchableOpacity
-          onPress={() => {
-            /* Handle premium subscription */
-          }}
-          className="p-2"
-        >
+        <TouchableOpacity className="p-2">
           <FontAwesome5 name="crown" size={24} color="gold" />
         </TouchableOpacity>
         <Text className="text-white text-xl">
@@ -92,7 +109,7 @@ const InteractiveCalendar = () => {
         ref={flatListRef}
         data={dates}
         renderItem={renderItem}
-        keyExtractor={(item) => item.toISOString()}
+        keyExtractor={(item) => item.date.toISOString()}
         horizontal
         showsHorizontalScrollIndicator={false}
         initialScrollIndex={INITIAL_INDEX}
