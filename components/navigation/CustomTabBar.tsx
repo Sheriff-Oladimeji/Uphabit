@@ -33,13 +33,14 @@ export function CustomTabBar({
           }
         };
 
-        if (index === 1) {
-          // Create button
+        if (index === 2) {
           return (
-            <View key={route.key} style={styles.createButtonContainer}>
-              <TouchableOpacity onPress={onPress} style={styles.createButton}>
-                <Entypo name="plus" size={28} color="white" />
-              </TouchableOpacity>
+            <View key={route.key} style={styles.createButtonWrapper}>
+              <View style={styles.createButtonContainer}>
+                <TouchableOpacity onPress={onPress} style={styles.createButton}>
+                  <Entypo name="plus" size={28} color="white" />
+                </TouchableOpacity>
+              </View>
             </View>
           );
         }
@@ -86,11 +87,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 10,
   },
-  createButtonContainer: {
+  createButtonWrapper: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 30, // Adjusted margin to match the floating effect
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  createButtonContainer: {
+    position: 'absolute',
+    top: -60, // Increased this value to move the button up more
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   createButton: {
     backgroundColor: "#3b82f6", // Blue color for the button
