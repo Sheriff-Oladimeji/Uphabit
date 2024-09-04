@@ -4,7 +4,7 @@ import { FontAwesome } from '@expo/vector-icons';
 
 const HabitHeader = () => {
   return (
-    <View className="flex flex-row items-center justify-between mt-6 w-[90%] mx-auto t">
+    <View className="flex flex-row items-center justify-between  w-[90%] mx-auto ">
       <View className="flex flex-row gap-4 items-center">
         <TouchableOpacity className='rounded-full border-2 border-white'>
           <Image

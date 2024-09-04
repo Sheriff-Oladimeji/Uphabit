@@ -1,15 +1,20 @@
 import { View, SafeAreaView, Platform, StatusBar } from 'react-native'
 import React from 'react'
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const Container = ({children}: {children: React.ReactNode}) => {
+const Container = ({ children }: { children: React.ReactNode }) => {
+  const insets = useSafeAreaInsets();
+  const padding = Platform.OS === "android"? insets.top: 0
+  
   return (
-    <View className="flex-1 bg-[#111827]">
-      <SafeAreaView className="flex-1">
-        <View className={`flex-1 ${Platform.OS === 'android' ? 'mt-2' : ''}`}>
-          {children}
-        </View>
-      </SafeAreaView>
-    </View>
+    <SafeAreaView className="flex-1 bg-[#111827]">
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent
+      />
+      <View style={{ paddingTop: padding }}>{children}</View>
+    </SafeAreaView>
   );
 }
 
