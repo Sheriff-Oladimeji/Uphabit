@@ -1,5 +1,6 @@
-import React from "react";
-import { View, Text, TouchableOpacity, Modal, StyleSheet } from "react-native";
+import React, { useRef } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import RBSheet from "react-native-raw-bottom-sheet";
 
 type CreateHabitModalProps = {
   isVisible: boolean;
@@ -12,56 +13,65 @@ export function CreateHabitModal({
   onClose,
   onCreateHabit,
 }: CreateHabitModalProps) {
+  const refRBSheet = useRef<any>(null);
+
+  // Open the bottom sheet when the component is visible
+  React.useEffect(() => {
+    if (isVisible) {
+      refRBSheet.current?.open();
+    } else {
+      refRBSheet.current?.close();
+    }
+  }, [isVisible]);
+
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={isVisible}
-      onRequestClose={onClose}
-      >
-           <View style={styles.overlay}>
+    <RBSheet
+      ref={refRBSheet}
+      closeOnPressMask={true}
+      onClose={onClose}
+      height={350}
+      draggable={true}
+      dragOnContent={true}
+      closeOnPressBack={true}
+      customStyles={{
+        wrapper: {
+          backgroundColor: "rgba(0, 0, 0, 0.6)",
+        },
+        container: {
+          backgroundColor: "#1C1C1E",
+          borderTopLeftRadius: 25,
+          borderTopRightRadius: 25,
+        },
+        draggableIcon: {
+          backgroundColor: "#fff",
+        },
+      }}
+    >
+      <View className="p-5 items-center w-full pb-8">
+        <Text className="text-xl font-bold text-white text-center mb-5">
+          What type of a habit?
+        </Text>
         <TouchableOpacity
-          style={styles.overlay}
-          activeOpacity={1}
-          onPress={onClose}
-        />
-      <View className="bg-darkBg z-50 p-5 absolute bottom-24 w-[90%] left-[10%] rounded-xl">
-        <View className="bg-white p-6 rounded-lg w-4/5">
-          <Text className="text-xl font-bold mb-4 text-center">
-            Create a Habit
+          className="bg-gray-800 p-4 rounded-lg mb-4 w-full"
+          onPress={() => onCreateHabit("build")}
+        >
+          <Text className="text-lg font-semibold text-white mb-2">Build</Text>
+          <Text className="text-sm text-gray-400">
+            Start a positive routine, like meditating, coding daily, or eating
+            healthier.
           </Text>
-          <TouchableOpacity
-            className="bg-red-500 p-3 rounded-lg mb-3"
-            onPress={() => onCreateHabit("break")}
-          >
-            <Text className="text-white text-center font-semibold">
-              Break a Habit
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            className="bg-green-500 p-3 rounded-lg"
-            onPress={() => onCreateHabit("build")}
-          >
-            <Text className="text-white text-center font-semibold">
-              Build a Habit
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="mt-4" onPress={onClose}>
-            <Text className="text-blue-500 text-center">Cancel</Text>
-          </TouchableOpacity>
-        </View>
-              </View>
-              </View>
-    </Modal>
+        </TouchableOpacity>
+        <TouchableOpacity
+          className="bg-gray-800 p-4 rounded-lg w-full"
+          onPress={() => onCreateHabit("break")}
+        >
+          <Text className="text-lg font-semibold text-white mb-2">Quit</Text>
+          <Text className="text-sm text-gray-400">
+            Break free from a negative pattern, like procrastination,
+            overthinking, or binge-watching.
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </RBSheet>
   );
 }
-
-const styles = StyleSheet.create({
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(29, 29, 29, 0.2)",
-    justifyContent: "flex-end",
-    zIndex: 1,
-    height: "100%",
-  },
-});
