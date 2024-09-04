@@ -1,10 +1,11 @@
 import React, { useState, useRef, useCallback, useMemo } from "react";
 import { View, Text, TouchableOpacity, FlatList, Dimensions } from "react-native";
-import { format, addDays, subDays, isSameDay, differenceInDays } from "date-fns";
+import { format, addDays, isSameDay, differenceInDays } from "date-fns";
+import { FontAwesome, FontAwesome5 } from '@expo/vector-icons'; 
 
 const ITEM_WIDTH = 60;
 const SCREEN_WIDTH = Dimensions.get('window').width;
-const INITIAL_INDEX = 365; // Center of the 2-year range
+const INITIAL_INDEX = 365; 
 
 const InteractiveCalendar = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -20,7 +21,13 @@ const InteractiveCalendar = () => {
     flatListRef.current?.scrollToIndex({ index, animated: true });
   }, []);
 
-  const renderItem = useCallback(({ item: date, index }: { item: Date; index: number }) => {
+  const goToToday = useCallback(() => {
+    const today = new Date();
+    setSelectedDate(today);
+    scrollToDate(today);
+  }, [scrollToDate]);
+
+  const renderItem = useCallback(({ item: date }: { item: Date }) => {
     const isSelected = isSameDay(date, selectedDate);
     const isToday = isSameDay(date, new Date());
     return (
@@ -53,33 +60,27 @@ const InteractiveCalendar = () => {
         </Text>
       </TouchableOpacity>
     );
-  }, [selectedDate]);
+  }, [selectedDate, scrollToDate]);
 
   return (
     <View className="w-full bg-gray-800 p-4 rounded-lg">
       <View className="flex-row justify-between items-center mb-4">
-        <TouchableOpacity 
+        <TouchableOpacity
           onPress={() => {
-            const newDate = subDays(selectedDate, 7);
-            setSelectedDate(newDate);
-            scrollToDate(newDate);
-          }} 
+           
+          }}
           className="p-2"
         >
-          <Text className="text-white">Previous Week</Text>
+          <FontAwesome5 name="crown" size={24} color="gold" />
         </TouchableOpacity>
         <Text className="text-white text-xl">
           {format(selectedDate, "MMMM dd, yyyy")}
         </Text>
-        <TouchableOpacity 
-          onPress={() => {
-            const newDate = addDays(selectedDate, 7);
-            setSelectedDate(newDate);
-            scrollToDate(newDate);
-          }} 
-          className="p-2"
+        <TouchableOpacity
+          onPress={goToToday}
+          className="p-2 bg-blue-500 rounded-md"
         >
-          <Text className="text-white">Next Week</Text>
+          <Text className="text-white">Today</Text>
         </TouchableOpacity>
       </View>
       <FlatList
@@ -95,7 +96,9 @@ const InteractiveCalendar = () => {
           offset: ITEM_WIDTH * index,
           index,
         })}
-        contentContainerStyle={{ paddingHorizontal: SCREEN_WIDTH / 2 - ITEM_WIDTH / 2 }}
+        contentContainerStyle={{
+          paddingHorizontal: SCREEN_WIDTH / 2 - ITEM_WIDTH / 2,
+        }}
       />
     </View>
   );
