@@ -6,7 +6,7 @@ interface DateState {
   setCurrentDate: (date: Date) => void;
 }
 
-// Custom storage object that always returns null for getItem
+
 const customStorage = {
   getItem: (): null => null,
   setItem: (): void => {},
@@ -22,7 +22,7 @@ const useDateStore = create<DateState>()(
     {
       name: "date-storage",
       storage: createJSONStorage(() => customStorage),
-      // This function determines if the state should be persisted
+      
       partialize: (state) => ({}),
     }
   )

@@ -20,7 +20,7 @@ interface CalendarItem {
 }
 
 const InteractiveCalendar: React.FC = () => {
-  const { currentDate, setCurrentDate } = useDateStore(); // Use the store
+  const { currentDate, setCurrentDate } = useDateStore(); 
   const flatListRef = useRef<FlatList<CalendarItem>>(null);
 
   const dates: CalendarItem[] = useMemo(() => {
