@@ -3,8 +3,8 @@ import React from 'react'
 
 const Container = ({children}: {children: React.ReactNode}) => {
   return (
-    <View className="flex-1 bg-[#111827] items-center justify-center">
-      <SafeAreaView>{children}</SafeAreaView>
+    <View className="flex-1 bg-[#111827] ">
+      <SafeAreaView className='mt-8'>{children}</SafeAreaView>
     </View>
   );
 }

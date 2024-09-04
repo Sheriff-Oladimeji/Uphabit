@@ -35,6 +35,7 @@ const handleCreateHabit = (type: "break" | "build") => {
             ),
           }}
         />
+     
         <Tabs.Screen
           name="create"
           options={{
@@ -61,6 +62,7 @@ const handleCreateHabit = (type: "break" | "build") => {
           }}
         />
       </Tabs>
+     
       <CreateHabitModal
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
