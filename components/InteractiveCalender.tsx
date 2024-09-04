@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useMemo } from "react";
+import React, { useRef, useCallback, useMemo } from "react";
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { format, addDays, isSameDay, differenceInDays } from "date-fns";
 import { FontAwesome5 } from "@expo/vector-icons";
+import useDateStore from "@/store/useDateStore";
 
 const ITEM_WIDTH = 50;
 const SCREEN_WIDTH = Dimensions.get("window").width;
@@ -19,7 +20,7 @@ interface CalendarItem {
 }
 
 const InteractiveCalendar: React.FC = () => {
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const { currentDate, setCurrentDate } = useDateStore(); // Use the store
   const flatListRef = useRef<FlatList<CalendarItem>>(null);
 
   const dates: CalendarItem[] = useMemo(() => {
@@ -36,23 +37,23 @@ const InteractiveCalendar: React.FC = () => {
 
   const goToToday = useCallback(() => {
     const today = new Date();
-    setSelectedDate(today);
+    setCurrentDate(today);
     scrollToDate(today);
-  }, [scrollToDate]);
+  }, [setCurrentDate, scrollToDate]);
 
   const handleDatePress = useCallback(
     (date: Date) => {
-      setSelectedDate(date);
+      setCurrentDate(date);
       requestAnimationFrame(() => {
         scrollToDate(date);
       });
     },
-    [scrollToDate]
+    [setCurrentDate, scrollToDate]
   );
 
   const renderItem: ListRenderItem<CalendarItem> = useCallback(
     ({ item }) => {
-      const isSelected = isSameDay(item.date, selectedDate);
+      const isSelected = isSameDay(item.date, currentDate);
       const isToday = isSameDay(item.date, new Date());
       return (
         <TouchableOpacity
@@ -86,7 +87,7 @@ const InteractiveCalendar: React.FC = () => {
         </TouchableOpacity>
       );
     },
-    [selectedDate, handleDatePress]
+    [currentDate, handleDatePress]
   );
 
   return (
@@ -96,7 +97,7 @@ const InteractiveCalendar: React.FC = () => {
           <FontAwesome5 name="crown" size={24} color="gold" />
         </TouchableOpacity>
         <Text className="text-white text-xl">
-          {format(selectedDate, "MMMM dd")}
+          {format(currentDate, "MMMM dd")}
         </Text>
         <TouchableOpacity
           onPress={goToToday}
