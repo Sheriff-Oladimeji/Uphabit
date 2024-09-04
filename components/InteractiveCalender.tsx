@@ -58,8 +58,8 @@ const InteractiveCalendar: React.FC = () => {
       return (
         <TouchableOpacity
           onPress={() => handleDatePress(item.date)}
-          className={`w-[50px] items-center p-1 ${
-            isSelected ? "bg-gray-800 rounded-lg" : ""
+          className={`w-[50px] items-center  py-2  ${
+            isSelected ? "bg-blue-500 rounded-2xl" : ""
           }`}
         >
           <Text
@@ -68,8 +68,8 @@ const InteractiveCalendar: React.FC = () => {
                 ? "text-white font-bold"
                 : isToday
                 ? "text-blue-500 font-bold"
-                : "text-white"
-            } text-base`}
+                : "text-white "
+            } text-base mb-2`}
           >
             {format(item.date, "d")}
           </Text>
@@ -79,7 +79,7 @@ const InteractiveCalendar: React.FC = () => {
                 ? "text-white font-bold"
                 : isToday
                 ? "text-blue-500 font-bold"
-                : "text-gray-400"
+                : "text-gray-400 "
             } text-xs`}
           >
             {format(item.date, "EEE")}
@@ -97,7 +97,7 @@ const InteractiveCalendar: React.FC = () => {
           <FontAwesome5 name="crown" size={24} color="gold" />
         </TouchableOpacity>
         <Text className="text-white text-xl">
-          {format(currentDate, "MMMM dd")}
+          {format(currentDate, "MMMM yyyy")}
         </Text>
         <TouchableOpacity
           onPress={goToToday}
