@@ -5,7 +5,7 @@ import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 
 const ITEM_WIDTH = 60;
 const SCREEN_WIDTH = Dimensions.get('window').width;
-const INITIAL_INDEX = 365; 
+const INITIAL_INDEX = 365;
 
 const InteractiveCalendar = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -27,15 +27,20 @@ const InteractiveCalendar = () => {
     scrollToDate(today);
   }, [scrollToDate]);
 
+  const handleDatePress = useCallback((date: Date) => {
+    setSelectedDate(date);
+    // Use requestAnimationFrame to delay the scroll until after the state update
+    requestAnimationFrame(() => {
+      scrollToDate(date);
+    });
+  }, [scrollToDate]);
+
   const renderItem = useCallback(({ item: date }: { item: Date }) => {
     const isSelected = isSameDay(date, selectedDate);
     const isToday = isSameDay(date, new Date());
     return (
       <TouchableOpacity
-        onPress={() => {
-          setSelectedDate(date);
-          scrollToDate(date);
-        }}
+        onPress={() => handleDatePress(date)}
         style={{ width: ITEM_WIDTH, alignItems: 'center', padding: 5 }}
       >
         <Text
@@ -60,21 +65,21 @@ const InteractiveCalendar = () => {
         </Text>
       </TouchableOpacity>
     );
-  }, [selectedDate, scrollToDate]);
+  }, [selectedDate, handleDatePress]);
 
   return (
-    <View className="w-full bg-gray-800 p-4 rounded-lg">
+    <View className="w-full bg-gray-[#111827] p-4 pt-8 ">
       <View className="flex-row justify-between items-center mb-4">
         <TouchableOpacity
           onPress={() => {
-           
+            /* Handle premium subscription */
           }}
           className="p-2"
         >
           <FontAwesome5 name="crown" size={24} color="gold" />
         </TouchableOpacity>
         <Text className="text-white text-xl">
-          {format(selectedDate, "MMMM dd, yyyy")}
+          {format(selectedDate, "MMMM dd")}
         </Text>
         <TouchableOpacity
           onPress={goToToday}
