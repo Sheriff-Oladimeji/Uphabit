@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import useHabitStore from "../store/useHabitStore";
 import { Feather } from "@expo/vector-icons";
+import DeleteHabitButton from './DeleteHabitButton';
 
 const Habits = () => {
   const { habits, loadHabits } = useHabitStore();
@@ -26,7 +27,7 @@ const Habits = () => {
   }, [habits]);
 
   const renderHabitItem = ({ item }) => (
-    <TouchableOpacity className="bg-gray-800 rounded-lg p-4 mb-3 flex-row items-center">
+    <View className="bg-gray-800 rounded-lg p-4 mb-3 flex-row items-center">
       <View
         className={`w-2 h-12 rounded-full mr-4 ${
           item.type === "build" ? "bg-green-500" : "bg-red-500"
@@ -47,7 +48,8 @@ const Habits = () => {
           {item.type}
         </Text>
       </View>
-    </TouchableOpacity>
+      <DeleteHabitButton habitId={item.id} />
+    </View>
   );
 
   if (isLoading) {

@@ -11,6 +11,7 @@ interface Habit {
 interface HabitStore {
   habits: Habit[];
   addHabit: (habit: Omit<Habit, 'id' | 'createdAt'>) => Promise<void>;
+  deleteHabit: (id: string) => Promise<void>;
   loadHabits: () => Promise<void>;
 }
 
@@ -25,14 +26,16 @@ const useHabitStore = create<HabitStore>((set, get) => ({
     const updatedHabits = [...get().habits, newHabit];
     await storeItem('habits', JSON.stringify(updatedHabits));
     set({ habits: updatedHabits });
-    console.log('Habit added:', newHabit);
+  },
+  deleteHabit: async (id: string) => {
+    const updatedHabits = get().habits.filter(habit => habit.id !== id);
+    await storeItem('habits', JSON.stringify(updatedHabits));
+    set({ habits: updatedHabits });
   },
   loadHabits: async () => {
     const storedHabits = await getItem('habits');
-    console.log('Stored habits:', storedHabits);
     if (storedHabits) {
       const parsedHabits = JSON.parse(storedHabits);
-      console.log('Parsed habits:', parsedHabits);
       set({ habits: parsedHabits });
     }
   },
