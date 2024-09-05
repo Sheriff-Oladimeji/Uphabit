@@ -70,7 +70,7 @@ const Habits = () => {
 
   return (
     <View>
-      <Text className="text-white text-2xl font-bold mb-6">My Habits</Text>
+      <Text className="text-white text-2xl font-bold mt-6 mb-4">My Habits</Text>
       {habits.map((item) => (
         <View key={item.id}>{renderHabitItem({ item })}</View>
       ))}
