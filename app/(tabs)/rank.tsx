@@ -1,12 +1,13 @@
 import { View, Text } from 'react-native'
 import React from 'react'
+import Container from '@/components/Container'
 
 const rank = () => {
   return (
-    <View>
+    <Container>
       <Text>rank</Text>
-    </View>
-  )
+    </Container>
+  );
 }
 
 export default rank

@@ -15,7 +15,7 @@ export function CreateHabitModal({
 }: CreateHabitModalProps) {
   const refRBSheet = useRef<any>(null);
 
-  // Open the bottom sheet when the component is visible
+  
   React.useEffect(() => {
     if (isVisible) {
       refRBSheet.current?.open();
@@ -35,10 +35,10 @@ export function CreateHabitModal({
       closeOnPressBack={true}
       customStyles={{
         wrapper: {
-          backgroundColor: "rgba(0, 0, 0, 0.6)",
+          backgroundColor: "rgba(0, 0, 0, 0.6)", 
         },
         container: {
-          backgroundColor: "#1C1C1E",
+          backgroundColor: "#1f2937", 
           borderTopLeftRadius: 25,
           borderTopRightRadius: 25,
         },
@@ -51,22 +51,25 @@ export function CreateHabitModal({
         <Text className="text-xl font-bold text-white text-center mb-5">
           What type of a habit?
         </Text>
+        {/* Build Habit Button */}
         <TouchableOpacity
-          className="bg-gray-800 p-4 rounded-lg mb-4 w-full"
+          className="bg-green-500 p-4 rounded-lg mb-4 w-full"
           onPress={() => onCreateHabit("build")}
         >
           <Text className="text-lg font-semibold text-white mb-2">Build</Text>
-          <Text className="text-sm text-gray-400">
+          <Text className="text-sm text-white">
             Start a positive routine, like meditating, coding daily, or eating
             healthier.
           </Text>
         </TouchableOpacity>
+
+        {/* Break Habit Button */}
         <TouchableOpacity
-          className="bg-gray-800 p-4 rounded-lg w-full"
+          className="bg-red-600 p-4 rounded-lg w-full"
           onPress={() => onCreateHabit("break")}
         >
           <Text className="text-lg font-semibold text-white mb-2">Quit</Text>
-          <Text className="text-sm text-gray-400">
+          <Text className="text-sm text-red-100">
             Break free from a negative pattern, like procrastination,
             overthinking, or binge-watching.
           </Text>

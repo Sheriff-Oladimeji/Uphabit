@@ -1,12 +1,13 @@
 import { View, Text } from 'react-native'
 import React from 'react'
+import Container from '@/components/Container'
 
 const history = () => {
   return (
-    <View>
+    <Container>
       <Text>history</Text>
-    </View>
-  )
+    </Container>
+  );
 }
 
 export default history
