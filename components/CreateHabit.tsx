@@ -14,6 +14,7 @@ export function CreateHabitModal({
 }: CreateHabitModalProps) {
   const refRBSheet = useRef<any>(null);
   const [habitType, setHabitType] = useState<'build' | 'quit' | null>(null);
+  const containerHeight = habitType ? "95%": "50%"
 
   React.useEffect(() => {
     if (isVisible) {
@@ -33,7 +34,6 @@ export function CreateHabitModal({
       ref={refRBSheet}
       closeOnPressMask={true}
       onClose={handleClose}
-      height={habitType ? 300 : 350}
       draggable={true}
       dragOnContent={true}
       closeOnPressBack={true}
@@ -45,6 +45,8 @@ export function CreateHabitModal({
           backgroundColor: "#1f2937", 
           borderTopLeftRadius: 25,
           borderTopRightRadius: 25,
+          height: containerHeight,
+        
         },
         draggableIcon: {
           backgroundColor: "#fff",
