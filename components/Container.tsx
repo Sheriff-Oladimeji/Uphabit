@@ -8,9 +8,9 @@ const Container = ({ children }: { children: React.ReactNode }) => {
   const padding = Platform.OS === "android" ? insets.top : 0
   
   return (
-    <SafeAreaView className="flex-1 bg-[#111827]">
+    <SafeAreaView className="flex-1 bg-darkBg">
       <StatusBar style="light" />
-      <View style={{ paddingTop: padding }}>{children}</View>
+      <View style={{ paddingTop: padding }} className='w-[90%] mx-auto'>{children}</View>
     </SafeAreaView>
   );
 }

@@ -91,8 +91,8 @@ const InteractiveCalendar: React.FC = () => {
   );
 
   return (
-    <View className="w-full bg-gray-900 p-4 pt-8">
-      <View className="flex-row justify-between items-center mb-4">
+    <View className="w-full bg-gray-900  pt-8">
+      {/* <View className="flex-row justify-between items-center mb-4">
         <TouchableOpacity className="p-2">
           <FontAwesome5 name="crown" size={24} color="gold" />
         </TouchableOpacity>
@@ -105,7 +105,7 @@ const InteractiveCalendar: React.FC = () => {
         >
           <Text className="text-white">Today</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
       <FlatList
         ref={flatListRef}
         data={dates}
