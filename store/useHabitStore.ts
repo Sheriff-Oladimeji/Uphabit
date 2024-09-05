@@ -5,6 +5,7 @@ interface Habit {
   id: string;
   name: string;
   type: 'build' | 'quit';
+  startDate: string;
   createdAt: string;
 }
 
@@ -13,6 +14,7 @@ interface HabitStore {
   addHabit: (habit: Omit<Habit, 'id' | 'createdAt'>) => Promise<void>;
   deleteHabit: (id: string) => Promise<void>;
   loadHabits: () => Promise<void>;
+  getHabitsForDate: (date: Date) => Habit[];
 }
 
 const useHabitStore = create<HabitStore>((set, get) => ({
@@ -38,6 +40,15 @@ const useHabitStore = create<HabitStore>((set, get) => ({
       const parsedHabits = JSON.parse(storedHabits);
       set({ habits: parsedHabits });
     }
+  },
+  getHabitsForDate: (date: Date) => {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    return get().habits.filter(habit => {
+      const habitStartDate = new Date(habit.startDate);
+      habitStartDate.setHours(0, 0, 0, 0);
+      return habitStartDate <= startOfDay;
+    });
   },
 }));
 
