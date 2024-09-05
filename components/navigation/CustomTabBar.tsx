@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Entypo } from "@expo/vector-icons";
+import { CreateHabitModal } from "../CreateHabit";
 
 export function CustomTabBar({
   state,
   descriptors,
   navigation,
 }: BottomTabBarProps) {
+  const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
+
   return (
     <View style={styles.container}>
       {state.routes.map((route, index) => {
@@ -37,10 +40,17 @@ export function CustomTabBar({
           return (
             <View key={route.key} style={styles.createButtonWrapper}>
               <View style={styles.createButtonContainer}>
-                <TouchableOpacity onPress={onPress} style={styles.createButton}>
+                <TouchableOpacity
+                  onPress={() => setIsCreateModalVisible(true)}
+                  style={styles.createButton}
+                >
                   <Entypo name="plus" size={28} color="white" />
                 </TouchableOpacity>
               </View>
+              <CreateHabitModal
+                isVisible={isCreateModalVisible}
+                onClose={() => setIsCreateModalVisible(false)}
+              />
             </View>
           );
         }

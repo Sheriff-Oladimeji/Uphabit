@@ -1,21 +1,20 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import RBSheet from "react-native-raw-bottom-sheet";
+import { AddHabitForm } from "./AddHabit";
 
 type CreateHabitModalProps = {
   isVisible: boolean;
   onClose: () => void;
-  onCreateHabit: (type: "break" | "build") => void;
 };
 
 export function CreateHabitModal({
   isVisible,
   onClose,
-  onCreateHabit,
 }: CreateHabitModalProps) {
   const refRBSheet = useRef<any>(null);
+  const [habitType, setHabitType] = useState<'build' | 'quit' | null>(null);
 
-  
   React.useEffect(() => {
     if (isVisible) {
       refRBSheet.current?.open();
@@ -24,12 +23,17 @@ export function CreateHabitModal({
     }
   }, [isVisible]);
 
+  const handleClose = () => {
+    setHabitType(null);
+    onClose();
+  };
+
   return (
     <RBSheet
       ref={refRBSheet}
       closeOnPressMask={true}
-      onClose={onClose}
-      height={350}
+      onClose={handleClose}
+      height={habitType ? 300 : 350}
       draggable={true}
       dragOnContent={true}
       closeOnPressBack={true}
@@ -47,34 +51,35 @@ export function CreateHabitModal({
         },
       }}
     >
-      <View className="p-5 items-center w-full pb-8">
-        <Text className="text-xl font-bold text-white text-center mb-5">
-          What type of a habit?
-        </Text>
-        {/* Build Habit Button */}
-        <TouchableOpacity
-          className="bg-green-500 p-4 rounded-lg mb-4 w-full"
-          onPress={() => onCreateHabit("build")}
-        >
-          <Text className="text-lg font-semibold text-white mb-2">Build</Text>
-          <Text className="text-sm text-white">
-            Start a positive routine, like meditating, coding daily, or eating
-            healthier.
+      {!habitType ? (
+        <View className="p-5 items-center w-full pb-8">
+          <Text className="text-xl font-bold text-white text-center mb-5">
+            What type of a habit?
           </Text>
-        </TouchableOpacity>
-
-        {/* Break Habit Button */}
-        <TouchableOpacity
-          className="bg-red-600 p-4 rounded-lg w-full"
-          onPress={() => onCreateHabit("break")}
-        >
-          <Text className="text-lg font-semibold text-white mb-2">Quit</Text>
-          <Text className="text-sm text-red-100">
-            Break free from a negative pattern, like procrastination,
-            overthinking, or binge-watching.
-          </Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            className="bg-green-500 p-4 rounded-lg mb-4 w-full"
+            onPress={() => setHabitType('build')}
+          >
+            <Text className="text-lg font-semibold text-white mb-2">Build</Text>
+            <Text className="text-sm text-white">
+              Start a positive routine, like meditating, coding daily, or eating
+              healthier.
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            className="bg-red-600 p-4 rounded-lg w-full"
+            onPress={() => setHabitType('quit')}
+          >
+            <Text className="text-lg font-semibold text-white mb-2">Quit</Text>
+            <Text className="text-sm text-red-100">
+              Break free from a negative pattern, like procrastination,
+              overthinking, or binge-watching.
+            </Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <AddHabitForm type={habitType} onClose={handleClose} />
+      )}
     </RBSheet>
   );
 }
