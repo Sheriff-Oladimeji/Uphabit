@@ -1,41 +1,55 @@
-import { View, Text } from "react-native";
 import React from "react";
+import { View, Text } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 
-const Summary = () => {
-  const progress = 52; 
+const Summary: React.FC = () => {
+  const progress = 52;
+  const habitsDone = 2;
+  const totalHabits = 3;
+  const tasksDone = 3;
+  const totalTasks = 5;
 
   return (
-    <View className="mt-8">
-      <Text className="text-white font-bold text-3xl mb-4">Today's Habit</Text>
-      <View className="bg-gray-700 p-4 rounded-lg flex flex-row justify-between">
-        <View>
-          <Text className="text-white text-lg font-medium mb-5">
+    <View className="mt-6 ">
+      <Text className="text-white font-bold text-2xl mb-3">Today's Habit</Text>
+      <View className="bg-gray-800 p-5 rounded-2xl flex-row justify-between items-center">
+        <View className="flex-1">
+          <Text className="text-white text-lg font-semibold mb-4">
             You're almost done!
           </Text>
-          <View className="flex-row justify-between items-center  gap-6">
+          <View className="flex-row justify-start items-center space-x-6">
             <View>
-              <Text className="text-white text-xl">2/3</Text>
-              <Text className="text-sm text-white">Habits</Text>
+              <Text className="text-white text-2xl font-bold">
+                {habitsDone}/{totalHabits}
+              </Text>
+              <Text className="text-gray-400 text-sm">Habits</Text>
             </View>
             <View>
-              <Text className="text-white text-xl">3/5</Text>
-              <Text className="text-sm text-white">Tasks</Text>
+              <Text className="text-white text-2xl font-bold">
+                {tasksDone}/{totalTasks}
+              </Text>
+              <Text className="text-gray-400 text-sm">Tasks</Text>
             </View>
           </View>
         </View>
-        <View className="">
-          {/* Circular Progress Chart */}
+        <View className="ml-4">
           <AnimatedCircularProgress
-            size={80}
-            width={10}
+            size={90}
+            width={8}
             fill={progress}
             tintColor="#4ade80"
-            backgroundColor="white"
+            backgroundColor="#374151"
             rotation={0}
             lineCap="round"
           >
-            {() => <Text className="text-white text-xl">{progress}%</Text>}
+            {() => (
+              <View className="items-center">
+                <Text className="text-white text-2xl font-bold">
+                  {progress}%
+                </Text>
+                <Text className="text-gray-400 text-xs">Completed</Text>
+              </View>
+            )}
           </AnimatedCircularProgress>
         </View>
       </View>
