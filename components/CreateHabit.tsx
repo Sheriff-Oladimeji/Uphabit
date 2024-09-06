@@ -38,6 +38,7 @@ export function CreateHabitModal({
       draggable={true}
       dragOnContent={true}
       closeOnPressBack={true}
+      
       customStyles={{
         wrapper: {
           backgroundColor: "rgba(0, 0, 0, 0.6)", 

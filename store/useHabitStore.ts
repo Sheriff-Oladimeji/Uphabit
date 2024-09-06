@@ -1,12 +1,18 @@
 import { create } from 'zustand';
 import { getItem, storeItem } from '../utils/storage';
 
+export type RepeatFrequency = 'daily' | 'weekly' | 'monthly';
+export type TimeOfDay = 'anytime' | 'morning' | 'afternoon' | 'evening';
+
 interface Habit {
   id: string;
   name: string;
   type: 'build' | 'quit';
   startDate: string;
   createdAt: string;
+  repeatFrequency: RepeatFrequency;
+  timeOfDay: TimeOfDay;
+  reminderTime: string;
 }
 
 interface HabitStore {
