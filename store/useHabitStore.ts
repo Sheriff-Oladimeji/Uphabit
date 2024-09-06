@@ -13,6 +13,7 @@ interface Habit {
   repeatFrequency: RepeatFrequency;
   timeOfDay: TimeOfDay;
   reminderTime: string;
+  endDate: string | null; // Add this line
 }
 
 interface HabitStore {
