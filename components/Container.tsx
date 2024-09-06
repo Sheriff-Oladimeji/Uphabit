@@ -10,7 +10,12 @@ const Container = ({ children }: { children: React.ReactNode }) => {
   return (
     <SafeAreaView className="flex-1 bg-darkBg">
       <StatusBar style="light" />
-      <ScrollView style={{ paddingTop: padding }} className='w-[90%] mx-auto' contentContainerStyle={{paddingBottom: 60}}>
+      <ScrollView
+        style={{ paddingTop: padding }}
+        className="w-[90%] mx-auto"
+        contentContainerStyle={{ paddingBottom: 60 }}
+        showsVerticalScrollIndicator={false}
+      >
         {children}
       </ScrollView>
     </SafeAreaView>

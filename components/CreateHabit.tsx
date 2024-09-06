@@ -43,12 +43,14 @@ export function CreateHabitModal({
       customStyles={{
         wrapper: {
           backgroundColor: "rgba(0, 0, 0, 0.6)", 
+          flex: 1,
         },
         container: {
           backgroundColor: "#1f2937", 
           borderTopLeftRadius: radius,
           borderTopRightRadius: radius,
           height: containerHeight,
+        
         
         },
         draggableIcon: {
