@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   Platform,
+  ScrollView,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import useHabitStore, {
@@ -12,7 +13,7 @@ import useHabitStore, {
   TimeOfDay,
 } from "../store/useHabitStore";
 import useDateStore from "@/store/useDateStore";
-import { format } from "date-fns";
+import { format, addYears } from "date-fns";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 
 interface AddHabitFormProps {
@@ -29,6 +30,8 @@ export function AddHabitForm({ type, onClose }: AddHabitFormProps) {
   const [timeOfDay, setTimeOfDay] = useState("anytime");
   const [reminderTime, setReminderTime] = useState(new Date());
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const addHabit = useHabitStore((state) => state.addHabit);
 
   const handleSubmit = async () => {
@@ -40,6 +43,7 @@ export function AddHabitForm({ type, onClose }: AddHabitFormProps) {
         repeatFrequency: repeatFrequency as RepeatFrequency,
         timeOfDay: timeOfDay as TimeOfDay,
         reminderTime: reminderTime.toISOString(),
+        endDate: endDate ? endDate.toISOString() : null,
       });
       onClose();
     }
@@ -57,8 +61,13 @@ export function AddHabitForm({ type, onClose }: AddHabitFormProps) {
     setReminderTime(currentTime);
   };
 
+  const onEndDateChange = (event: any, selectedDate?: Date) => {
+    setShowEndDatePicker(Platform.OS === "ios");
+    setEndDate(selectedDate || null);
+  };
+
   return (
-    <View className="w-[90%] mx-auto bg-gray-800 py-6 rounded-lg shadow-lg">
+    <ScrollView className="w-[90%] mx-auto bg-gray-800 py-6 rounded-lg shadow-lg" contentContainerStyle={{ paddingBottom: 60 }} showsVerticalScrollIndicator={false}>
       <View className="flex-row justify-between items-center mb-6">
         <TouchableOpacity onPress={() => onClose()}>
           <AntDesign name="closecircleo" size={26} color="white" />
@@ -152,6 +161,40 @@ export function AddHabitForm({ type, onClose }: AddHabitFormProps) {
         />
       )}
 
+      {/* End Date */}
+      <Text className="text-xl font-bold text-white mb-2">End At</Text>
+      <View className="flex-row space-x-2 mb-4">
+        <TouchableOpacity
+          onPress={() => setEndDate(null)}
+          className={`px-4 py-2 rounded-lg ${
+            endDate === null ? "bg-blue-500" : "bg-gray-700"
+          }`}
+        >
+          <Text className="text-white">Never</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setShowEndDatePicker(true)}
+          className={`px-4 py-2 rounded-lg ${
+            endDate !== null ? "bg-blue-500" : "bg-gray-700"
+          }`}
+        >
+          <Text className="text-white">
+            {endDate ? format(endDate, "MMM dd, yyyy") : "Select Date"}
+          </Text>
+        </TouchableOpacity>
+      </View>
+      {showEndDatePicker && (
+        <DateTimePicker
+          testID="endDatePicker"
+          value={endDate || addYears(new Date(), 1)}
+          mode="date"
+          is24Hour={true}
+          display="default"
+          onChange={onEndDateChange}
+          minimumDate={new Date()}
+        />
+      )}
+
       {/* Submit Button */}
       <TouchableOpacity
         className="bg-blue-600 p-4 rounded-lg"
@@ -161,6 +204,6 @@ export function AddHabitForm({ type, onClose }: AddHabitFormProps) {
           Add Habit
         </Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }

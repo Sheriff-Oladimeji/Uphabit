@@ -15,7 +15,8 @@ export function CreateHabitModal({
   const refRBSheet = useRef<any>(null);
   const [habitType, setHabitType] = useState<'build' | 'quit' | null>(null);
   const containerHeight = habitType ? "100%" : "50%"
-  const radius = habitType ? 0: 25;
+  const radius = habitType ? 0 : 25;
+  const isDraggable = habitType ? false: true;
 
   React.useEffect(() => {
     if (isVisible) {
@@ -35,8 +36,8 @@ export function CreateHabitModal({
       ref={refRBSheet}
       closeOnPressMask={true}
       onClose={handleClose}
-      draggable={true}
-      dragOnContent={true}
+      draggable={isDraggable}
+      dragOnContent={isDraggable}
       closeOnPressBack={true}
       
       customStyles={{
