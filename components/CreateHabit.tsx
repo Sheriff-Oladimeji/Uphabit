@@ -14,7 +14,8 @@ export function CreateHabitModal({
 }: CreateHabitModalProps) {
   const refRBSheet = useRef<any>(null);
   const [habitType, setHabitType] = useState<'build' | 'quit' | null>(null);
-  const containerHeight = habitType ? "95%": "50%"
+  const containerHeight = habitType ? "100%" : "50%"
+  const radius = habitType ? 0: 25;
 
   React.useEffect(() => {
     if (isVisible) {
@@ -43,8 +44,8 @@ export function CreateHabitModal({
         },
         container: {
           backgroundColor: "#1f2937", 
-          borderTopLeftRadius: 25,
-          borderTopRightRadius: 25,
+          borderTopLeftRadius: radius,
+          borderTopRightRadius: radius,
           height: containerHeight,
         
         },
@@ -60,7 +61,10 @@ export function CreateHabitModal({
           </Text>
           <TouchableOpacity
             className="bg-green-500 p-4 rounded-lg mb-4 w-full"
-            onPress={() => setHabitType('build')}
+            onPress={() => {
+              setHabitType('build') 
+            
+            }}
           >
             <Text className="text-lg font-semibold text-white mb-2">Build</Text>
             <Text className="text-sm text-white">

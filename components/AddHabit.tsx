@@ -4,7 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import useHabitStore from '../store/useHabitStore';
 import useDateStore from '@/store/useDateStore';
 import { format } from 'date-fns';
-
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 interface AddHabitFormProps {
   type: 'build' | 'quit';
   onClose: () => void;
@@ -31,12 +31,18 @@ export function AddHabitForm({ type, onClose }: AddHabitFormProps) {
   };
 
   return (
-    <View className="p-5">
-      <Text className="text-xl font-bold text-white mb-4">
-        {type === 'build' ? 'Build a new habit' : 'Quit a habit'}
-      </Text>
+    <View className="w-[90%] mx-auto">
+      <View className="flex-row  justify-between items-center mb-6">
+        <TouchableOpacity onPress={() => onClose()}>
+          <AntDesign name="closecircleo" size={26} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleSubmit}>
+          <Ionicons name="checkmark-done" size={26} color="white" />
+        </TouchableOpacity>
+      </View>
+      <Text className="text-2xl font-bold text-white mb-4">Habit Name</Text>
       <TextInput
-        className="bg-gray-700 text-white p-3 rounded-lg mb-4"
+        className="bg-gray-700 text-white p-3 rounded-lg mb-4 text-lg"
         placeholder="Enter habit name"
         placeholderTextColor="#9ca3af"
         value={habitName}
@@ -46,7 +52,9 @@ export function AddHabitForm({ type, onClose }: AddHabitFormProps) {
         onPress={() => setShowDatePicker(true)}
         className="bg-gray-700 p-3 rounded-lg mb-4"
       >
-        <Text className="text-white">Start habit on: {format(startDate, 'MMM dd, yyyy')}</Text>
+        <Text className="text-white">
+          Start habit on: {format(startDate, "MMM dd, yyyy")}
+        </Text>
       </TouchableOpacity>
       {showDatePicker && (
         <DateTimePicker
@@ -58,12 +66,12 @@ export function AddHabitForm({ type, onClose }: AddHabitFormProps) {
           onChange={onDateChange}
         />
       )}
-      <TouchableOpacity
+      {/* <TouchableOpacity
         className="bg-blue-500 p-3 rounded-lg"
         onPress={handleSubmit}
       >
         <Text className="text-white text-center font-semibold">Add Habit</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 }
