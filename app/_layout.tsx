@@ -37,17 +37,16 @@ export default function RootLayout() {
       <Stack.Screen
         name="createHabit"
         options={{
-          presentation: "modal",
           headerShown: true,
           headerStyle: {
-            backgroundColor: '#050a15',
+            backgroundColor: "#050a15",
           },
-          headerTintColor: '#fff',
+          headerTintColor: "#fff",
           headerTitleStyle: {
-            fontWeight: 'bold',
+            fontWeight: "bold",
           },
-          headerTitle: 'New Habit',
-          headerTitleAlign: 'center',
+          headerTitle: "New Habit",
+          headerTitleAlign: "center",
         }}
       />
     </Stack>

@@ -17,12 +17,13 @@ import { format, addYears } from "date-fns";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import Container from "@/components/Container";
 import BottomTab from "@/components/BottomTab";
-
+import { useRouter } from "expo-router";
 interface CreateHabitProps {
   type: "build" | "quit";
   onClose: () => void;
 }
 const Create = ({ type, onClose }: CreateHabitProps) => {
+  const router = useRouter()
   const { currentDate } = useDateStore();
   const [habitName, setHabitName] = useState("");
   const [startDate, setStartDate] = useState(currentDate);
@@ -46,7 +47,7 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
         reminderTime: reminderTime.toISOString(),
         endDate: endDate ? endDate.toISOString() : null,
       });
-      onClose();
+      router.push("/(tabs)")
     }
   };
 
