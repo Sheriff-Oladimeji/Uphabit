@@ -18,7 +18,6 @@ const Habits = () => {
   const { habits, loadHabits, getHabitsForDate } = useHabitStore();
   const { currentDate } = useDateStore();
   const [isLoading, setIsLoading] = useState(true);
-  const [currentTime, setCurrentTime] = useState("");
 
   useEffect(() => {
     const fetchHabits = async () => {
@@ -26,34 +25,17 @@ const Habits = () => {
       setIsLoading(false);
     };
     fetchHabits();
-
-    
-    const timer = setInterval(() => {
-      updateCurrentTime();
-    }, 60000);
-
-    
-    updateCurrentTime();
-
-    
-    return () => clearInterval(timer);
   }, []);
 
-  const updateCurrentTime = () => {
-    const now = new Date();
-    setCurrentTime(
-      now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-    );
-  };
-
-  const getStreakCount = (habit: Habit) => {  
-    return Math.floor(Math.random() * 30); 
+  const getStreakCount = (habit: Habit) => {
+    return Math.floor(Math.random() * 30);
   };
 
   const renderHabitItem = (item: Habit) => {
+    console.log("Rendering habit:", item); // Added this line
     const streakCount = getStreakCount(item);
-    const borderColor =
-      item.type === "build" ? "border-green-500" : "border-red-500";
+    const borderColor = item.type === "build" ? "border-green-500" : "border-red-500";
+    const bgColor = item.type === "build" ? "bg-green-700" : "bg-red-700";
 
     return (
       <View
@@ -104,12 +86,12 @@ const Habits = () => {
   const habitsForDate = getHabitsForDate(currentDate);
 
   return (
-    <ScrollView className="flex-1  bg-gray-900" showsVerticalScrollIndicator={false}>
+    <ScrollView
+      className="flex-1  bg-gray-900"
+      showsVerticalScrollIndicator={false}
+    >
       <View className="flex-row justify-between items-center mt-6 mb-4">
         <Text className="text-white text-2xl font-bold">My Habits</Text>
-        <View className="bg-gray-800 px-4 py-2 rounded-full">
-          <Text className="text-white font-semibold">{currentTime}</Text>
-        </View>
       </View>
 
       {isToday(currentDate) ? (

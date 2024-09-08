@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import RBSheet from "react-native-raw-bottom-sheet";
-import { AddHabitForm } from "./AddHabit";
+
 import { Link, useRouter } from "expo-router";
 
 
@@ -36,8 +36,10 @@ export default function SelectHabitType({
 
 
   const handleSelect = (type: "build" | "quit" | null) => {
-    setHabitType(type);
     onClose();
+    setHabitType(type);
+    console.log(type)
+    
     router.push("/createHabit");
   };
   return (

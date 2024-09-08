@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -18,12 +18,15 @@ import { AntDesign, Ionicons } from "@expo/vector-icons";
 import Container from "@/components/Container";
 import BottomTab from "@/components/BottomTab";
 import { useRouter } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
+
 interface CreateHabitProps {
   type: "build" | "quit";
   onClose: () => void;
 }
 const Create = ({ type, onClose }: CreateHabitProps) => {
-  const router = useRouter()
+  const router = useRouter();
+  const navigation = useNavigation();
   const { currentDate } = useDateStore();
   const [habitName, setHabitName] = useState("");
   const [startDate, setStartDate] = useState(currentDate);
@@ -36,7 +39,7 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const addHabit = useHabitStore((state) => state.addHabit);
 
-  const handleSubmit = async () => {
+  const handleSave = async () => {
     if (habitName.trim()) {
       await addHabit({
         name: habitName.trim(),
@@ -47,9 +50,27 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
         reminderTime: reminderTime.toISOString(),
         endDate: endDate ? endDate.toISOString() : null,
       });
-      router.push("/(tabs)")
+      navigation.goBack();
     }
   };
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={handleSave} style={{ marginRight: 15 }}>
+          <Text style={{ color: "#fff", fontSize: 16 }}>Save</Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, [
+    navigation,
+    habitName,
+    startDate,
+    repeatFrequency,
+    timeOfDay,
+    reminderTime,
+    endDate,
+  ]);
 
   const onDateChange = (event: any, selectedDate?: Date) => {
     const currentDate = selectedDate || startDate;
@@ -191,16 +212,6 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
 
         {/* Submit Button */}
       </Container>
-      <BottomTab>
-        <TouchableOpacity
-          className="bg-blue-600 py-4 rounded-lg w-[90%] mx-auto"
-          onPress={handleSubmit}
-        >
-          <Text className="text-white text-center font-semibold text-lg">
-            Add Habit
-          </Text>
-        </TouchableOpacity>
-      </BottomTab>
     </View>
   );
 };

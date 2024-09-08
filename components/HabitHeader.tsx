@@ -3,6 +3,14 @@ import React from 'react'
 import { FontAwesome } from '@expo/vector-icons';
 
 const HabitHeader = () => {
+  // Add this function to determine the greeting
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
+  };
+
   return (
     <View className="flex flex-row items-center justify-between mt-2">
       <View className="flex flex-row gap-4 items-center">
@@ -17,7 +25,7 @@ const HabitHeader = () => {
         </TouchableOpacity>
         <View className="">
           <Text className="text-white font-bold text-xl">Hello Sheriff</Text>
-          <Text className="text-gray-400">Good morning</Text>
+          <Text className="text-gray-400">{getGreeting()}</Text>
         </View>
       </View>
       <TouchableOpacity>

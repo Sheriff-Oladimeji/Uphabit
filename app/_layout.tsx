@@ -1,3 +1,4 @@
+import React from "react";
 import {
   DarkTheme,
   DefaultTheme,
@@ -8,9 +9,9 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
-
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { StatusBar } from "expo-status-bar";
+import { TouchableOpacity, Text } from "react-native";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -36,7 +37,7 @@ export default function RootLayout() {
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
         name="createHabit"
-        options={{
+        options={({ navigation }) => ({
           headerShown: true,
           headerStyle: {
             backgroundColor: "#050a15",
@@ -47,7 +48,19 @@ export default function RootLayout() {
           },
           headerTitle: "New Habit",
           headerTitleAlign: "center",
-        }}
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => {
+                if (navigation.canGoBack()) {
+                  navigation.goBack();
+                }
+              }}
+              style={{ marginRight: 15 }}
+            >
+              <Text style={{ color: "#fff", fontSize: 16 }}>Save</Text>
+            </TouchableOpacity>
+          ),
+        })}
       />
     </Stack>
   );
