@@ -13,7 +13,7 @@ const Container = ({ children }: { children: React.ReactNode }) => {
       <ScrollView
         style={{ paddingTop: padding }}
         className="w-[90%] mx-auto"
-        contentContainerStyle={{ paddingBottom: 60 }}
+        contentContainerStyle={{ paddingBottom: 120 }}
         showsVerticalScrollIndicator={false}
       >
         {children}
