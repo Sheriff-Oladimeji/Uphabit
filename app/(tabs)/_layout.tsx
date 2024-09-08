@@ -1,19 +1,25 @@
-import { Tabs } from 'expo-router';
-import React, { useState } from 'react';
-import { Ionicons, AntDesign, FontAwesome, Entypo, FontAwesome6, Feather } from "@expo/vector-icons";
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { CreateHabitModal } from '@/components/CreateHabit';
-import { TouchableOpacity } from 'react-native';
-import { CustomTabBar } from '@/components/navigation/CustomTabBar';
+import { Tabs } from "expo-router";
+import React, { useState } from "react";
+import {
+  Ionicons,
+  AntDesign,
+  FontAwesome,
+  Entypo,
+  FontAwesome6,
+  Feather,
+} from "@expo/vector-icons";
+import { TabBarIcon } from "@/components/navigation/TabBarIcon";
+import SelectHabitType from "@/components/SelectHabitType";
+import { TouchableOpacity } from "react-native";
+import { CustomTabBar } from "@/components/navigation/CustomTabBar";
 export default function TabLayout() {
-  
-const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
-const handleCreateHabit = (type: "break" | "build") => {
-  console.log(`Creating a ${type} habit`);
-  setIsModalVisible(false);
-  // Add your logic here to navigate to the appropriate screen or perform an action
-};
+  const handleCreateHabit = (type: "break" | "build") => {
+    console.log(`Creating a ${type} habit`);
+    setIsModalVisible(false);
+    // Add your logic here to navigate to the appropriate screen or perform an action
+  };
   return (
     <>
       <Tabs
@@ -89,10 +95,10 @@ const handleCreateHabit = (type: "break" | "build") => {
         />
       </Tabs>
 
-      <CreateHabitModal
+      <SelectHabitType
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
-        onCreateHabit={handleCreateHabit}
+      
       />
     </>
   );

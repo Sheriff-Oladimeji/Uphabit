@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Entypo } from "@expo/vector-icons";
-import { CreateHabitModal } from "../CreateHabit";
+import SelectHabitType from "../SelectHabitType";
 
 export function CustomTabBar({
   state,
@@ -47,7 +47,7 @@ export function CustomTabBar({
                   <Entypo name="plus" size={28} color="white" />
                 </TouchableOpacity>
               </View>
-              <CreateHabitModal
+              <SelectHabitType
                 isVisible={isCreateModalVisible}
                 onClose={() => setIsCreateModalVisible(false)}
               />
@@ -99,14 +99,14 @@ const styles = StyleSheet.create({
   },
   createButtonWrapper: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   createButtonContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: -60, // Increased this value to move the button up more
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   createButton: {
     backgroundColor: "#3b82f6", // Blue color for the button

@@ -1,6 +1,9 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, Touchable, TouchableOpacity } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
+import { useRouter } from "expo-router";
+
+
 
 const Summary: React.FC = () => {
   const progress = 52;
@@ -8,10 +11,13 @@ const Summary: React.FC = () => {
   const totalHabits = 3;
   const tasksDone = 3;
   const totalTasks = 5;
+  const router = useRouter();
+  
 
   return (
     <View className="mt-6 ">
       <Text className="text-white font-bold text-2xl mb-3">Today's Habit</Text>
+   
       <View className="bg-gray-800 p-5 rounded-2xl flex-row justify-between items-center">
         <View className="flex-1">
           <Text className="text-white text-lg font-semibold mb-4">
