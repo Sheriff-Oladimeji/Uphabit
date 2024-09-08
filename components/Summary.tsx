@@ -1,9 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Touchable, TouchableOpacity } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { useRouter } from "expo-router";
-
-
 
 const Summary: React.FC = () => {
   const progress = 52;
@@ -12,12 +10,33 @@ const Summary: React.FC = () => {
   const tasksDone = 3;
   const totalTasks = 5;
   const router = useRouter();
-  
+  const [currentTime, setCurrentTime] = useState("");
+  useEffect(() => {
+    const timer = setInterval(() => {
+      updateCurrentTime();
+    }, 60000);
+
+    updateCurrentTime();
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const updateCurrentTime = () => {
+    const now = new Date();
+    setCurrentTime(
+      now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    );
+  };
 
   return (
     <View className="mt-6 ">
-      <Text className="text-white font-bold text-2xl mb-3">Today's Habit</Text>
-   
+      <View className="flex flex-row justify-between items-center mb-3">
+        <Text className="text-white font-bold text-2xl ">Today's Habit</Text>
+        <View className="bg-gray-700 px-4 py-2 rounded-full">
+          <Text className="text-white font-bold text-base">{currentTime}</Text>
+        </View>
+      </View>
+
       <View className="bg-gray-800 p-5 rounded-2xl flex-row justify-between items-center">
         <View className="flex-1">
           <Text className="text-white text-lg font-semibold mb-4">

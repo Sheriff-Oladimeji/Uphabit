@@ -27,15 +27,15 @@ const Habits = () => {
     };
     fetchHabits();
 
-    // Set up the timer to update the current time every minute
+    
     const timer = setInterval(() => {
       updateCurrentTime();
     }, 60000);
 
-    // Initial time update
+    
     updateCurrentTime();
 
-    // Clean up the timer on component unmount
+    
     return () => clearInterval(timer);
   }, []);
 
@@ -46,9 +46,8 @@ const Habits = () => {
     );
   };
 
-  const getStreakCount = (habit: Habit) => {
-    // This is a placeholder function. You should implement the actual streak counting logic.
-    return Math.floor(Math.random() * 30); // Random number between 0 and 29 for demonstration
+  const getStreakCount = (habit: Habit) => {  
+    return Math.floor(Math.random() * 30); 
   };
 
   const renderHabitItem = (item: Habit) => {
