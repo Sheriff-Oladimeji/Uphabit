@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, memo } from "react";
 import { View, Text, FlatList, ListRenderItem } from "react-native";
-import useHabitStore from "../store/useHabitStore";
+import useHabitStore, { HabitType } from "../store/useHabitStore";
 import useDateStore from "@/store/useDateStore";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import DeleteHabitButton from "./DeleteHabitButton";
@@ -10,37 +10,47 @@ interface Habit {
   id: string;
   name: string;
   type: "build" | "quit";
+  habitType: HabitType;
   startDate: string;
+  target?: number;
+  unit?: string;
 }
 
 const HabitItem = memo(({ item }: { item: Habit }) => {
   const streakCount = Math.floor(Math.random() * 30); // Placeholder for actual streak logic
-  const borderColor =
-    item.type === "build" ? "border-green-500" : "border-red-500";
+  const borderColor = item.type === "build" ? "border-green-500" : "border-red-500";
   const bgColor = item.type === "build" ? "bg-green-700" : "bg-red-700";
 
+  const renderHabitTypeInfo = () => {
+    switch (item.habitType) {
+      case 'task':
+        return <Text className="text-gray-400 text-sm">Task-based habit</Text>;
+      case 'amount':
+        return <Text className="text-gray-400 text-sm">Target: {item.target} {item.unit}</Text>;
+      case 'duration':
+        return <Text className="text-gray-400 text-sm">Duration: {item.target} {item.unit}</Text>;
+      default:
+        return null;
+    }
+  };
+
   return (
-    <View
-      className={`bg-gray-800 rounded-xl p-4 mb-4 border-l-4 ${borderColor}`}
-    >
+    <View className={`bg-gray-800 rounded-xl p-4 mb-4 border-l-4 ${borderColor}`}>
       <View className="flex-row items-center justify-between">
         <View className="flex-1">
           <Text className="text-white font-bold text-lg mb-1">{item.name}</Text>
-          <Text className="text-gray-400 text-sm">
+          {renderHabitTypeInfo()}
+          <Text className="text-gray-400 text-sm mt-1">
             Started: {format(new Date(item.startDate), "MMM d, yyyy")}
           </Text>
           <View className="flex-row items-center mt-2">
             <MaterialCommunityIcons name="fire" size={16} color="#FCD34D" />
-            <Text className="text-yellow-300 ml-1">
-              {streakCount} day streak
-            </Text>
+            <Text className="text-yellow-300 ml-1">{streakCount} day streak</Text>
           </View>
         </View>
         <View className="items-end">
           <View className={`px-3 py-1 rounded-full ${bgColor}`}>
-            <Text className="text-white text-xs font-semibold uppercase">
-              {item.type}
-            </Text>
+            <Text className="text-white text-xs font-semibold uppercase">{item.type}</Text>
           </View>
           <DeleteHabitButton habitId={item.id} />
         </View>

@@ -4,17 +4,21 @@ import { startOfDay } from 'date-fns';
 
 export type RepeatFrequency = 'daily' | 'weekly' | 'monthly';
 export type TimeOfDay = 'anytime' | 'morning' | 'afternoon' | 'evening';
+export type HabitType = 'task' | 'amount' | 'duration';
 
 interface Habit {
   id: string;
   name: string;
   type: 'build' | 'quit';
+  habitType: HabitType;
   startDate: string;
   createdAt: string;
   repeatFrequency: RepeatFrequency;
   timeOfDay: TimeOfDay;
   reminderTime: string;
   endDate: string | null;
+  target?: number; // For amount and duration based habits
+  unit?: string; // For amount and duration based habits (e.g., 'ml', 'mins')
 }
 
 interface HabitStore {

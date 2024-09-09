@@ -38,17 +38,29 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const addHabit = useHabitStore((state) => state.addHabit);
+  const [habitType, setHabitType] = useState<HabitType>('task');
+  const [amount, setAmount] = useState('1');
+  const [hours, setHours] = useState('0');
+  const [minutes, setMinutes] = useState('10');
+  const [seconds, setSeconds] = useState('0');
 
   const handleSave = async () => {
     if (habitName.trim()) {
+      const durationInSeconds = habitType === 'duration' 
+        ? parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseInt(seconds)
+        : undefined;
+      
       await addHabit({
         name: habitName.trim(),
         type,
+        habitType,
         startDate: startDate.toISOString(),
         repeatFrequency: repeatFrequency as RepeatFrequency,
         timeOfDay: timeOfDay as TimeOfDay,
         reminderTime: reminderTime.toISOString(),
         endDate: endDate ? endDate.toISOString() : null,
+        target: habitType === 'amount' ? parseInt(amount) : durationInSeconds,
+        unit: habitType === 'amount' ? 'times' : habitType === 'duration' ? 'seconds' : undefined,
       });
       navigation.goBack();
     }
@@ -101,6 +113,73 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
           value={habitName}
           onChangeText={setHabitName}
         />
+
+        {/* Habit Type */}
+        <Text className="text-xl font-bold text-white mb-2">Habit Type</Text>
+        <View className="flex-row space-x-2 mb-4">
+          {['task', 'amount', 'duration'].map((type) => (
+            <TouchableOpacity
+              key={type}
+              onPress={() => setHabitType(type as HabitType)}
+              className={`flex-1 py-2 rounded-lg ${
+                habitType === type ? "bg-blue-500" : "bg-gray-700"
+              }`}
+            >
+              <Text className="text-white capitalize text-center">{type}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Amount Input (for amount habit type) */}
+        {habitType === 'amount' && (
+          <View className="mb-4">
+            <Text className="text-xl font-bold text-white mb-2">Amount</Text>
+            <TextInput
+              className="bg-gray-700 text-white p-4 rounded-lg text-base"
+              placeholder="Enter amount"
+              placeholderTextColor="#9ca3af"
+              value={amount}
+              onChangeText={setAmount}
+              keyboardType="numeric"
+            />
+          </View>
+        )}
+
+        {/* Duration Input (for duration habit type) */}
+        {habitType === 'duration' && (
+          <View className="mb-4">
+            <Text className="text-xl font-bold text-white mb-2">Duration</Text>
+            <View className="flex-row space-x-2">
+              <View className="flex-1">
+                <Text className="text-white mb-1">Hours</Text>
+                <TextInput
+                  className="bg-gray-700 text-white p-4 rounded-lg text-base"
+                  value={hours}
+                  onChangeText={setHours}
+                  keyboardType="numeric"
+                />
+              </View>
+              <View className="flex-1">
+                <Text className="text-white mb-1">Minutes</Text>
+                <TextInput
+                  className="bg-gray-700 text-white p-4 rounded-lg text-base"
+                  value={minutes}
+                  onChangeText={setMinutes}
+                  keyboardType="numeric"
+                />
+              </View>
+              <View className="flex-1">
+                <Text className="text-white mb-1">Seconds</Text>
+                <TextInput
+                  className="bg-gray-700 text-white p-4 rounded-lg text-base"
+                  value={seconds}
+                  onChangeText={setSeconds}
+                  keyboardType="numeric"
+                />
+              </View>
+            </View>
+          </View>
+        )}
 
         {/* Start Date */}
         <Text className="text-xl font-bold text-white mb-2">Start Date</Text>
