@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useCallback, memo } from "react";
-import { View, Text, FlatList, ListRenderItem } from "react-native";
+import { View, Text, FlatList, ListRenderItem, TouchableOpacity } from "react-native";
 import useHabitStore, { HabitType } from "../store/useHabitStore";
 import useDateStore from "@/store/useDateStore";
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import DeleteHabitButton from "./DeleteHabitButton";
 import { format, isToday } from "date-fns";
 
@@ -17,18 +17,75 @@ interface Habit {
 }
 
 const HabitItem = memo(({ item }: { item: Habit }) => {
-  const streakCount = Math.floor(Math.random() * 30); // Placeholder for actual streak logic
+  const [progress, setProgress] = useState(0);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [timerRunning, setTimerRunning] = useState(false);
+  const [timeElapsed, setTimeElapsed] = useState(0);
+
   const borderColor = item.type === "build" ? "border-green-500" : "border-red-500";
   const bgColor = item.type === "build" ? "bg-green-700" : "bg-red-700";
+
+  const handleTaskCompletion = () => {
+    setIsCompleted(!isCompleted);
+  };
+
+  const handleAmountIncrement = () => {
+    if (progress < item.target!) {
+      setProgress(progress + 1);
+      if (progress + 1 === item.target) {
+        setIsCompleted(true);
+      }
+    }
+  };
+
+  const handleDurationTimer = () => {
+    if (!timerRunning) {
+      setTimerRunning(true);
+      const interval = setInterval(() => {
+        setTimeElapsed((prev) => {
+          if (prev + 1 >= item.target!) {
+            clearInterval(interval);
+            setTimerRunning(false);
+            setIsCompleted(true);
+            return item.target!;
+          }
+          return prev + 1;
+        });
+      }, 1000);
+    } else {
+      setTimerRunning(false);
+    }
+  };
 
   const renderHabitTypeInfo = () => {
     switch (item.habitType) {
       case 'task':
-        return <Text className="text-gray-400 text-sm">Task-based habit</Text>;
+        return (
+          <TouchableOpacity onPress={handleTaskCompletion} className="mt-2">
+            <View className={`flex-row items-center ${isCompleted ? 'bg-green-500' : 'bg-gray-700'} p-2 rounded-lg`}>
+              <AntDesign name={isCompleted ? "checkcircle" : "checkcircleo"} size={24} color="white" />
+              <Text className="text-white ml-2">{isCompleted ? "Completed" : "Mark as complete"}</Text>
+            </View>
+          </TouchableOpacity>
+        );
       case 'amount':
-        return <Text className="text-gray-400 text-sm">Target: {item.target} {item.unit}</Text>;
+        return (
+          <View className="mt-2">
+            <Text className="text-gray-400 text-sm">Progress: {progress} / {item.target} {item.unit}</Text>
+            <TouchableOpacity onPress={handleAmountIncrement} className="bg-blue-500 p-2 rounded-lg mt-1">
+              <Text className="text-white text-center">Increment</Text>
+            </TouchableOpacity>
+          </View>
+        );
       case 'duration':
-        return <Text className="text-gray-400 text-sm">Duration: {item.target} {item.unit}</Text>;
+        return (
+          <View className="mt-2">
+            <Text className="text-gray-400 text-sm">Duration: {timeElapsed} / {item.target} seconds</Text>
+            <TouchableOpacity onPress={handleDurationTimer} className={`${timerRunning ? 'bg-red-500' : 'bg-blue-500'} p-2 rounded-lg mt-1`}>
+              <Text className="text-white text-center">{timerRunning ? "Stop Timer" : "Start Timer"}</Text>
+            </TouchableOpacity>
+          </View>
+        );
       default:
         return null;
     }
@@ -39,14 +96,10 @@ const HabitItem = memo(({ item }: { item: Habit }) => {
       <View className="flex-row items-center justify-between">
         <View className="flex-1">
           <Text className="text-white font-bold text-lg mb-1">{item.name}</Text>
-          {renderHabitTypeInfo()}
-          <Text className="text-gray-400 text-sm mt-1">
+          <Text className="text-gray-400 text-sm">
             Started: {format(new Date(item.startDate), "MMM d, yyyy")}
           </Text>
-          <View className="flex-row items-center mt-2">
-            <MaterialCommunityIcons name="fire" size={16} color="#FCD34D" />
-            <Text className="text-yellow-300 ml-1">{streakCount} day streak</Text>
-          </View>
+          {renderHabitTypeInfo()}
         </View>
         <View className="items-end">
           <View className={`px-3 py-1 rounded-full ${bgColor}`}>
