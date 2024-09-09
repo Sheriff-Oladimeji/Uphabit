@@ -22,9 +22,11 @@ const HabitItem = memo(({ item }: { item: Habit }) => {
   const [timerRunning, setTimerRunning] = useState(false);
   const [timeElapsed, setTimeElapsed] = useState(0);
 
-  const borderColor = item.type === "build" ? "border-green-500" : "border-red-500";
+  const borderColor =
+    item.type === "build" ? "border-green-500" : "border-red-500";
   const bgColor = item.type === "build" ? "bg-green-700" : "bg-red-700";
-
+  const accentColor = item.type === "build" ? "text-green-500" : "text-red-500";
+ 
   const handleTaskCompletion = () => {
     setIsCompleted(!isCompleted);
   };
@@ -59,55 +61,76 @@ const HabitItem = memo(({ item }: { item: Habit }) => {
 
   const renderHabitTypeInfo = () => {
     switch (item.habitType) {
-      case 'task':
+      case "task":
         return (
-          <TouchableOpacity onPress={handleTaskCompletion} className="mt-2">
-            <View className={`flex-row items-center ${isCompleted ? 'bg-green-500' : 'bg-gray-700'} p-2 rounded-lg`}>
-              <AntDesign name={isCompleted ? "checkcircle" : "checkcircleo"} size={24} color="white" />
-              <Text className="text-white ml-2">{isCompleted ? "Completed" : "Mark as complete"}</Text>
-            </View>
-          </TouchableOpacity>
+          <Text className="text-gray-400">
+            {isCompleted ? "Completed" : "Not completed"}
+          </Text>
         );
-      case 'amount':
+      case "amount":
         return (
-          <View className="mt-2">
-            <Text className="text-gray-400 text-sm">Progress: {progress} / {item.target} {item.unit}</Text>
-            <TouchableOpacity onPress={handleAmountIncrement} className="bg-blue-500 p-2 rounded-lg mt-1">
-              <Text className="text-white text-center">Increment</Text>
-            </TouchableOpacity>
-          </View>
+          <Text className="text-gray-400">
+            {progress}/{item.target} {item.unit}
+          </Text>
         );
-      case 'duration':
+      case "duration":
         return (
-          <View className="mt-2">
-            <Text className="text-gray-400 text-sm">Duration: {timeElapsed} / {item.target} seconds</Text>
-            <TouchableOpacity onPress={handleDurationTimer} className={`${timerRunning ? 'bg-red-500' : 'bg-blue-500'} p-2 rounded-lg mt-1`}>
-              <Text className="text-white text-center">{timerRunning ? "Stop Timer" : "Start Timer"}</Text>
-            </TouchableOpacity>
-          </View>
+          <Text className="text-gray-400">
+            {format(new Date(timeElapsed * 1000), "mm:ss")}/
+            {format(new Date(item.target! * 1000), "mm:ss")}
+          </Text>
         );
       default:
         return null;
     }
   };
 
+  const iconColor = isCompleted ? "#60A5FA" : "#374151";
+  const initialLetter = item.name.charAt(0).toUpperCase();
+
   return (
-    <View className={`bg-gray-800 rounded-xl p-4 mb-4 border-l-4 ${borderColor}`}>
-      <View className="flex-row items-center justify-between">
-        <View className="flex-1">
-          <Text className="text-white font-bold text-lg mb-1">{item.name}</Text>
-          <Text className="text-gray-400 text-sm">
-            Started: {format(new Date(item.startDate), "MMM d, yyyy")}
-          </Text>
+    <View className="bg-gray-800 rounded-full p-2 mb-4 flex-row items-center justify-between ">
+      {/* Left Icon with Initial */}
+      <View className="flex-row items-center">
+        <View className="bg-blue-500 h-12 w-12 rounded-full flex items-center justify-center mr-4">
+          <Text className="text-white text-lg font-bold">{initialLetter}</Text>
+        </View>
+        {/* Habit Details */}
+        <View>
+          <Text className="text-white font-bold text-lg">{item.name}</Text>
           {renderHabitTypeInfo()}
         </View>
-        <View className="items-end">
-          <View className={`px-3 py-1 rounded-full ${bgColor}`}>
-            <Text className="text-white text-xs font-semibold uppercase">{item.type}</Text>
-          </View>
-          <DeleteHabitButton habitId={item.id} />
-        </View>
       </View>
+
+      {/* Right Side Button (Play, Plus, Check) */}
+      {item.habitType === "duration" && (
+        <TouchableOpacity onPress={handleDurationTimer}>
+          <View className="bg-blue-500 h-10 w-10 rounded-full flex items-center justify-center">
+            <AntDesign name="play" size={20} color="white" />
+          </View>
+        </TouchableOpacity>
+      )}
+      {item.habitType === "amount" && (
+        <TouchableOpacity onPress={handleAmountIncrement}>
+          <View className="bg-blue-500 h-10 w-10 rounded-full flex items-center justify-center">
+            <AntDesign name="plus" size={20} color="white" />
+          </View>
+        </TouchableOpacity>
+      )}
+      {item.habitType === "task" && (
+        <TouchableOpacity onPress={handleTaskCompletion}>
+          <View
+            className="h-10 w-10 rounded-full flex items-center justify-center border-2"
+            style={{ borderColor: iconColor }}
+          >
+            <AntDesign
+              name={isCompleted ? "checkcircle" : "checkcircleo"}
+              size={20}
+              color={iconColor}
+            />
+          </View>
+        </TouchableOpacity>
+      )}
     </View>
   );
 });
@@ -143,7 +166,6 @@ const Habits = () => {
       data={habitsForDate}
       renderItem={renderItem}
       keyExtractor={keyExtractor}
- 
       ListEmptyComponent={
         <View className="flex-1 justify-center items-center ">
           <Feather name="inbox" size={64} color="#4B5563" />
@@ -155,7 +177,7 @@ const Habits = () => {
       contentContainerStyle={{
         paddingBottom: 20,
       }}
-      className="mt-12"
+      className="mt-6 "
       showsVerticalScrollIndicator={false}
       scrollEnabled={true}
     />
