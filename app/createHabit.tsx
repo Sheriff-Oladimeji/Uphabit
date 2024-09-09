@@ -121,7 +121,7 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
     <View className="flex-1">
       <Container>
         {/* Habit Name */}
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom: 70}}>
           <Text className="text-xl font-bold text-white mb-2">Habit Name</Text>
           <TextInput
             className="bg-gray-700 text-white p-4 rounded-lg mb-4 text-base"
@@ -317,6 +317,11 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
           
         </ScrollView>
       </Container>
+      <BottomTab>
+        <TouchableOpacity className="bg-blue-500 w-[90%] mx-auto rounded-lg py-3  text-center" onPress={handleSave}>
+<Text className="text-white text-lg text-center">Create New  habit</Text>
+        </TouchableOpacity>
+      </BottomTab>
     </View>
   );
 };
