@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useMemo } from "react";
+import React, { useRef, useCallback, useMemo, memo } from "react";
 import {
   View,
   Text,
@@ -20,7 +20,7 @@ interface CalendarItem {
   id: string;
 }
 
-const CalendarItemComponent = React.memo<{
+const CalendarItemComponent = memo<{
   item: CalendarItem;
   isSelected: boolean;
   isToday: boolean;
@@ -112,12 +112,13 @@ const InteractiveCalendar: React.FC = () => {
           paddingHorizontal: SCREEN_WIDTH / 2 - ITEM_WIDTH / 2,
         }}
         removeClippedSubviews={true}
-        maxToRenderPerBatch={10}
+        maxToRenderPerBatch={7}
         updateCellsBatchingPeriod={50}
-        windowSize={5}
+        windowSize={7}
+        initialNumToRender={7}
       />
     </View>
   );
 };
 
-export default InteractiveCalendar;
+export default memo(InteractiveCalendar);

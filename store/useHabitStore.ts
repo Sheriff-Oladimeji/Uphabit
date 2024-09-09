@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { getItem, storeItem } from '../utils/storage';
+import { startOfDay } from 'date-fns';
 
 export type RepeatFrequency = 'daily' | 'weekly' | 'monthly';
 export type TimeOfDay = 'anytime' | 'morning' | 'afternoon' | 'evening';
@@ -13,7 +14,7 @@ interface Habit {
   repeatFrequency: RepeatFrequency;
   timeOfDay: TimeOfDay;
   reminderTime: string;
-  endDate: string | null; // Add this line
+  endDate: string | null;
 }
 
 interface HabitStore {
@@ -49,12 +50,10 @@ const useHabitStore = create<HabitStore>((set, get) => ({
     }
   },
   getHabitsForDate: (date: Date) => {
-    const startOfDay = new Date(date);
-    startOfDay.setHours(0, 0, 0, 0);
+    const startOfDayDate = startOfDay(date);
     return get().habits.filter(habit => {
-      const habitStartDate = new Date(habit.startDate);
-      habitStartDate.setHours(0, 0, 0, 0);
-      return habitStartDate <= startOfDay;
+      const habitStartDate = startOfDay(new Date(habit.startDate));
+      return habitStartDate <= startOfDayDate;
     });
   },
 }));
