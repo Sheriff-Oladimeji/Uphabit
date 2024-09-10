@@ -1,25 +1,12 @@
 import React, { useEffect, useState, useCallback, memo } from "react";
-import { View, Text, FlatList, ListRenderItem, TouchableOpacity } from "react-native";
-import useHabitStore, { HabitType } from "../store/useHabitStore";
+import { View, Text, FlatList, ListRenderItem, TouchableOpacity, Animated, StyleSheet } from "react-native";
+import { RectButton, Swipeable } from 'react-native-gesture-handler';
+import useHabitStore, { HabitType, Habit } from "../store/useHabitStore";
 import useDateStore from "@/store/useDateStore";
 import { Feather, MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
-import DeleteHabitButton from "./DeleteHabitButton";
-import { format, isToday } from "date-fns";
+import { format } from "date-fns";
 
-interface Habit {
-  id: string;
-  name: string;
-  type: "build" | "quit";
-  habitType: HabitType;
-  startDate: string;
-  target?: number;
-  unit?: string;
-  isCompleted: boolean;
-  progress?: number;
-  timeElapsed?: number;
-}
-
-const HabitItem = memo(({ item }: { item: Habit }) => {
+const HabitItem = memo(({ item, onDelete }: { item: Habit; onDelete: (id: string) => void }) => {
   const { toggleHabitCompletion, updateHabitProgress } = useHabitStore();
   const [progress, setProgress] = useState(item.progress || 0);
   const [timeElapsed, setTimeElapsed] = useState(item.timeElapsed || 0);
@@ -58,7 +45,7 @@ const HabitItem = memo(({ item }: { item: Habit }) => {
     if (!timerRunning) {
       setTimerRunning(true);
       const interval = setInterval(() => {
-        setTimeElapsed((prev) => {
+        setTimeElapsed((prev: number) => {
           const newTimeElapsed = prev + 1;
           updateHabitProgress(item.id, newTimeElapsed);
           if (newTimeElapsed >= item.target!) {
@@ -104,55 +91,82 @@ const HabitItem = memo(({ item }: { item: Habit }) => {
   const iconColor = isCompleted ? "#60A5FA" : "#374151";
   const initialLetter = item.name.charAt(0).toUpperCase();
 
-  return (
-    <View className="bg-gray-800 rounded-full p-2 mb-4 flex-row items-center justify-between ">
-      {/* Left Icon with Initial */}
-      <View className="flex-row items-center">
-        <View className="bg-blue-500 h-12 w-12 rounded-full flex items-center justify-center mr-4">
-          <Text className="text-white text-lg font-bold">{initialLetter}</Text>
-        </View>
-        {/* Habit Details */}
-        <View>
-          <Text className="text-white font-bold text-lg">{item.name}</Text>
-          {renderHabitTypeInfo()}
-        </View>
-      </View>
+  const renderRightActions = (
+    progress: Animated.AnimatedInterpolation<number>,
+    dragX: Animated.AnimatedInterpolation<number>
+  ) => {
+    const trans = dragX.interpolate({
+      inputRange: [-100, 0],
+      outputRange: [1, 0],
+      extrapolate: 'clamp',
+    });
+    return (
+      <RectButton style={styles.deleteButton} onPress={() => onDelete(item.id)}>
+        <Animated.View
+          style={[
+            styles.deleteButtonContent,
+            {
+              transform: [{ translateX: trans }],
+            },
+          ]}
+        >
+          <AntDesign name="delete" size={24} color="white" />
+        </Animated.View>
+      </RectButton>
+    );
+  };
 
-      {/* Right Side Button (Play, Plus, Check) */}
-      {item.habitType === "duration" && (
-        <TouchableOpacity onPress={handleDurationTimer}>
-          <View className={`h-10 w-10 rounded-full flex items-center justify-center ${isCompleted ? 'bg-blue-500' : 'bg-gray-600'}`}>
-            <AntDesign name={timerRunning ? "pause" : "play"} size={20} color="white" />
+  return (
+    <Swipeable renderRightActions={renderRightActions}>
+      <View style={styles.habitItem}>
+        {/* Left Icon with Initial */}
+        <View className="flex-row items-center">
+          <View className="bg-blue-500 h-12 w-12 rounded-full flex items-center justify-center mr-4">
+            <Text className="text-white text-lg font-bold">{initialLetter}</Text>
           </View>
-        </TouchableOpacity>
-      )}
-      {item.habitType === "amount" && (
-        <TouchableOpacity onPress={handleAmountIncrement}>
-          <View className={`h-10 w-10 rounded-full flex items-center justify-center ${isCompleted ? 'bg-blue-500' : 'bg-gray-600'}`}>
-            <AntDesign name="plus" size={20} color="white" />
+          {/* Habit Details */}
+          <View>
+            <Text className="text-white font-bold text-lg">{item.name}</Text>
+            {renderHabitTypeInfo()}
           </View>
-        </TouchableOpacity>
-      )}
-      {item.habitType === "task" && (
-        <TouchableOpacity onPress={handleTaskCompletion}>
-          <View
-            className="h-10 w-10 rounded-full flex items-center justify-center border-2"
-            style={{ borderColor: iconColor }}
-          >
-            <AntDesign
-              name={isCompleted ? "checkcircle" : "checkcircleo"}
-              size={20}
-              color={iconColor}
-            />
-          </View>
-        </TouchableOpacity>
-      )}
-    </View>
+        </View>
+
+        {/* Right Side Button (Play, Plus, Check) */}
+        {item.habitType === "duration" && (
+          <TouchableOpacity onPress={handleDurationTimer}>
+            <View className={`h-10 w-10 rounded-full flex items-center justify-center ${isCompleted ? 'bg-blue-500' : 'bg-gray-600'}`}>
+              <AntDesign name={timerRunning ? "pause" : "play"} size={20} color="white" />
+            </View>
+          </TouchableOpacity>
+        )}
+        {item.habitType === "amount" && (
+          <TouchableOpacity onPress={handleAmountIncrement}>
+            <View className={`h-10 w-10 rounded-full flex items-center justify-center ${isCompleted ? 'bg-blue-500' : 'bg-gray-600'}`}>
+              <AntDesign name="plus" size={20} color="white" />
+            </View>
+          </TouchableOpacity>
+        )}
+        {item.habitType === "task" && (
+          <TouchableOpacity onPress={handleTaskCompletion}>
+            <View
+              className="h-10 w-10 rounded-full flex items-center justify-center border-2"
+              style={{ borderColor: iconColor }}
+            >
+              <AntDesign
+                name={isCompleted ? "checkcircle" : "checkcircleo"}
+                size={20}
+                color={iconColor}
+              />
+            </View>
+          </TouchableOpacity>
+        )}
+      </View>
+    </Swipeable>
   );
 });
 
 const Habits = () => {
-  const { habits, loadHabits, getHabitsForDate } = useHabitStore();
+  const { habits, loadHabits, getHabitsForDate, deleteHabit } = useHabitStore();
   const { currentDate } = useDateStore();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -160,9 +174,13 @@ const Habits = () => {
     loadHabits().then(() => setIsLoading(false));
   }, []);
 
+  const handleDelete = useCallback((id: string) => {
+    deleteHabit(id);
+  }, [deleteHabit]);
+
   const renderItem: ListRenderItem<Habit> = useCallback(
-    ({ item }) => <HabitItem item={item} />,
-    []
+    ({ item }) => <HabitItem item={item} onDelete={handleDelete} />,
+    [handleDelete]
   );
   const keyExtractor = useCallback((item: Habit) => item.id, []);
 
@@ -199,5 +217,27 @@ const Habits = () => {
     />
   );
 };
+
+const styles = StyleSheet.create({
+  deleteButton: {
+    backgroundColor: '#EF4444', // red-500
+    justifyContent: 'center',
+  },
+  deleteButtonContent: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 80,
+  },
+  habitItem: {
+    backgroundColor: '#1F2937', // gray-800
+    borderRadius: 9999,
+    padding: 8,
+    marginBottom: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+});
 
 export default Habits;

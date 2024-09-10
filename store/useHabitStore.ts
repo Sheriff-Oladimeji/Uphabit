@@ -6,7 +6,7 @@ export type RepeatFrequency = 'daily' | 'weekly' | 'monthly';
 export type TimeOfDay = 'anytime' | 'morning' | 'afternoon' | 'evening';
 export type HabitType = 'task' | 'amount' | 'duration';
 
-interface Habit {
+export interface Habit {
   id: string;
   name: string;
   type: 'build' | 'quit';
@@ -93,5 +93,5 @@ const useHabitStore = create<HabitStore>((set, get) => ({
     set({ habits: updatedHabits });
   },
 }));
-
+ 
 export default useHabitStore;
