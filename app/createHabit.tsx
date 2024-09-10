@@ -36,7 +36,7 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [repeatFrequency, setRepeatFrequency] = useState("daily");
   const [timeOfDay, setTimeOfDay] = useState("anytime");
-  const [reminderTime, setReminderTime] = useState(new Date());
+  const [reminderTime, setReminderTime] = useState(new Date() );
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
@@ -64,6 +64,7 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
         endDate: endDate ? endDate.toISOString() : null,
         target: habitType === 'amount' ? parseInt(amount) : durationInSeconds,
         unit: habitType === 'amount' ? 'times' : habitType === 'duration' ? 'seconds' : undefined,
+        isCompleted: false, // Add this line to fix the TypeScript error
       });
       navigation.goBack();
     }
@@ -121,7 +122,10 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
     <View className="flex-1">
       <Container>
         {/* Habit Name */}
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom: 70}}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 70 }}
+        >
           <Text className="text-xl font-bold text-white mb-2">Habit Name</Text>
           <TextInput
             className="bg-gray-700 text-white p-4 rounded-lg mb-4 text-base"
@@ -260,24 +264,37 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
           </View>
 
           {/* Reminder Time */}
+          {/* Reminder Time */}
           <Text className="text-xl font-bold text-white mb-2">Reminder</Text>
           <TouchableOpacity
             onPress={() => setShowTimePicker(true)}
-            className="bg-gray-700 p-4 rounded-lg mb-4"
+            className="bg-gray-700 p-4 rounded-full mb-4 flex-row justify-between items-center"
           >
-            <Text className="text-white">
+            <Text className="text-white text-base">
               Set reminder: {format(reminderTime, "hh:mm a")}
             </Text>
+            <Ionicons name="time-outline" size={20} color="white" />
           </TouchableOpacity>
-          {showTimePicker && (
-            <DateTimePicker
-              testID="timeTimePicker"
-              value={reminderTime}
-              mode="time"
-              is24Hour={true}
-              display="default"
-              onChange={onTimeChange}
-            />
+          {showTimePicker && Platform.OS === "ios" && (
+            <View className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+              <View className="bg-white p-4 rounded-lg">
+                <DateTimePicker
+                  testID="timeTimePicker"
+                  value={reminderTime}
+                  mode="time"
+                  is24Hour={false}
+                  display="spinner"
+                  textColor="black" // Use custom styles for text color in spinner
+                  onChange={onTimeChange}
+                />
+                <TouchableOpacity
+                  onPress={() => setShowTimePicker(false)}
+                  className="mt-4 bg-blue-500 p-2 rounded-full"
+                >
+                  <Text className="text-white text-center">Done</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           )}
 
           {/* End Date */}
@@ -313,13 +330,16 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
               minimumDate={new Date()}
             />
           )}
-
-          
         </ScrollView>
       </Container>
       <BottomTab>
-        <TouchableOpacity className="bg-blue-500 w-[90%] mx-auto rounded-lg py-3  text-center" onPress={handleSave}>
-<Text className="text-white text-lg text-center">Create New  habit</Text>
+        <TouchableOpacity
+          className="bg-blue-500 w-[90%] mx-auto rounded-lg py-3  text-center"
+          onPress={handleSave}
+        >
+          <Text className="text-white text-lg text-center">
+            Create New habit
+          </Text>
         </TouchableOpacity>
       </BottomTab>
     </View>
