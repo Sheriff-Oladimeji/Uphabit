@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Platform,
   ScrollView,
+  Modal,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import useHabitStore, {
@@ -129,7 +130,7 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
         >
           <Text className="text-xl font-bold text-white mb-2">Habit Name</Text>
           <TextInput
-            className="bg-gray-700 text-white p-4 rounded-lg mb-4 text-base"
+            className="bg-gray-700 text-white p-4 rounded-lg= mb-4 text-base"
             placeholder="Enter habit name"
             placeholderTextColor="#9ca3af"
             value={habitName}
@@ -264,15 +265,14 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
             ))}
           </View>
 
-          {/* Reminder Time */}
           <View>
             {/* Reminder Time */}
-            <Text className="text-xl font-bold text-black mb-2">Reminder</Text>
+            <Text className="text-xl font-bold text-white mb-2">Reminder</Text>
 
             {/* Touchable to open DateTimePicker */}
             <TouchableOpacity
               onPress={() => setShowTimePicker(true)}
-              className="bg-blue-600 p-4 rounded-full mb-4 flex-row justify-between items-center"
+              className="bg-gray-700 p-4 rounded-lg mb-4 flex-row justify-between items-center"
             >
               <Text className="text-white text-base">
                 Set reminder: {format(reminderTime, "hh:mm a")}
@@ -280,39 +280,45 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
               <Ionicons name="time-outline" size={20} color="white" />
             </TouchableOpacity>
 
-            {/* DateTimePicker */}
-            {showTimePicker && (
-              <View>
-                {Platform.OS === "ios" ? (
-                  <View className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                    <View className="bg-white p-4 rounded-lg">
-                      <DateTimePicker
-                        testID="iosTimePicker"
-                        value={reminderTime}
-                        mode="time"
-                        is24Hour={false}
-                        display="spinner"
-                        onChange={onTimeChange}
-                      />
-                      <TouchableOpacity
-                        onPress={() => setShowTimePicker(false)}
-                        className="mt-4 bg-blue-500 p-2 rounded-full"
-                      >
-                        <Text className="text-white text-center">Done</Text>
-                      </TouchableOpacity>
-                    </View>
+            {/* iOS Custom Modal for DateTimePicker */}
+            {Platform.OS === "ios" && (
+              <Modal
+                transparent={true}
+                animationType="slide"
+                visible={showTimePicker}
+                onRequestClose={() => setShowTimePicker(false)}
+              >
+                <View className="flex-1 justify-center items-center bg-[rgba(0, 0, 0, 0.9)] ">
+                  <View className="bg-white p-4 rounded-lg w-4/5">
+                    <DateTimePicker
+                      testID="iosTimePicker"
+                      value={reminderTime}
+                      mode="time"
+                      is24Hour={false}
+                      display="spinner"
+                      onChange={onTimeChange}
+                    />
+                    <TouchableOpacity
+                      onPress={() => setShowTimePicker(false)}
+                      className="mt-4 bg-blue-500 p-2 rounded-full"
+                    >
+                      <Text className="text-white text-center">Done</Text>
+                    </TouchableOpacity>
                   </View>
-                ) : (
-                  <DateTimePicker
-                    testID="androidTimePicker"
-                    value={reminderTime}
-                    mode="time"
-                    is24Hour={false}
-                    display="default" // 'default' for Android to show standard picker
-                    onChange={onTimeChange}
-                  />
-                )}
-              </View>
+                </View>
+              </Modal>
+            )}
+
+            {/* Android Time Picker (no modal needed) */}
+            {Platform.OS === "android" && showTimePicker && (
+              <DateTimePicker
+                testID="androidTimePicker"
+                value={reminderTime}
+                mode="time"
+                is24Hour={false}
+                display="default"
+                onChange={onTimeChange}
+              />
             )}
           </View>
 
