@@ -46,6 +46,7 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
   const [hours, setHours] = useState('0');
   const [minutes, setMinutes] = useState('10');
   const [seconds, setSeconds] = useState('0');
+  
 
   const handleSave = async () => {
     if (habitName.trim()) {
@@ -264,38 +265,56 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
           </View>
 
           {/* Reminder Time */}
-          {/* Reminder Time */}
-          <Text className="text-xl font-bold text-white mb-2">Reminder</Text>
-          <TouchableOpacity
-            onPress={() => setShowTimePicker(true)}
-            className="bg-gray-700 p-4 rounded-full mb-4 flex-row justify-between items-center"
-          >
-            <Text className="text-white text-base">
-              Set reminder: {format(reminderTime, "hh:mm a")}
-            </Text>
-            <Ionicons name="time-outline" size={20} color="white" />
-          </TouchableOpacity>
-          {showTimePicker && Platform.OS === "ios" && (
-            <View className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-              <View className="bg-white p-4 rounded-lg">
-                <DateTimePicker
-                  testID="timeTimePicker"
-                  value={reminderTime}
-                  mode="time"
-                  is24Hour={false}
-                  display="spinner"
-                  textColor="black" // Use custom styles for text color in spinner
-                  onChange={onTimeChange}
-                />
-                <TouchableOpacity
-                  onPress={() => setShowTimePicker(false)}
-                  className="mt-4 bg-blue-500 p-2 rounded-full"
-                >
-                  <Text className="text-white text-center">Done</Text>
-                </TouchableOpacity>
+          <View>
+            {/* Reminder Time */}
+            <Text className="text-xl font-bold text-black mb-2">Reminder</Text>
+
+            {/* Touchable to open DateTimePicker */}
+            <TouchableOpacity
+              onPress={() => setShowTimePicker(true)}
+              className="bg-blue-600 p-4 rounded-full mb-4 flex-row justify-between items-center"
+            >
+              <Text className="text-white text-base">
+                Set reminder: {format(reminderTime, "hh:mm a")}
+              </Text>
+              <Ionicons name="time-outline" size={20} color="white" />
+            </TouchableOpacity>
+
+            {/* DateTimePicker */}
+            {showTimePicker && (
+              <View>
+                {Platform.OS === "ios" ? (
+                  <View className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                    <View className="bg-white p-4 rounded-lg">
+                      <DateTimePicker
+                        testID="iosTimePicker"
+                        value={reminderTime}
+                        mode="time"
+                        is24Hour={false}
+                        display="spinner"
+                        onChange={onTimeChange}
+                      />
+                      <TouchableOpacity
+                        onPress={() => setShowTimePicker(false)}
+                        className="mt-4 bg-blue-500 p-2 rounded-full"
+                      >
+                        <Text className="text-white text-center">Done</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ) : (
+                  <DateTimePicker
+                    testID="androidTimePicker"
+                    value={reminderTime}
+                    mode="time"
+                    is24Hour={false}
+                    display="default" // 'default' for Android to show standard picker
+                    onChange={onTimeChange}
+                  />
+                )}
               </View>
-            </View>
-          )}
+            )}
+          </View>
 
           {/* End Date */}
           <Text className="text-xl font-bold text-white mb-2">End At</Text>
