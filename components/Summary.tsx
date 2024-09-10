@@ -9,7 +9,7 @@ const Summary: React.FC = () => {
   const { currentDate } = useDateStore();
   const [currentTime, setCurrentTime] = useState("");
   const [habitStats, setHabitStats] = useState({ done: 0, total: 0, percentage: 0 });
-
+const points = 50
   useEffect(() => {
     const timer = setInterval(updateCurrentTime, 60000);
     updateCurrentTime();
@@ -45,7 +45,9 @@ const Summary: React.FC = () => {
       <View className="bg-gray-800 p-5 rounded-2xl flex-row justify-between items-center">
         <View className="flex-1">
           <Text className="text-white text-lg font-semibold mb-4">
-            {habitStats.percentage === 100 ? "Great job!" : "You're almost done!"}
+            {habitStats.percentage === 100
+              ? "Great job!"
+              : "You're almost done!"}
           </Text>
           <View className="flex-row justify-start items-center space-x-6">
             <View>
@@ -54,11 +56,17 @@ const Summary: React.FC = () => {
               </Text>
               <Text className="text-gray-400 text-sm">Habits</Text>
             </View>
+            <View>
+              <Text className="text-white text-2xl font-bold">
+                {points}
+              </Text>
+              <Text className="text-gray-400 text-sm">Points</Text>
+            </View>
           </View>
         </View>
         <View className="ml-4">
           <AnimatedCircularProgress
-            size={90}
+            size={120}
             width={8}
             fill={habitStats.percentage}
             tintColor="#4ade80"
@@ -67,7 +75,7 @@ const Summary: React.FC = () => {
             lineCap="round"
           >
             {() => (
-              <View className="items-center">
+              <View className="items-center p-4">
                 <Text className="text-white text-2xl font-bold">
                   {habitStats.percentage}%
                 </Text>
