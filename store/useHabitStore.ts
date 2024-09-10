@@ -19,6 +19,9 @@ interface Habit {
   endDate: string | null;
   target?: number; // For amount and duration based habits
   unit?: string; // For amount and duration based habits (e.g., 'ml', 'mins')
+  progress?: number;
+  timeElapsed?: number;
+  isCompleted: boolean; // Add this line
 }
 
 interface HabitStore {
@@ -27,6 +30,8 @@ interface HabitStore {
   deleteHabit: (id: string) => Promise<void>;
   loadHabits: () => Promise<void>;
   getHabitsForDate: (date: Date) => Habit[];
+  updateHabitProgress: (id: string, progress: number) => Promise<void>;
+  toggleHabitCompletion: (id: string) => Promise<void>;
 }
 
 const useHabitStore = create<HabitStore>((set, get) => ({
@@ -59,6 +64,33 @@ const useHabitStore = create<HabitStore>((set, get) => ({
       const habitStartDate = startOfDay(new Date(habit.startDate));
       return habitStartDate <= startOfDayDate;
     });
+  },
+  updateHabitProgress: async (id: string, progress: number) => {
+    const updatedHabits = get().habits.map(habit =>
+      habit.id === id
+        ? {
+            ...habit,
+            progress: habit.habitType === 'amount' ? progress : habit.progress,
+            timeElapsed: habit.habitType === 'duration' ? progress : habit.timeElapsed,
+          }
+        : habit
+    );
+    await storeItem('habits', JSON.stringify(updatedHabits));
+    set({ habits: updatedHabits });
+  },
+  toggleHabitCompletion: async (id: string) => {
+    const updatedHabits = get().habits.map(habit =>
+      habit.id === id
+        ? {
+            ...habit,
+            isCompleted: !habit.isCompleted,
+            progress: habit.habitType === 'amount' ? (habit.isCompleted ? 0 : habit.target) : habit.progress,
+            timeElapsed: habit.habitType === 'duration' ? (habit.isCompleted ? 0 : habit.target) : habit.timeElapsed,
+          }
+        : habit
+    );
+    await storeItem('habits', JSON.stringify(updatedHabits));
+    set({ habits: updatedHabits });
   },
 }));
 

@@ -14,13 +14,25 @@ interface Habit {
   startDate: string;
   target?: number;
   unit?: string;
+  isCompleted: boolean;
+  progress?: number;
+  timeElapsed?: number;
 }
 
 const HabitItem = memo(({ item }: { item: Habit }) => {
-  const [progress, setProgress] = useState(0);
-  const [isCompleted, setIsCompleted] = useState(false);
+  const { toggleHabitCompletion, updateHabitProgress } = useHabitStore();
+  const [progress, setProgress] = useState(item.progress || 0);
+  const [timeElapsed, setTimeElapsed] = useState(item.timeElapsed || 0);
   const [timerRunning, setTimerRunning] = useState(false);
-  const [timeElapsed, setTimeElapsed] = useState(0);
+
+  useEffect(() => {
+    setProgress(item.progress || 0);
+    setTimeElapsed(item.timeElapsed || 0);
+  }, [item]);
+
+  const isCompleted = item.isCompleted || 
+    (item.habitType === 'amount' && progress >= item.target!) ||
+    (item.habitType === 'duration' && timeElapsed >= item.target!);
 
   const borderColor =
     item.type === "build" ? "border-green-500" : "border-red-500";
@@ -28,14 +40,16 @@ const HabitItem = memo(({ item }: { item: Habit }) => {
   const accentColor = item.type === "build" ? "text-green-500" : "text-red-500";
  
   const handleTaskCompletion = () => {
-    setIsCompleted(!isCompleted);
+    toggleHabitCompletion(item.id);
   };
 
   const handleAmountIncrement = () => {
     if (progress < item.target!) {
-      setProgress(progress + 1);
-      if (progress + 1 === item.target) {
-        setIsCompleted(true);
+      const newProgress = progress + 1;
+      setProgress(newProgress);
+      updateHabitProgress(item.id, newProgress);
+      if (newProgress >= item.target!) {
+        toggleHabitCompletion(item.id);
       }
     }
   };
@@ -45,13 +59,15 @@ const HabitItem = memo(({ item }: { item: Habit }) => {
       setTimerRunning(true);
       const interval = setInterval(() => {
         setTimeElapsed((prev) => {
-          if (prev + 1 >= item.target!) {
+          const newTimeElapsed = prev + 1;
+          updateHabitProgress(item.id, newTimeElapsed);
+          if (newTimeElapsed >= item.target!) {
             clearInterval(interval);
             setTimerRunning(false);
-            setIsCompleted(true);
+            toggleHabitCompletion(item.id);
             return item.target!;
           }
-          return prev + 1;
+          return newTimeElapsed;
         });
       }, 1000);
     } else {
@@ -105,14 +121,14 @@ const HabitItem = memo(({ item }: { item: Habit }) => {
       {/* Right Side Button (Play, Plus, Check) */}
       {item.habitType === "duration" && (
         <TouchableOpacity onPress={handleDurationTimer}>
-          <View className="bg-blue-500 h-10 w-10 rounded-full flex items-center justify-center">
-            <AntDesign name="play" size={20} color="white" />
+          <View className={`h-10 w-10 rounded-full flex items-center justify-center ${isCompleted ? 'bg-blue-500' : 'bg-gray-600'}`}>
+            <AntDesign name={timerRunning ? "pause" : "play"} size={20} color="white" />
           </View>
         </TouchableOpacity>
       )}
       {item.habitType === "amount" && (
         <TouchableOpacity onPress={handleAmountIncrement}>
-          <View className="bg-blue-500 h-10 w-10 rounded-full flex items-center justify-center">
+          <View className={`h-10 w-10 rounded-full flex items-center justify-center ${isCompleted ? 'bg-blue-500' : 'bg-gray-600'}`}>
             <AntDesign name="plus" size={20} color="white" />
           </View>
         </TouchableOpacity>
