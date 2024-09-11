@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useMemo, memo } from "react";
+import React, { useRef, useCallback, useMemo, memo, useEffect } from "react";
 import {
   View,
   Text,
@@ -12,8 +12,9 @@ import useDateStore from "@/store/useDateStore";
 
 const ITEM_WIDTH = 60;
 const SCREEN_WIDTH = Dimensions.get("window").width;
-const INITIAL_INDEX = 365;
 const ITEM_COUNT = 365 * 2;
+const ITEMS_TO_SHOW = 5;
+const DAYS_TO_SCROLL = 2;
 
 interface CalendarItem {
   date: Date;
@@ -56,22 +57,30 @@ const InteractiveCalendar: React.FC = () => {
   const dates: CalendarItem[] = useMemo(() => {
     const today = new Date();
     return Array.from({ length: ITEM_COUNT }, (_, i) => ({
-      date: addDays(today, i - 365),
+      date: addDays(today, i - ITEM_COUNT / 2),
       id: `date-${i}`,
     }));
   }, []);
 
-  const scrollToDate = useCallback((date: Date) => {
-    const index = INITIAL_INDEX + differenceInDays(date, new Date());
-    flatListRef.current?.scrollToIndex({ index, animated: true });
+  const initialScrollIndex = useMemo(() => {
+    return Math.floor(ITEM_COUNT / 2) + DAYS_TO_SCROLL;
   }, []);
+
+  const scrollToDate = useCallback(
+    (date: Date) => {
+      const index =
+        initialScrollIndex +
+        differenceInDays(date, new Date()) -
+        DAYS_TO_SCROLL;
+      flatListRef.current?.scrollToIndex({ index, animated: true });
+    },
+    [initialScrollIndex]
+  );
 
   const handleDatePress = useCallback(
     (date: Date) => {
       setCurrentDate(date);
-      requestAnimationFrame(() => {
-        scrollToDate(date);
-      });
+      scrollToDate(date);
     },
     [setCurrentDate, scrollToDate]
   );
@@ -97,6 +106,13 @@ const InteractiveCalendar: React.FC = () => {
     []
   );
 
+  useEffect(() => {
+    // Scroll to two days after the current date when the component mounts
+    setTimeout(() => {
+      scrollToDate(addDays(new Date(), DAYS_TO_SCROLL));
+    }, 100);
+  }, [scrollToDate]);
+
   return (
     <View className="w-full bg-gray-900 mt-4">
       <FlatList
@@ -106,16 +122,16 @@ const InteractiveCalendar: React.FC = () => {
         keyExtractor={(item) => item.id}
         horizontal
         showsHorizontalScrollIndicator={false}
-        initialScrollIndex={INITIAL_INDEX}
+        initialScrollIndex={initialScrollIndex}
         getItemLayout={getItemLayout}
         contentContainerStyle={{
-          paddingHorizontal: SCREEN_WIDTH / 2 - ITEM_WIDTH / 2,
+          paddingHorizontal: (SCREEN_WIDTH - ITEM_WIDTH) / 2,
         }}
         removeClippedSubviews={true}
-        maxToRenderPerBatch={7}
+        maxToRenderPerBatch={ITEMS_TO_SHOW}
         updateCellsBatchingPeriod={50}
-        windowSize={7}
-        initialNumToRender={7}
+        windowSize={ITEMS_TO_SHOW}
+        initialNumToRender={ITEMS_TO_SHOW}
       />
     </View>
   );
