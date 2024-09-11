@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { getItem, storeItem } from '../utils/storage';
-import { startOfDay } from 'date-fns';
+import { startOfDay, format } from 'date-fns';
 
 export type RepeatFrequency = 'daily' | 'weekly' | 'monthly';
 export type TimeOfDay = 'anytime' | 'morning' | 'afternoon' | 'evening';
@@ -19,19 +19,18 @@ export interface Habit {
   endDate: string | null;
   target?: number; // For amount and duration based habits
   unit?: string; // For amount and duration based habits (e.g., 'ml', 'mins')
-  progress?: number;
-  timeElapsed?: number;
-  isCompleted: boolean; // Add this line
+  completionDates: Record<string, boolean>;
+  progressDates: Record<string, number>;
 }
 
 interface HabitStore {
   habits: Habit[];
-  addHabit: (habit: Omit<Habit, 'id' | 'createdAt'>) => Promise<void>;
+  addHabit: (habit: Omit<Habit, 'id' | 'createdAt' | 'completionDates' | 'progressDates'>) => Promise<void>;
   deleteHabit: (id: string) => Promise<void>;
   loadHabits: () => Promise<void>;
   getHabitsForDate: (date: Date) => Habit[];
-  updateHabitProgress: (id: string, progress: number) => Promise<void>;
-  toggleHabitCompletion: (id: string) => Promise<void>;
+  updateHabitProgress: (id: string, progress: number, date: Date) => Promise<void>;
+  toggleHabitCompletion: (id: string, date: Date) => Promise<void>;
 }
 
 const useHabitStore = create<HabitStore>((set, get) => ({
@@ -41,6 +40,8 @@ const useHabitStore = create<HabitStore>((set, get) => ({
       ...habit,
       id: Date.now().toString(),
       createdAt: new Date().toISOString(),
+      completionDates: {},
+      progressDates: {},
     };
     const updatedHabits = [...get().habits, newHabit];
     await storeItem('habits', JSON.stringify(updatedHabits));
@@ -65,33 +66,45 @@ const useHabitStore = create<HabitStore>((set, get) => ({
       return habitStartDate <= startOfDayDate;
     });
   },
-  updateHabitProgress: async (id: string, progress: number) => {
+  updateHabitProgress: async (id: string, progress: number, date: Date) => {
+    const dateKey = format(date, 'yyyy-MM-dd');
     const updatedHabits = get().habits.map(habit =>
       habit.id === id
         ? {
             ...habit,
-            progress: habit.habitType === 'amount' ? progress : habit.progress,
-            timeElapsed: habit.habitType === 'duration' ? progress : habit.timeElapsed,
+            progressDates: {
+              ...habit.progressDates,
+              [dateKey]: progress,
+            },
           }
         : habit
     );
     await storeItem('habits', JSON.stringify(updatedHabits));
     set({ habits: updatedHabits });
   },
-  toggleHabitCompletion: async (id: string) => {
-    const updatedHabits = get().habits.map(habit =>
-      habit.id === id
-        ? {
-            ...habit,
-            isCompleted: !habit.isCompleted,
-            progress: habit.habitType === 'amount' ? (habit.isCompleted ? 0 : habit.target) : habit.progress,
-            timeElapsed: habit.habitType === 'duration' ? (habit.isCompleted ? 0 : habit.target) : habit.timeElapsed,
-          }
-        : habit
-    );
+  toggleHabitCompletion: async (id: string, date: Date) => {
+    const dateKey = format(date, 'yyyy-MM-dd');
+    const updatedHabits = get().habits.map(habit => {
+      if (habit.id === id) {
+        const currentCompletionStatus = habit.completionDates?.[dateKey] ?? false;
+        const currentProgress = habit.progressDates?.[dateKey] ?? 0;
+        return {
+          ...habit,
+          completionDates: {
+            ...habit.completionDates,
+            [dateKey]: !currentCompletionStatus,
+          },
+          progressDates: {
+            ...habit.progressDates,
+            [dateKey]: currentCompletionStatus ? 0 : (habit.target ?? 0),
+          },
+        };
+      }
+      return habit;
+    });
     await storeItem('habits', JSON.stringify(updatedHabits));
     set({ habits: updatedHabits });
   },
 }));
- 
+
 export default useHabitStore;

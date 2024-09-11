@@ -3,13 +3,15 @@ import { View, Text } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import useHabitStore from "../store/useHabitStore";
 import useDateStore from "@/store/useDateStore";
+import { format } from "date-fns";
 
 const Summary: React.FC = () => {
   const { habits, getHabitsForDate } = useHabitStore();
   const { currentDate } = useDateStore();
   const [currentTime, setCurrentTime] = useState("");
   const [habitStats, setHabitStats] = useState({ done: 0, total: 0, percentage: 0 });
-const points = 50
+  const [points, setPoints] = useState(0);
+
   useEffect(() => {
     const timer = setInterval(updateCurrentTime, 60000);
     updateCurrentTime();
@@ -26,17 +28,25 @@ const points = 50
   };
 
   const updateHabitStats = () => {
-    const habitsForToday = getHabitsForDate(currentDate);
-    const total = habitsForToday.length;
-    const done = habitsForToday.filter(habit => habit?.isCompleted).length;
+    const habitsForDate = getHabitsForDate(currentDate);
+    const dateKey = format(currentDate, 'yyyy-MM-dd');
+    const total = habitsForDate.length;
+    const done = habitsForDate.filter(habit => habit.completionDates?.[dateKey] ?? false).length;
     const percentage = total > 0 ? Math.round((done / total) * 100) : 0;
+    
+    // Calculate points (you can adjust this calculation as needed)
+    const calculatedPoints = done * 10; // For example, 10 points per completed habit
+
     setHabitStats({ done, total, percentage });
+    setPoints(calculatedPoints);
   };
 
   return (
     <View className="mt-6 ">
       <View className="flex flex-row justify-between items-center mb-3">
-        <Text className="text-white font-bold text-2xl ">Today's Habit</Text>
+        <Text className="text-white font-bold text-2xl ">
+          {format(currentDate, "MMMM d, yyyy")}
+        </Text>
         <View className="bg-gray-700 px-4 py-2 rounded-full">
           <Text className="text-white font-bold text-base">{currentTime}</Text>
         </View>

@@ -66,7 +66,6 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
         endDate: endDate ? endDate.toISOString() : null,
         target: habitType === 'amount' ? parseInt(amount) : durationInSeconds,
         unit: habitType === 'amount' ? 'times' : habitType === 'duration' ? 'seconds' : undefined,
-        isCompleted: false, // Add this line to fix the TypeScript error
       });
       navigation.goBack();
     }

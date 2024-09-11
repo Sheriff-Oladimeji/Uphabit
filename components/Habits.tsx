@@ -8,18 +8,19 @@ import { format } from "date-fns";
 
 const HabitItem = memo(({ item, onDelete }: { item: Habit; onDelete: (id: string) => void }) => {
   const { toggleHabitCompletion, updateHabitProgress } = useHabitStore();
-  const [progress, setProgress] = useState(item.progress || 0);
-  const [timeElapsed, setTimeElapsed] = useState(item.timeElapsed || 0);
+  const { currentDate } = useDateStore();
+  const dateKey = format(currentDate, 'yyyy-MM-dd');
+  
+  const [progress, setProgress] = useState(item.progressDates?.[dateKey] ?? 0);
+  const [timeElapsed, setTimeElapsed] = useState(item.progressDates?.[dateKey] ?? 0);
   const [timerRunning, setTimerRunning] = useState(false);
 
   useEffect(() => {
-    setProgress(item.progress || 0);
-    setTimeElapsed(item.timeElapsed || 0);
-  }, [item]);
+    setProgress(item.progressDates?.[dateKey] ?? 0);
+    setTimeElapsed(item.progressDates?.[dateKey] ?? 0);
+  }, [item, dateKey]);
 
-  const isCompleted = item.isCompleted || 
-    (item.habitType === 'amount' && progress >= item.target!) ||
-    (item.habitType === 'duration' && timeElapsed >= item.target!);
+  const isCompleted = item.completionDates?.[dateKey] ?? false;
 
   const borderColor =
     item.type === "build" ? "border-green-500" : "border-red-500";
@@ -27,16 +28,16 @@ const HabitItem = memo(({ item, onDelete }: { item: Habit; onDelete: (id: string
   const accentColor = item.type === "build" ? "text-green-500" : "text-red-500";
  
   const handleTaskCompletion = () => {
-    toggleHabitCompletion(item.id);
+    toggleHabitCompletion(item.id, currentDate);
   };
 
   const handleAmountIncrement = () => {
     if (progress < item.target!) {
       const newProgress = progress + 1;
       setProgress(newProgress);
-      updateHabitProgress(item.id, newProgress);
+      updateHabitProgress(item.id, newProgress, currentDate);
       if (newProgress >= item.target!) {
-        toggleHabitCompletion(item.id);
+        toggleHabitCompletion(item.id, currentDate);
       }
     }
   };
@@ -47,11 +48,11 @@ const HabitItem = memo(({ item, onDelete }: { item: Habit; onDelete: (id: string
       const interval = setInterval(() => {
         setTimeElapsed((prev: number) => {
           const newTimeElapsed = prev + 1;
-          updateHabitProgress(item.id, newTimeElapsed);
+          updateHabitProgress(item.id, newTimeElapsed, currentDate);
           if (newTimeElapsed >= item.target!) {
             clearInterval(interval);
             setTimerRunning(false);
-            toggleHabitCompletion(item.id);
+            toggleHabitCompletion(item.id, currentDate);
             return item.target!;
           }
           return newTimeElapsed;
