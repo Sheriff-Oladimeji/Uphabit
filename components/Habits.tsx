@@ -5,6 +5,7 @@ import useHabitStore, { HabitType, Habit } from "../store/useHabitStore";
 import useDateStore from "@/store/useDateStore";
 import { Feather, MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import { format } from "date-fns";
+import { router } from "expo-router";
 
 const HabitItem = memo(({ item, onDelete }: { item: Habit; onDelete: (id: string) => void }) => {
   const { toggleHabitCompletion, updateHabitProgress } = useHabitStore();
@@ -119,7 +120,7 @@ const HabitItem = memo(({ item, onDelete }: { item: Habit; onDelete: (id: string
 
   return (
     <Swipeable renderRightActions={renderRightActions}>
-      <View style={styles.habitItem}>
+      <TouchableOpacity style={styles.habitItem} onPress={ () => router.push("/habit")}>
         {/* Left Icon with Initial */}
         <View className="flex-row items-center">
           <View className="bg-blue-500 h-12 w-12 rounded-full flex items-center justify-center mr-4">
@@ -162,7 +163,7 @@ const HabitItem = memo(({ item, onDelete }: { item: Habit; onDelete: (id: string
           </TouchableOpacity>
         )}
         {/* include reminder here */}
-      </View>
+      </TouchableOpacity>
     </Swipeable>
   );
 });

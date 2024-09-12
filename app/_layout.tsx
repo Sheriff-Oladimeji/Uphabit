@@ -76,6 +76,7 @@ export default function RootLayout() {
             ),
           })}
         />
+        <Stack.Screen name="habit" options={{headerShown: false}}/>
       </Stack>
     </GestureHandlerRootView>
   );
