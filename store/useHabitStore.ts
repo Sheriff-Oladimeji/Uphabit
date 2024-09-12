@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { getItem, storeItem } from '../utils/storage';
 import { startOfDay, format } from 'date-fns';
+import { scheduleNotification, cancelNotification } from '../utils/notificationService';
 
 export type RepeatFrequency = 'daily' | 'weekly' | 'monthly';
 export type TimeOfDay = 'anytime' | 'morning' | 'afternoon' | 'evening';
@@ -46,11 +47,17 @@ const useHabitStore = create<HabitStore>((set, get) => ({
     const updatedHabits = [...get().habits, newHabit];
     await storeItem('habits', JSON.stringify(updatedHabits));
     set({ habits: updatedHabits });
+
+    // Schedule notification for the new habit
+    await scheduleNotification(newHabit);
   },
   deleteHabit: async (id: string) => {
     const updatedHabits = get().habits.filter(habit => habit.id !== id);
     await storeItem('habits', JSON.stringify(updatedHabits));
     set({ habits: updatedHabits });
+
+    // Cancel notification for the deleted habit
+    await cancelNotification(id);
   },
   loadHabits: async () => {
     const storedHabits = await getItem('habits');

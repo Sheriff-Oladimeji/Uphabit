@@ -161,6 +161,7 @@ const HabitItem = memo(({ item, onDelete }: { item: Habit; onDelete: (id: string
             </View>
           </TouchableOpacity>
         )}
+        {/* include reminder here */}
       </View>
     </Swipeable>
   );

@@ -21,6 +21,7 @@ import Container from "@/components/Container";
 import BottomTab from "@/components/BottomTab";
 import { useRouter } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
+import { registerForPushNotificationsAsync } from '../utils/notificationService';
 
 interface CreateHabitProps {
   type: "build" | "quit";
@@ -118,6 +119,10 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
     afternoon: <Ionicons name="partly-sunny-outline" size={20} color="white" />,
     evening: <Ionicons name="moon-outline" size={20} color="white" />,
   };
+
+  useEffect(() => {
+    registerForPushNotificationsAsync();
+  }, []);
 
   return (
     <View className="flex-1">
