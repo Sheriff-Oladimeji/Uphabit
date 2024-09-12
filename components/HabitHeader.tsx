@@ -1,9 +1,12 @@
 import { View, Text, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { FontAwesome } from '@expo/vector-icons';
+import usePointStore from '@/store/usePointStore';
 
 const HabitHeader = () => {
-  // Add this function to determine the greeting
+
+  const {points} = usePointStore()
+ 
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return 'Good morning';
@@ -29,6 +32,7 @@ const HabitHeader = () => {
         </View>
       </View>
       <TouchableOpacity>
+        <Text className='text-white font-bold '>{points}</Text>
         <FontAwesome name="bell" size={20} color="white" />
       </TouchableOpacity>
     </View>
