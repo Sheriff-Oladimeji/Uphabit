@@ -107,7 +107,7 @@ const InteractiveCalendar: React.FC = () => {
   );
 
   useEffect(() => {
-    // Scroll to two days after the current date when the component mounts
+   
     setTimeout(() => {
       scrollToDate(addDays(new Date(), DAYS_TO_SCROLL));
     }, 100);
