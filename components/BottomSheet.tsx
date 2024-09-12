@@ -1,0 +1,49 @@
+import { View, Text } from "react-native";
+import React, { useEffect, useRef } from "react";
+import RBSheet from "react-native-raw-bottom-sheet";
+import { BottomSheetProps } from "@/types/bottomSheet";
+
+
+const BottomSheet = ({ isVisible, onClose , children, radius}: BottomSheetProps) => {
+  const refRBSheet = useRef<any>(null);
+  useEffect(() => {
+    if (isVisible) {
+      refRBSheet.current?.open();
+    } else {
+      refRBSheet.current?.close();
+    }
+  }, [isVisible]);
+
+  const handleClose = () => {
+    onClose();
+  };
+  return (
+    <RBSheet
+      ref={refRBSheet}
+      closeOnPressMask={true}
+      onClose={handleClose}
+      draggable={true}
+      dragOnContent={true}
+      closeOnPressBack={true}
+      customStyles={{
+        wrapper: {
+          backgroundColor: "rgba(0, 0, 0, 0.6)",
+          flex: 1,
+        },
+        container: {
+          backgroundColor: "#1f2937",
+          borderTopLeftRadius: radius,
+          borderTopRightRadius: radius,
+          height: "50%",
+        },
+        draggableIcon: {
+          backgroundColor: "#fff",
+        },
+      }}
+      >
+          {children}
+    </RBSheet>
+  );
+};
+
+export default BottomSheet;

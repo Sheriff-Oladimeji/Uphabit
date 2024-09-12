@@ -1,27 +1,19 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import RBSheet from "react-native-raw-bottom-sheet";
 
 import { Link, useRouter } from "expo-router";
+import { BottomSheetProps } from "@/types/bottomSheet";
 
 
-
-type CreateHabitModalProps = {
-  isVisible: boolean;
-  onClose: () => void;
-};
-
-export default function SelectHabitType({
-  isVisible,
-  onClose,
-}: CreateHabitModalProps) {
+export default function SelectHabitType({ isVisible, onClose }: BottomSheetProps) {
   const refRBSheet = useRef<any>(null);
   const router = useRouter();
   const [habitType, setHabitType] = useState<"build" | "quit" | null>(null);
 
-  const radius =  25;
+  const radius = 25;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isVisible) {
       refRBSheet.current?.open();
     } else {
@@ -34,12 +26,11 @@ export default function SelectHabitType({
     onClose();
   };
 
-
   const handleSelect = (type: "build" | "quit" | null) => {
     onClose();
     setHabitType(type);
-    console.log(type)
-    
+    console.log(type);
+
     router.push("/createHabit");
   };
   return (
