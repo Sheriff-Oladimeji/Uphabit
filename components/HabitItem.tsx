@@ -1,5 +1,5 @@
 import React, { useState, useEffect, memo } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { router } from "expo-router";
@@ -91,9 +91,10 @@ const HabitItem = memo(({ item, onDelete }: { item: Habit; onDelete: (id: string
 
   return (
     <TouchableOpacity 
-      style={styles.habitItem} 
+  
       onPress={() => router.push("/habit")}
-      onLongPress={() => setIsModalVisible(true)}
+          onLongPress={() => setIsModalVisible(true)}
+          className="bg-gray-800 rounded-full p-2 mb-4 flex flex-row justify-between items-center"
     >
       {/* Left Icon with Initial */}
       <View className="flex-row items-center">
@@ -147,16 +148,6 @@ const HabitItem = memo(({ item, onDelete }: { item: Habit; onDelete: (id: string
   );
 });
 
-const styles = StyleSheet.create({
-  habitItem: {
-    backgroundColor: '#1F2937', // gray-800
-    borderRadius: 9999,
-    padding: 8,
-    marginBottom: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-});
+
 
 export default HabitItem;
