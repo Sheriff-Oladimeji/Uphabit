@@ -89,11 +89,6 @@ const HabitItem = memo(({ item, onDelete, onEdit }: { item: Habit; onDelete: (id
   const iconColor = isCompleted ? "#60A5FA" : "#374151";
   const initialLetter = item.name.charAt(0).toUpperCase();
 
-  const handleEdit = () => {
-    onEdit(item);
-    setIsModalVisible(false);
-  };
-
   return (
     <TouchableOpacity 
   
@@ -146,11 +141,13 @@ const HabitItem = memo(({ item, onDelete, onEdit }: { item: Habit; onDelete: (id
         isVisible={isModalVisible} 
         onClose={() => setIsModalVisible(false)}
         onDelete={() => onDelete(item.id)}
-        onEdit={handleEdit}
+        onEdit={() => {/* Implement edit functionality */}}
         name={item.name}
       />
     </TouchableOpacity>
   );
 });
+
+
 
 export default HabitItem;
