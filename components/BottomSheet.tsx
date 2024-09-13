@@ -3,8 +3,14 @@ import React, { useEffect, useRef } from "react";
 import RBSheet from "react-native-raw-bottom-sheet";
 import { BottomSheetProps } from "@/types/bottomSheet";
 
-
-const BottomSheet = ({ isVisible, onClose , children, radius, height}: BottomSheetProps) => {
+const BottomSheet = ({
+  isVisible,
+  onClose,
+  children,
+  radius,
+  height,
+  handler,
+}: BottomSheetProps) => {
   const refRBSheet = useRef<any>(null);
   useEffect(() => {
     if (isVisible) {
@@ -16,6 +22,9 @@ const BottomSheet = ({ isVisible, onClose , children, radius, height}: BottomShe
 
   const handleClose = () => {
     onClose();
+    if (handler) {
+      handler();
+    }
   };
   return (
     <RBSheet
@@ -40,8 +49,8 @@ const BottomSheet = ({ isVisible, onClose , children, radius, height}: BottomShe
           backgroundColor: "#fff",
         },
       }}
-      >
-          {children}
+    >
+      {children}
     </RBSheet>
   );
 };
