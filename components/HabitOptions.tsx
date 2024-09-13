@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import BottomSheet from "./BottomSheet";
 
 interface HabitOptionsProps {
@@ -10,28 +10,43 @@ interface HabitOptionsProps {
   name: string;
 }
 
-const HabitOptions = ({ isVisible, onClose, onDelete, onEdit, name }: HabitOptionsProps) => {
+const HabitOptions = ({
+  isVisible,
+  onClose,
+  onDelete,
+  onEdit,
+  name,
+}: HabitOptionsProps) => {
   return (
-    <BottomSheet isVisible={isVisible} onClose={onClose} radius={25} height="40%">
+    <BottomSheet
+      isVisible={isVisible}
+      onClose={onClose}
+      radius={25}
+      height="40%"
+    >
       <View className="w-[90%] mx-auto py-5">
-        <Text className="text-center text-white text-xl font-bold">{name}</Text>
+        <Text className="text-center text-white text-2xl font-bold mb-8">
+          {name}
+        </Text>
         <TouchableOpacity
           onPress={onEdit}
-          className="bg-red-500 w-full py-4 rounded-lg mb-5 mt-12 "
+          className="bg-blue-500 w-full py-4 rounded-2xl mb-4 active:opacity-80"
         >
-          <Text className="text-center text-white text-lg">Edit Habit</Text>
+          <Text className="text-center text-white text-lg font-semibold">
+            Edit Habit
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={onDelete}
-          className="bg-blue-500 w-full py-4 rounded-lg "
+          className="bg-red-500 w-full py-4 rounded-2xl active:opacity-80"
         >
-          <Text className="text-center text-white text-lg">Delete Habit</Text>
+          <Text className="text-center text-white text-lg font-semibold">
+            Delete Habit
+          </Text>
         </TouchableOpacity>
       </View>
     </BottomSheet>
   );
 };
-
-;
 
 export default HabitOptions;
