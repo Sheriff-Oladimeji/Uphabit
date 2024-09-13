@@ -4,27 +4,16 @@ import RBSheet from "react-native-raw-bottom-sheet";
 
 import { Link, useRouter } from "expo-router";
 import { BottomSheetProps } from "@/types/bottomSheet";
+import BottomSheet from "./BottomSheet";
 
 
-export default function SelectHabitType({ isVisible, onClose }: BottomSheetProps) {
+export default function SelectHabitType({ isVisible, onClose,  }: BottomSheetProps) {
   const refRBSheet = useRef<any>(null);
   const router = useRouter();
   const [habitType, setHabitType] = useState<"build" | "quit" | null>(null);
 
-  const radius = 25;
 
-  useEffect(() => {
-    if (isVisible) {
-      refRBSheet.current?.open();
-    } else {
-      refRBSheet.current?.close();
-    }
-  }, [isVisible]);
 
-  const handleClose = () => {
-    setHabitType(null);
-    onClose();
-  };
 
   const handleSelect = (type: "build" | "quit" | null) => {
     onClose();
@@ -34,28 +23,12 @@ export default function SelectHabitType({ isVisible, onClose }: BottomSheetProps
     router.push("/createHabit");
   };
   return (
-    <RBSheet
-      ref={refRBSheet}
-      closeOnPressMask={true}
-      onClose={handleClose}
-      draggable={true}
-      dragOnContent={true}
-      closeOnPressBack={true}
-      customStyles={{
-        wrapper: {
-          backgroundColor: "rgba(0, 0, 0, 0.6)",
-          flex: 1,
-        },
-        container: {
-          backgroundColor: "#1f2937",
-          borderTopLeftRadius: radius,
-          borderTopRightRadius: radius,
-          height: "50%",
-        },
-        draggableIcon: {
-          backgroundColor: "#fff",
-        },
-      }}
+    <BottomSheet
+      isVisible={isVisible}
+      onClose={onClose}
+      radius={25}
+      height="50%"
+      handler={ () => setHabitType(null)}
     >
       <View className="p-5 items-center w-full pb-8">
         <Text className="text-xl font-bold text-white text-center mb-5">
@@ -83,6 +56,6 @@ export default function SelectHabitType({ isVisible, onClose }: BottomSheetProps
           </Text>
         </TouchableOpacity>
       </View>
-    </RBSheet>
+  </BottomSheet>
   );
 }

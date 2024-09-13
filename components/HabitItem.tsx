@@ -7,7 +7,7 @@ import useHabitStore, { Habit } from "../store/useHabitStore";
 import useDateStore from "@/store/useDateStore";
 import HabitOptions from "./HabitOptions";
 
-const HabitItem = memo(({ item, onDelete }: { item: Habit; onDelete: (id: string) => void }) => {
+const HabitItem = memo(({ item, onDelete, onEdit }: { item: Habit; onDelete: (id: string) => void; onEdit: (habit: Habit) => void }) => {
   const { toggleHabitCompletion, updateHabitProgress } = useHabitStore();
   const { currentDate } = useDateStore();
   const dateKey = format(currentDate, 'yyyy-MM-dd');

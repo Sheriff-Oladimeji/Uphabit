@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getItem, storeItem } from '../utils/storage';
 import { startOfDay, format } from 'date-fns';
 import { scheduleNotification, cancelNotification } from '../utils/notificationService';
@@ -26,12 +27,14 @@ export interface Habit {
 
 interface HabitStore {
   habits: Habit[];
-  addHabit: (habit: Omit<Habit, 'id' | 'createdAt' | 'completionDates' | 'progressDates'>) => Promise<void>;
-  deleteHabit: (id: string) => Promise<void>;
+  addHabit: (habit: Habit) => void;
+  deleteHabit: (id: string) => void;
+  updateHabit: (id: string, updatedHabit: Partial<Habit>) => void;
+  toggleHabitCompletion: (id: string, date: Date) => void;
+  updateHabitProgress: (id: string, progress: number, date: Date) => void;
   loadHabits: () => Promise<void>;
   getHabitsForDate: (date: Date) => Habit[];
-  updateHabitProgress: (id: string, progress: number, date: Date) => Promise<void>;
-  toggleHabitCompletion: (id: string, date: Date) => Promise<void>;
+  saveHabits: () => Promise<void>;
 }
 
 const useHabitStore = create<HabitStore>((set, get) => ({
@@ -58,6 +61,14 @@ const useHabitStore = create<HabitStore>((set, get) => ({
 
     // Cancel notification for the deleted habit
     await cancelNotification(id);
+  },
+  updateHabit: (id: string, updatedHabit: Partial<Habit>) => {
+    set((state) => ({
+      habits: state.habits.map((habit) =>
+        habit.id === id ? { ...habit, ...updatedHabit } : habit
+      ),
+    }));
+    get().saveHabits();
   },
   loadHabits: async () => {
     const storedHabits = await getItem('habits');
@@ -111,6 +122,9 @@ const useHabitStore = create<HabitStore>((set, get) => ({
     });
     await storeItem('habits', JSON.stringify(updatedHabits));
     set({ habits: updatedHabits });
+  },
+  saveHabits: async () => {
+    await storeItem('habits', JSON.stringify(get().habits));
   },
 }));
 
