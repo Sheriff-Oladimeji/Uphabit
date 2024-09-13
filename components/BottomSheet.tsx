@@ -4,7 +4,7 @@ import RBSheet from "react-native-raw-bottom-sheet";
 import { BottomSheetProps } from "@/types/bottomSheet";
 
 
-const BottomSheet = ({ isVisible, onClose , children, radius}: BottomSheetProps) => {
+const BottomSheet = ({ isVisible, onClose , children, radius, height}: BottomSheetProps) => {
   const refRBSheet = useRef<any>(null);
   useEffect(() => {
     if (isVisible) {
@@ -34,7 +34,7 @@ const BottomSheet = ({ isVisible, onClose , children, radius}: BottomSheetProps)
           backgroundColor: "#1f2937",
           borderTopLeftRadius: radius,
           borderTopRightRadius: radius,
-          height: "50%",
+          height: height,
         },
         draggableIcon: {
           backgroundColor: "#fff",
