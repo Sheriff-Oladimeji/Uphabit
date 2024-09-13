@@ -4,6 +4,7 @@ import { MaterialCommunityIcons, Feather } from "@expo/vector-icons";
 import useHabitStore, { Habit } from "../store/useHabitStore";
 import useDateStore from "@/store/useDateStore";
 import HabitItem from "./HabitItem";
+import { router } from "expo-router";
 
 const Habits = () => {
   const { habits, loadHabits, getHabitsForDate, deleteHabit } = useHabitStore();
@@ -21,11 +22,16 @@ const Habits = () => {
     [deleteHabit]
   );
 
+  const handleEdit = useCallback((habit: Habit) => {
+    router.push(`/editHabit?id=${habit.id}`);
+  }, []);
+
   const renderItem: ListRenderItem<Habit> = useCallback(
-    ({ item }) => <HabitItem item={item} onDelete={handleDelete} />,
-    [handleDelete]
+    ({ item }) => <HabitItem item={item} onDelete={handleDelete} onEdit={handleEdit} />,
+    [handleDelete, handleEdit]
   );
-  const keyExtractor = useCallback((item: Habit) => item.id, []);
+
+  const keyExtractor = (item: Habit) => item.id;
 
   if (isLoading) {
     return (

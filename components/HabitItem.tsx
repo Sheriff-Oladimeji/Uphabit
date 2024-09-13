@@ -7,7 +7,7 @@ import useHabitStore, { Habit } from "../store/useHabitStore";
 import useDateStore from "@/store/useDateStore";
 import HabitOptions from "./HabitOptions";
 
-const HabitItem = memo(({ item, onDelete }: { item: Habit; onDelete: (id: string) => void }) => {
+const HabitItem = memo(({ item, onDelete, onEdit }: { item: Habit; onDelete: (id: string) => void; onEdit: (habit: Habit) => void }) => {
   const { toggleHabitCompletion, updateHabitProgress } = useHabitStore();
   const { currentDate } = useDateStore();
   const dateKey = format(currentDate, 'yyyy-MM-dd');
@@ -89,6 +89,11 @@ const HabitItem = memo(({ item, onDelete }: { item: Habit; onDelete: (id: string
   const iconColor = isCompleted ? "#60A5FA" : "#374151";
   const initialLetter = item.name.charAt(0).toUpperCase();
 
+  const handleEdit = () => {
+    onEdit(item);
+    setIsModalVisible(false);
+  };
+
   return (
     <TouchableOpacity 
   
@@ -141,13 +146,11 @@ const HabitItem = memo(({ item, onDelete }: { item: Habit; onDelete: (id: string
         isVisible={isModalVisible} 
         onClose={() => setIsModalVisible(false)}
         onDelete={() => onDelete(item.id)}
-        onEdit={() => {/* Implement edit functionality */}}
+        onEdit={handleEdit}
         name={item.name}
       />
     </TouchableOpacity>
   );
 });
-
-
 
 export default HabitItem;
