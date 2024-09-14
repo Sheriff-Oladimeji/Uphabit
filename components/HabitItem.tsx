@@ -7,7 +7,10 @@ import useHabitStore, { Habit } from "../store/useHabitStore";
 import useDateStore from "@/store/useDateStore";
 import HabitOptions from "./HabitOptions";
 
+import { useRouter } from "expo-router";
+
 const HabitItem = memo(({ item, onDelete, onEdit }: { item: Habit; onDelete: (id: string) => void; onEdit: (habit: Habit) => void }) => {
+  const router = useRouter();
   const { toggleHabitCompletion, updateHabitProgress } = useHabitStore();
   const { currentDate } = useDateStore();
   const dateKey = format(currentDate, 'yyyy-MM-dd');
@@ -91,10 +94,9 @@ const HabitItem = memo(({ item, onDelete, onEdit }: { item: Habit; onDelete: (id
 
   return (
     <TouchableOpacity 
-  
-      onPress={() => router.push("/habit")}
-          onLongPress={() => setIsModalVisible(true)}
-          className="bg-gray-800 rounded-full p-2 mb-4 flex flex-row justify-between items-center"
+      onPress={() => router.push(`/habit/${item.id}`)}
+      onLongPress={() => setIsModalVisible(true)}
+      className="bg-gray-800 rounded-full p-2 mb-4 flex flex-row justify-between items-center"
     >
       {/* Left Icon with Initial */}
       <View className="flex-row items-center">
@@ -103,7 +105,7 @@ const HabitItem = memo(({ item, onDelete, onEdit }: { item: Habit; onDelete: (id
         </View>
         {/* Habit Details */}
         <View>
-          <Text className="text-white font-bold text-lg">{item.name}</Text>
+          <Text className="text-white font-bold text-lg max-w-[200px]">{item.name}</Text>
           {renderHabitTypeInfo()}
         </View>
       </View>
@@ -141,13 +143,11 @@ const HabitItem = memo(({ item, onDelete, onEdit }: { item: Habit; onDelete: (id
         isVisible={isModalVisible} 
         onClose={() => setIsModalVisible(false)}
         onDelete={() => onDelete(item.id)}
-        onEdit={() => {/* Implement edit functionality */}}
+        onEdit={() => onEdit(item)}
         name={item.name}
       />
     </TouchableOpacity>
   );
 });
-
-
 
 export default HabitItem;
