@@ -103,7 +103,7 @@ const HabitItem = memo(({ item, onDelete, onEdit }: { item: Habit; onDelete: (id
         </View>
         {/* Habit Details */}
         <View>
-          <Text className="text-white font-bold text-lg">{item.name}</Text>
+          <Text className="text-white font-bold text-lg max-w-[200px]">{item.name}</Text>
           {renderHabitTypeInfo()}
         </View>
       </View>
