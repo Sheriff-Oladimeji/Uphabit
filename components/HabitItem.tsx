@@ -6,6 +6,7 @@ import { router } from "expo-router";
 import useHabitStore, { Habit } from "../store/useHabitStore";
 import useDateStore from "@/store/useDateStore";
 import HabitOptions from "./HabitOptions";
+import habit from "@/app/habit";
 
 const HabitItem = memo(({ item, onDelete, onEdit }: { item: Habit; onDelete: (id: string) => void; onEdit: (habit: Habit) => void }) => {
   const { toggleHabitCompletion, updateHabitProgress } = useHabitStore();
@@ -141,7 +142,7 @@ const HabitItem = memo(({ item, onDelete, onEdit }: { item: Habit; onDelete: (id
         isVisible={isModalVisible} 
         onClose={() => setIsModalVisible(false)}
         onDelete={() => onDelete(item.id)}
-        onEdit={() => {/* Implement edit functionality */}}
+        onEdit={() => onEdit(item)}
         name={item.name}
       />
     </TouchableOpacity>
