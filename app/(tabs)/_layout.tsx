@@ -7,6 +7,7 @@ import {
   Entypo,
   FontAwesome6,
   Feather,
+  MaterialIcons,
 } from "@expo/vector-icons";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import SelectHabitType from "@/components/SelectHabitType";
@@ -81,13 +82,13 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="profile"
+          name="focus"
           options={{
-            title: "Profile",
+            title: "Focus",
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
-                IconComponent={FontAwesome}
-                name={focused ? "user" : "user-o"}
+                IconComponent={MaterialIcons}
+                name={focused ? "timer" : "timer"}
                 color={color}
               />
             ),

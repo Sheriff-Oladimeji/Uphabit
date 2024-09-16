@@ -2,7 +2,7 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import Container from '@/components/Container'
 
-const profile = () => {
+const focus = () => {
   return (
     <Container>
       <Text className="text-white">Profile Screen</Text>
@@ -10,4 +10,4 @@ const profile = () => {
   );
 }
 
-export default profile
+export default focus
