@@ -6,9 +6,9 @@ import Container from '@/components/Container';
 const History = () => {
   return (
     <Container>
-      <ScrollView contentContainerStyle={{paddingBottom: 50}}>
+      
         <Statistics />
-      </ScrollView>
+    
     </Container>
   );
 };

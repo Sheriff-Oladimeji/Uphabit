@@ -67,7 +67,7 @@ const Statistics = () => {
   }, [habits]);
 
   return (
-    <ScrollView className="flex-1 bg-gray-900 px-4 py-6">
+    <ScrollView className="flex-1 bg-gray-900  py-6" showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom: 20}}>
       <Text className="text-white text-2xl font-bold mb-6">Statistics</Text>
 
       <StatCard
@@ -100,7 +100,7 @@ const Statistics = () => {
             labels: chartData.labels,
             datasets: [{ data: chartData.data }],
           }}
-          width={Dimensions.get("window").width - 50}
+          width={Dimensions.get("window").width- 60}
           height={220}
           chartConfig={{
             backgroundColor: "#1F2937",
