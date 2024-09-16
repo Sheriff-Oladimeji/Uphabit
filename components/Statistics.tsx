@@ -1,16 +1,16 @@
 import React, { useMemo } from "react";
-import { View, Text, Dimensions } from "react-native";
+import { View, Text, Dimensions, ScrollView, StyleSheet } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { LineChart } from "react-native-chart-kit";
+import { FontAwesome5, MaterialIcons, Ionicons } from "@expo/vector-icons";
 import useHabitStore from "@/store/useHabitStore";
 
 const Statistics = () => {
   const { habits } = useHabitStore();
 
-  // Calculate total awesome days (days when all habits are completed)
   const totalAwesomeDays = () => {
     return Object.values(
-      habits.reduce((acc: { [key: string]: number }, habit) => { // Added 'habit' as a parameter
+      habits.reduce((acc: { [key: string]: number }, habit) => {
         Object.keys(habit.completionDates).forEach((date) => {
           if (habit.completionDates[date]) {
             acc[date] = (acc[date] || 0) + 1;
@@ -21,19 +21,14 @@ const Statistics = () => {
     ).filter((count) => count === habits.length).length;
   };
 
-  // Calculate current streak
   const currentStreak = () => {
-    // Implement your logic for current streak
-    return 0; // Replace with actual calculation
+    return 0;
   };
 
-  // Calculate best streak
   const bestStreak = () => {
-    // Implement your logic for best streak
-    return 1; // Replace with actual calculation
+    return 1;
   };
 
-  // Calculate total times done
   const totalTimesDone = () => {
     return habits.reduce((total, habit) => {
       return (
@@ -42,7 +37,6 @@ const Statistics = () => {
     }, 0);
   };
 
-  // Prepare data for the chart
   const chartData = useMemo(() => {
     const data = [];
     const labels = [];
@@ -52,104 +46,193 @@ const Statistics = () => {
       date.setDate(today.getDate() - i);
       const dateString = date.toISOString().split("T")[0];
       labels.push(dateString);
-      const completedCount = habits.filter(habit => habit.completionDates[dateString]).length;
+      const completedCount = habits.filter(
+        (habit) => habit.completionDates[dateString]
+      ).length;
       data.push(completedCount);
     }
     return { labels: labels.reverse(), data: data.reverse() };
   }, [habits]);
 
   return (
-    <View className="flex-1 bg-gray-900 p-4">
-      <Text className="text-white text-2xl font-bold mb-4">Statistics</Text>
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>Statistics</Text>
 
-      <View className="bg-gray-800 rounded-lg p-4 mb-4">
-        <Text className="text-gray-300">Total awesome days</Text>
-        <Text className="text-white text-3xl font-bold">
-          {totalAwesomeDays()} days
-        </Text>
+      {/* Total Awesome Days */}
+      <View style={styles.statBox}>
+        <View>
+          <Text style={styles.statLabel}>Total Awesome Days</Text>
+          <Text style={styles.statValue}>{totalAwesomeDays()} days</Text>
+        </View>
+        <FontAwesome5 name="calendar-check" size={40} color="#FEE715FF" />
       </View>
 
-      <View className="bg-gray-800 rounded-lg p-4 mb-4">
-        <Text className="text-gray-300">Your current streak</Text>
-        <Text className="text-white text-3xl font-bold">
-          {currentStreak()} days
-        </Text>
+      {/* Current Streak */}
+      <View style={styles.statBox}>
+        <View>
+          <Text style={styles.statLabel}>Current Streak</Text>
+          <Text style={[styles.statValue, styles.currentStreak]}>
+            {currentStreak()} days
+          </Text>
+        </View>
+        <FontAwesome5 name="fire" size={40} color="#00ADB5" />
       </View>
 
-      <View className="bg-gray-800 rounded-lg p-4 mb-4">
-        <Text className="text-gray-300">Best streak</Text>
-        <Text className="text-white text-3xl font-bold">
-          {bestStreak()} days
-        </Text>
+      {/* Best Streak */}
+      <View style={styles.statBox}>
+        <View>
+          <Text style={styles.statLabel}>Best Streak</Text>
+          <Text style={[styles.statValue, styles.bestStreak]}>
+            {bestStreak()} days
+          </Text>
+        </View>
+        <MaterialIcons name="stars" size={40} color="#FF5722" />
       </View>
 
-      <View className="bg-gray-800 rounded-lg p-4 mb-4">
-        <Text className="text-gray-300">Total times done</Text>
-        <Text className="text-white text-3xl font-bold">
-          {totalTimesDone()} times
-        </Text>
+      {/* Total Times Done */}
+      <View style={styles.statBox}>
+        <View>
+          <Text style={styles.statLabel}>Total Times Done</Text>
+          <Text style={[styles.statValue, styles.totalTimesDone]}>
+            {totalTimesDone()} times
+          </Text>
+        </View>
+        <Ionicons name="checkmark-done-circle" size={40} color="#9C27B0" />
       </View>
 
-      <View className="bg-gray-800 rounded-lg p-4 mb-4">
-        <Text className="text-gray-300 mb-2">Habit Completion Over Last 7 Days</Text>
+      {/* Line Chart for Weekly Progress */}
+      <View style={styles.chartBox}>
+        <Text style={styles.chartLabel}>Habit Completion Over Last 7 Days</Text>
         <LineChart
           data={{
             labels: chartData.labels,
-            datasets: [{ data: chartData.data }]
+            datasets: [{ data: chartData.data }],
           }}
-          width={Dimensions.get("window").width - 40}
-          height={220}
+          width={Dimensions.get("window").width - 50}
+          height={240}
           chartConfig={{
-            backgroundColor: "#1F2937",
-            backgroundGradientFrom: "#1F2937",
-            backgroundGradientTo: "#1F2937",
+            backgroundColor: "#303841",
+            backgroundGradientFrom: "#303841",
+            backgroundGradientTo: "#303841",
             decimalPlaces: 0,
-            color: (opacity = 1) => `rgba(96, 165, 250, ${opacity})`,
+            color: (opacity = 1) => `rgba(254, 231, 21, ${opacity})`,
+            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
             style: {
-              borderRadius: 16
-            }
+              borderRadius: 16,
+            },
+            propsForDots: {
+              r: "6",
+              strokeWidth: "2",
+              stroke: "#FEE715FF",
+            },
           }}
           bezier
-          style={{
-            marginVertical: 8,
-            borderRadius: 16
-          }}
+          style={styles.chartStyle}
         />
       </View>
 
-      <View className="bg-gray-800 rounded-lg mb-4">
-        <Text className="text-gray-300 mb-2">Calendar</Text>
+      {/* Calendar */}
+      <View style={styles.calendarBox}>
+        <Text style={styles.chartLabel}>Calendar</Text>
         <Calendar
-          // You can customize the calendar here
-          style={{ borderRadius: 10 }}
+          style={styles.calendarStyle}
           theme={{
-            backgroundColor: '#1F2937',
-            calendarBackground: '#1F2937',
-            textSectionTitleColor: '#ffffff',
-            selectedDayBackgroundColor: '#4F46E5',
-            todayTextColor: '#ffffff',
-            dayTextColor: '#ffffff',
-            textDisabledColor: '#555555',
-            arrowColor: '#ffffff',
-            monthTextColor: '#ffffff',
-            indicatorColor: '#ffffff',
+            backgroundColor: "#303841",
+            calendarBackground: "#303841",
+            textSectionTitleColor: "#FEE715FF",
+            selectedDayBackgroundColor: "#00ADB5",
+            todayTextColor: "#FF5722",
+            dayTextColor: "#EEEEEE",
+            textDisabledColor: "#555555",
+            arrowColor: "#FEE715FF",
+            monthTextColor: "#FEE715FF",
+            indicatorColor: "#FEE715FF",
           }}
-          markingType={'multi-dot'}
+          markingType="multi-dot"
           markedDates={{
-            // Mark dates based on completion
             ...habits.reduce((acc, habit) => {
-              Object.keys(habit.completionDates).forEach(date => {
+              Object.keys(habit.completionDates).forEach((date) => {
                 if (habit.completionDates[date]) {
-                  acc[date] = { dots: [{ key: habit.id, color: '#4F46E5' }] }; // Ensure 'acc' is typed correctly
+                  acc[date] = { dots: [{ key: habit.id, color: "#00ADB5" }] };
                 }
               });
               return acc;
-            }, {} as { [key: string]: { dots: { key: string; color: string }[] } }) // Added type assertion
+            }, {}),
           }}
         />
       </View>
-    </View>
+    </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#101820FF",
+    padding: 16,
+  },
+  title: {
+    color: "#FEE715FF",
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 24,
+  },
+  statBox: {
+    backgroundColor: "#303841",
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 16,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  statLabel: {
+    color: "#EEEEEE",
+    fontSize: 16,
+  },
+  statValue: {
+    color: "#FEE715FF",
+    fontSize: 32,
+    fontWeight: "bold",
+  },
+  currentStreak: {
+    color: "#00ADB5",
+  },
+  bestStreak: {
+    color: "#FF5722",
+  },
+  totalTimesDone: {
+    color: "#9C27B0",
+  },
+  chartBox: {
+    backgroundColor: "#303841",
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 16,
+  },
+  chartLabel: {
+    color: "#EEEEEE",
+    fontSize: 16,
+    marginBottom: 12,
+  },
+  chartStyle: {
+    marginVertical: 8,
+    borderRadius: 16,
+  },
+  calendarBox: {
+    backgroundColor: "#303841",
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 16,
+  },
+  calendarStyle: {
+    borderRadius: 10,
+  },
+});
 
 export default Statistics;
