@@ -56,7 +56,7 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
         ? parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseInt(seconds)
         : undefined;
       
-      await addHabit({
+      const habitData = {
         name: habitName.trim(),
         type,
         habitType,
@@ -67,7 +67,12 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
         endDate: endDate ? endDate.toISOString() : null,
         target: habitType === 'amount' ? parseInt(amount) : durationInSeconds,
         unit: habitType === 'amount' ? 'times' : habitType === 'duration' ? 'seconds' : undefined,
-      });
+        id: '', // Placeholder ID, should be replaced with actual logic to generate or retrieve ID
+        createdAt: new Date().toISOString(), // Placeholder createdAt date, should be replaced with actual logic to set createdAt
+        completionDates: {}, // Changed from [] to {}
+        progressDates: {}, // Changed from [] to {}
+      };
+      await addHabit(habitData);
       navigation.goBack();
     }
   };
