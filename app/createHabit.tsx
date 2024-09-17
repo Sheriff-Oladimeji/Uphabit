@@ -38,7 +38,7 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [repeatFrequency, setRepeatFrequency] = useState("daily");
   const [timeOfDay, setTimeOfDay] = useState("anytime");
-  const [reminderTime, setReminderTime] = useState(new Date() );
+  const [reminderTime, setReminderTime] = useState(new Date(Date.now() + 30 * 60 * 1000)); // Set default reminder to 30 minutes from now
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
@@ -56,7 +56,7 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
         ? parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseInt(seconds)
         : undefined;
       
-      await addHabit({
+      const habitData = {
         name: habitName.trim(),
         type,
         habitType,
@@ -67,7 +67,12 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
         endDate: endDate ? endDate.toISOString() : null,
         target: habitType === 'amount' ? parseInt(amount) : durationInSeconds,
         unit: habitType === 'amount' ? 'times' : habitType === 'duration' ? 'seconds' : undefined,
-      });
+        id: '', // Placeholder ID, should be replaced with actual logic to generate or retrieve ID
+        createdAt: new Date().toISOString(), // Placeholder createdAt date, should be replaced with actual logic to set createdAt
+        completionDates: {}, // Changed from [] to {}
+        progressDates: {}, // Changed from [] to {}
+      };
+      await addHabit(habitData);
       navigation.goBack();
     }
   };

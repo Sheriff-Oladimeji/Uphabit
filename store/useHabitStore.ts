@@ -1,17 +1,20 @@
-import { create } from 'zustand';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getItem, storeItem } from '../utils/storage';
-import { startOfDay, format } from 'date-fns';
-import { scheduleNotification, cancelNotification } from '../utils/notificationService';
+import { create } from "zustand";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getItem, storeItem } from "../utils/storage";
+import { startOfDay, format } from "date-fns";
+import {
+  scheduleNotification,
+  cancelNotification,
+} from "../utils/notificationService";
 
-export type RepeatFrequency = 'daily' | 'weekly' | 'monthly';
-export type TimeOfDay = 'anytime' | 'morning' | 'afternoon' | 'evening';
-export type HabitType = 'task' | 'amount' | 'duration';
+export type RepeatFrequency = "daily" | "weekly" | "monthly";
+export type TimeOfDay = "anytime" | "morning" | "afternoon" | "evening";
+export type HabitType = "task" | "amount" | "duration";
 
 export interface Habit {
   id: string;
   name: string;
-  type: 'build' | 'quit';
+  type: "build" | "quit";
   habitType: HabitType;
   startDate: string;
   createdAt: string;
@@ -35,7 +38,12 @@ interface HabitStore {
   loadHabits: () => Promise<void>;
   getHabitsForDate: (date: Date) => Habit[];
   saveHabits: () => Promise<void>;
+  checkAllHabitsCompleted: () => void;
 }
+
+const sendCompletionNotification = () => {
+  // Implementation of the notification logic
+};
 
 const useHabitStore = create<HabitStore>((set, get) => ({
   habits: [],
@@ -48,15 +56,15 @@ const useHabitStore = create<HabitStore>((set, get) => ({
       progressDates: {},
     };
     const updatedHabits = [...get().habits, newHabit];
-    await storeItem('habits', JSON.stringify(updatedHabits));
+    await storeItem("habits", JSON.stringify(updatedHabits));
     set({ habits: updatedHabits });
 
     // Schedule notification for the new habit
     await scheduleNotification(newHabit);
   },
   deleteHabit: async (id: string) => {
-    const updatedHabits = get().habits.filter(habit => habit.id !== id);
-    await storeItem('habits', JSON.stringify(updatedHabits));
+    const updatedHabits = get().habits.filter((habit) => habit.id !== id);
+    await storeItem("habits", JSON.stringify(updatedHabits));
     set({ habits: updatedHabits });
 
     // Cancel notification for the deleted habit
@@ -71,7 +79,7 @@ const useHabitStore = create<HabitStore>((set, get) => ({
     get().saveHabits();
   },
   loadHabits: async () => {
-    const storedHabits = await getItem('habits');
+    const storedHabits = await getItem("habits");
     if (storedHabits) {
       const parsedHabits = JSON.parse(storedHabits);
       set({ habits: parsedHabits });
@@ -79,14 +87,14 @@ const useHabitStore = create<HabitStore>((set, get) => ({
   },
   getHabitsForDate: (date: Date) => {
     const startOfDayDate = startOfDay(date);
-    return get().habits.filter(habit => {
+    return get().habits.filter((habit) => {
       const habitStartDate = startOfDay(new Date(habit.startDate));
       return habitStartDate <= startOfDayDate;
     });
   },
   updateHabitProgress: async (id: string, progress: number, date: Date) => {
-    const dateKey = format(date, 'yyyy-MM-dd');
-    const updatedHabits = get().habits.map(habit =>
+    const dateKey = format(date, "yyyy-MM-dd");
+    const updatedHabits = get().habits.map((habit) =>
       habit.id === id
         ? {
             ...habit,
@@ -97,14 +105,15 @@ const useHabitStore = create<HabitStore>((set, get) => ({
           }
         : habit
     );
-    await storeItem('habits', JSON.stringify(updatedHabits));
+    await storeItem("habits", JSON.stringify(updatedHabits));
     set({ habits: updatedHabits });
   },
   toggleHabitCompletion: async (id: string, date: Date) => {
-    const dateKey = format(date, 'yyyy-MM-dd');
-    const updatedHabits = get().habits.map(habit => {
+    const dateKey = format(date, "yyyy-MM-dd");
+    const updatedHabits = get().habits.map((habit) => {
       if (habit.id === id) {
-        const currentCompletionStatus = habit.completionDates?.[dateKey] ?? false;
+        const currentCompletionStatus =
+          habit.completionDates?.[dateKey] ?? false;
         const currentProgress = habit.progressDates?.[dateKey] ?? 0;
         return {
           ...habit,
@@ -114,17 +123,30 @@ const useHabitStore = create<HabitStore>((set, get) => ({
           },
           progressDates: {
             ...habit.progressDates,
-            [dateKey]: currentCompletionStatus ? 0 : (habit.target ?? 0),
+            [dateKey]: currentCompletionStatus ? 0 : habit.target ?? 0,
           },
         };
       }
       return habit;
     });
-    await storeItem('habits', JSON.stringify(updatedHabits));
+    await storeItem("habits", JSON.stringify(updatedHabits));
     set({ habits: updatedHabits });
+
+    get().checkAllHabitsCompleted(); // Correctly accessing checkAllHabitsCompleted
   },
   saveHabits: async () => {
-    await storeItem('habits', JSON.stringify(get().habits));
+    await storeItem("habits", JSON.stringify(get().habits));
+  },
+  checkAllHabitsCompleted: () => {
+    const allCompleted = get().habits.every((habit: Habit) => {
+      const todayKey = format(new Date(), "yyyy-MM-dd");
+      return habit.completionDates[todayKey] === true;
+    });
+
+    if (allCompleted) {
+      console.log("All habits completed, sending notification."); // Debug log
+      sendCompletionNotification(); // Ensure this is called
+    }
   },
 }));
 

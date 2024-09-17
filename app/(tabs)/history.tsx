@@ -1,13 +1,16 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import Container from '@/components/Container'
+import React from 'react';
+import { ScrollView, View } from 'react-native';
+import Statistics from '@/components/Statistics';
+import Container from '@/components/Container';
 
-const history = () => {
+const History = () => {
   return (
     <Container>
-      <Text>history</Text>
+      
+        <Statistics />
+    
     </Container>
   );
-}
+};
 
-export default history
+export default History;
