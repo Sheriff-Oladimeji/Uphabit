@@ -44,12 +44,25 @@ export async function scheduleNotification(habit: Habit) {
   trigger.setSeconds(0);
   trigger.setMilliseconds(0);
 
+  // Schedule the initial reminder
   await Notifications.scheduleNotificationAsync({
     content: {
       title: 'Habit Reminder',
-      body: `Time to work on your habit: ${habit.name}`,
+      body: `Time to work on your habit: ${habit.name}. You're almost there!`,
+      sound: 'default', // Ensure sound is set
     },
     trigger,
+  });
+}
+
+export async function sendCompletionNotification() {
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: 'Good Job!',
+      body: "You've achieved all your goals for the day!",
+      sound: 'default', // Ensure sound is set
+    },
+    trigger: null, // Send immediately
   });
 }
 

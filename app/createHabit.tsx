@@ -38,7 +38,7 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [repeatFrequency, setRepeatFrequency] = useState("daily");
   const [timeOfDay, setTimeOfDay] = useState("anytime");
-  const [reminderTime, setReminderTime] = useState(new Date() );
+  const [reminderTime, setReminderTime] = useState(new Date(Date.now() + 30 * 60 * 1000)); // Set default reminder to 30 minutes from now
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
