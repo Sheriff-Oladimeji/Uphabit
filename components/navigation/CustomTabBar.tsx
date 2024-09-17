@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Entypo } from "@expo/vector-icons";
-import SelectHabitType from "../SelectHabitType";
 
+import { useRouter } from "expo-router";
 export function CustomTabBar({
   state,
   descriptors,
   navigation,
 }: BottomTabBarProps) {
-  const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
-
+  const router = useRouter()
+  
   return (
     <View style={styles.container}>
       {state.routes.map((route, index) => {
@@ -41,16 +41,13 @@ export function CustomTabBar({
             <View key={route.key} style={styles.createButtonWrapper}>
               <View style={styles.createButtonContainer}>
                 <TouchableOpacity
-                  onPress={() => setIsCreateModalVisible(true)}
+                  onPress={() => router.push('/createHabit')} 
                   style={styles.createButton}
                 >
                   <Entypo name="plus" size={28} color="white" />
                 </TouchableOpacity>
               </View>
-              <SelectHabitType
-                isVisible={isCreateModalVisible}
-                onClose={() => setIsCreateModalVisible(false)}
-              />
+              {/* Removed SelectHabitType component */}
             </View>
           );
         }
@@ -64,7 +61,7 @@ export function CustomTabBar({
             {options.tabBarIcon &&
               options.tabBarIcon({
                 focused: isFocused,
-                color: isFocused ? "#3b82f6" : "#94a3b8", // Active/Inactive colors
+                color: isFocused ? "#3b82f6" : "#94a3b8", 
                 size: 24,
               })}
           </TouchableOpacity>
@@ -77,7 +74,7 @@ export function CustomTabBar({
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    backgroundColor: "#050a15", // Dark navy blue background color
+    backgroundColor: "#050a15", 
     height: 70,
     alignItems: "center",
     justifyContent: "space-around",
@@ -104,12 +101,12 @@ const styles = StyleSheet.create({
   },
   createButtonContainer: {
     position: "absolute",
-    top: -60, // Increased this value to move the button up more
+    top: -60, 
     alignItems: "center",
     justifyContent: "center",
   },
   createButton: {
-    backgroundColor: "#3b82f6", // Blue color for the button
+    backgroundColor: "#3b82f6", 
     width: 60,
     height: 60,
     borderRadius: 30,
