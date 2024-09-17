@@ -53,6 +53,7 @@ export default function RootLayout() {
           name="createHabit"
           options={({ navigation }) => ({
             headerShown: true,
+            presentation: "card",
             headerStyle: {
               backgroundColor: "#050a15",
             },
