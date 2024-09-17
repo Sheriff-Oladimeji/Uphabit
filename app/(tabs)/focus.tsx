@@ -19,13 +19,13 @@ const PomodoroTimer = () => {
 
   // Timer effect
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: NodeJS.Timeout | null = null; // Initialize interval to null
     if (isActive && timeLeft > 0) {
       interval = setInterval(() => {
         setTimeLeft((prevTime) => prevTime - 1);
       }, 1000);
     } else if (timeLeft === 0) {
-      clearInterval(interval);
+      if (interval) clearInterval(interval); // Check if interval is not null
       setIsActive(false);
       alert(
         isBreak
@@ -33,9 +33,15 @@ const PomodoroTimer = () => {
           : "Pomodoro done! Time for a break."
       );
       setIsBreak(!isBreak); // Switch between work and break mode
-      setTimeLeft(isBreak ? 25 * 60 : 5 * 60); // 25 minutes for work, 5 minutes for break
+      if (isBreak) {
+        setTimeLeft(25 * 60); // 25 minutes for work
+      } else {
+        setTimeLeft(5 * 60); // 5 minutes for break
+      }
     }
-    return () => clearInterval(interval);
+    return () => {
+      if (interval) clearInterval(interval);
+    }
   }, [isActive, timeLeft, isBreak]);
 
   // Start/Pause toggle function
