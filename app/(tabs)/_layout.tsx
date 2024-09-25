@@ -36,7 +36,7 @@ export default function TabLayout() {
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
                 IconComponent={MaterialIcons}
-                name={focused ? "dashboard" : "dashboard"}
+                name={focused ? "home" : "home"}
                 color={color}
                 size={24}
               />
@@ -49,8 +49,8 @@ export default function TabLayout() {
             title: "Rank",
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
-                IconComponent={MaterialIcons}
-                name={focused ? "leaderboard" : "leaderboard"}
+                IconComponent={FontAwesome6}
+                name={focused ? "ranking-star" : "ranking-star"}
                 color={color}
                 size={24}
               />
