@@ -19,7 +19,7 @@ export default function TabLayout() {
   const handleCreateHabit = (type: "break" | "build") => {
     console.log(`Creating a ${type} habit`);
     setIsModalVisible(false);
-    // Add your logic here to navigate to the appropriate screen or perform an action
+    
   };
   return (
     <>
@@ -35,26 +35,29 @@ export default function TabLayout() {
             title: "Home",
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
-                IconComponent={Ionicons}
-                name={focused ? "home" : "home-outline"}
+                IconComponent={MaterialIcons}
+                name={focused ? "dashboard" : "dashboard"}
                 color={color}
+                size={24}
               />
             ),
           }}
         />
         <Tabs.Screen
-          name="history"
+          name="rank"
           options={{
-            title: "History",
+            title: "Rank",
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
-                IconComponent={Feather}
-                name={focused ? "pie-chart" : "pie-chart"}
+                IconComponent={MaterialIcons}
+                name={focused ? "leaderboard" : "leaderboard"}
                 color={color}
+                size={24}
               />
             ),
           }}
         />
+
         <Tabs.Screen
           name="create"
           options={{
@@ -69,27 +72,29 @@ export default function TabLayout() {
         />
 
         <Tabs.Screen
-          name="rank"
+          name="goals"
           options={{
-            title: "Rank",
+            title: "Goals",
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
-                IconComponent={FontAwesome6}
-                name={focused ? "ranking-star" : "ranking-star"}
+                IconComponent={MaterialIcons}
+                name={focused ? "check-circle" : "check-circle-outline"}
                 color={color}
+                size={24}
               />
             ),
           }}
         />
         <Tabs.Screen
-          name="focus"
+          name="profile"
           options={{
-            title: "Focus",
+            title: "Profile",
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
                 IconComponent={MaterialIcons}
-                name={focused ? "timer" : "timer"}
+                name={focused ? "account-circle" : "account-circle"}
                 color={color}
+                size={24}
               />
             ),
           }}
@@ -99,7 +104,6 @@ export default function TabLayout() {
       <SelectHabitType
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
-      
       />
     </>
   );

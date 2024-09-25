@@ -14,8 +14,7 @@ export type HabitType = "task" | "amount" | "duration";
 export interface Habit {
   id: string;
   name: string;
-  type: "build" | "quit";
-  habitType: HabitType;
+  habitType: HabitType; // Keep this
   startDate: string;
   createdAt: string;
   repeatFrequency: RepeatFrequency;
