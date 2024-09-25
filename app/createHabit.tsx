@@ -40,7 +40,7 @@ const timeOfDayIcons = {
   evening: <Ionicons name="moon-outline" size={20} color="white" />,
 };
 
-const Create = ({ type, onClose }) => {
+const Create: React.FC<{ type: string; onClose: () => void }> = ({ type, onClose }) => {
   const router = useRouter();
   const navigation = useNavigation();
   const { currentDate } = useDateStore();
@@ -59,7 +59,7 @@ const Create = ({ type, onClose }) => {
   const [reminderTime, setReminderTime] = useState(
     new Date(Date.now() + 30 * 60 * 1000)
   );
-  const [endDate, setEndDate] = useState(null);
+  const [endDate, setEndDate] = useState<Date | null>(null); // Update type to accept Date
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
@@ -87,7 +87,6 @@ const Create = ({ type, onClose }) => {
 
       const habitData = {
         name: habitName.trim(),
-        type,
         habitType,
         startDate: startDate.toISOString(),
         repeatFrequency: repeatFrequency as RepeatFrequency,
@@ -106,6 +105,7 @@ const Create = ({ type, onClose }) => {
         completionDates: {},
         progressDates: {},
       };
+      habitData.habitType = habitData.habitType as HabitType; // Ensure habitType is of type HabitType
       await addHabit(habitData);
       navigation.goBack();
     }
@@ -141,7 +141,7 @@ const Create = ({ type, onClose }) => {
               }`}
             >
               <View className="flex-row items-center justify-center space-x-2">
-                {habitTypeIcons[type]}
+                {habitTypeIcons[type as keyof typeof habitTypeIcons]} // Cast type to the keys of habitTypeIcons
                 <Text className="text-white capitalize">{type}</Text>
               </View>
             </TouchableOpacity>
@@ -238,7 +238,7 @@ const Create = ({ type, onClose }) => {
               }`}
             >
               <View className="flex-row items-center justify-center space-x-2">
-                {timeOfDayIcons[time]}
+                {timeOfDayIcons[time as keyof typeof timeOfDayIcons]} // Cast time to the correct type
                 <Text className="text-white capitalize">{time}</Text>
               </View>
             </TouchableOpacity>
