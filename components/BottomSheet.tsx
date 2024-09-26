@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import React, { useEffect, useRef } from "react";
 import RBSheet from "react-native-raw-bottom-sheet";
-import { BottomSheetProps } from "@/types/bottomSheet";
+import { BottomSheetProps } from "@/@types/bottomSheet";
 
 const BottomSheet = ({
   isVisible,

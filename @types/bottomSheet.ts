@@ -18,3 +18,4 @@ export type HabitOptionProps = {
   onDelete: () => void,
   onEdit: () => void
 };
+

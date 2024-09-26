@@ -9,8 +9,9 @@ import {
 
 export type RepeatFrequency = "daily" | "weekly" | "monthly";
 export type TimeOfDay = "anytime" | "morning" | "afternoon" | "evening";
-export type HabitType = "task" | "amount" | "duration";
+export type HabitType = "task" | "amount" | "duration"; // Keep this
 
+// Removed the type for build or quit from the Habit interface
 export interface Habit {
   id: string;
   name: string;

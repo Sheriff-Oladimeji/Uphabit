@@ -8,7 +8,9 @@ export function CustomTabBar({
   state,
   descriptors,
   navigation,
-}: BottomTabBarProps) {
+  openCreateModal, // Add this prop
+}: BottomTabBarProps & { openCreateModal: () => void }) { // Update the type
+
   const router = useRouter()
   
   return (
@@ -41,7 +43,7 @@ export function CustomTabBar({
             <View key={route.key} style={styles.createButtonWrapper}>
               <View style={styles.createButtonContainer}>
                 <TouchableOpacity
-                  onPress={() => router.push('/createHabit')} 
+                  onPress={openCreateModal} // Change this line
                   style={styles.createButton}
                 >
                   <Entypo name="plus" size={28} color="white" />
