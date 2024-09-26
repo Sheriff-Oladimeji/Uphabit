@@ -12,12 +12,12 @@ const FirstStep: React.FC<FirstStepProps> = ({ onOptionSelect }) => {
   return (
     <ScrollView className="w-full">
       <View className="w-[90%] mx-auto">
-        <Text className="text-white font-bold text-3xl text-center mb-8">
+        <Text className="text-white font-bold text-2xl text-center mb-4">
           What do you want to do?
         </Text>
 
         <TouchableOpacity
-          className="bg-emerald-600 p-6 rounded-xl mb-6 w-full"
+          className="bg-emerald-600 p-5 rounded-xl mb-4 w-full"
           onPress={() => onOptionSelect("build")}
         >
           <View className="flex-row items-center mb-3">
@@ -31,7 +31,7 @@ const FirstStep: React.FC<FirstStepProps> = ({ onOptionSelect }) => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          className="bg-rose-700 p-6 rounded-xl mb-6 w-full"
+          className="bg-rose-700 p-5 rounded-xl mb-4 w-full"
           onPress={() => onOptionSelect("quit")}
         >
           <View className="flex-row items-center mb-3">
@@ -45,7 +45,7 @@ const FirstStep: React.FC<FirstStepProps> = ({ onOptionSelect }) => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          className="bg-blue-600 p-6 rounded-xl mb-6 w-full"
+          className="bg-blue-600 p-5 rounded-xl mb-4 w-full"
           onPress={() => onOptionSelect("goal")}
         >
           <View className="flex-row items-center mb-3">
@@ -61,7 +61,7 @@ const FirstStep: React.FC<FirstStepProps> = ({ onOptionSelect }) => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          className="bg-purple-600 p-6 rounded-xl w-full"
+          className="bg-purple-600 p-5 rounded-xl w-full"
           onPress={() => onOptionSelect("task")}
         >
           <View className="flex-row items-center mb-3">

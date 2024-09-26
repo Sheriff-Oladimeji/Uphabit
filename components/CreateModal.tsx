@@ -23,9 +23,11 @@ const CreateModal: React.FC<BottomSheetProps> = ({ isVisible, onClose }) => {
     completedStepIconColor: "#10B981",
     completedProgressBarColor: "#10B981",
     completedCheckColor: "#111827",
-    labelColor: "#6B7280",
-    labelFontSize: 12,
+    labelColor: "#9CA3AF",
+    labelFontSize: 16,
     topOffset: 20,
+    progressBarColor: "#374151",
+    disabledStepIconColor: "#374151",
   };
 
   const progressStepStyle = {
