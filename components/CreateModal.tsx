@@ -4,6 +4,7 @@ import BottomSheet from "./BottomSheet";
 import { BottomSheetProps } from "@/@types/bottomSheet";
 import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
 import FirstStep from "./FirstStep";
+import SecondStep, { TrackingOptionType } from "./SecondStep";
 
 type ProgressStepsRef = {
   setActiveStep: (step: number) => void;
@@ -38,12 +39,19 @@ const CreateModal: React.FC<BottomSheetProps> = ({ isVisible, onClose }) => {
     nextBtnText: "",
   };
 
-  const handleOptionSelect = (option: OptionType) => {
+  const handleFirstStepSelect = (option: OptionType) => {
     if (progressStepsRef.current && currentStep < 2) {
       progressStepsRef.current.setActiveStep(currentStep + 1);
       setCurrentStep(currentStep + 1);
-      // Here you can handle the selected option if needed
       console.log("Selected option:", option);
+    }
+  };
+
+  const handleSecondStepSelect = (option: TrackingOptionType) => {
+    if (progressStepsRef.current && currentStep < 2) {
+      progressStepsRef.current.setActiveStep(currentStep + 1);
+      setCurrentStep(currentStep + 1);
+      console.log("Selected tracking option:", option);
     }
   };
 
@@ -55,21 +63,38 @@ const CreateModal: React.FC<BottomSheetProps> = ({ isVisible, onClose }) => {
       height="99%"
     >
       <View style={{ flex: 1, backgroundColor: "#111827" }}>
-        <ProgressSteps {...progressStepsStyle} ref={progressStepsRef}>
-          <ProgressStep label="Want" {...progressStepStyle}>
-            <FirstStep onOptionSelect={handleOptionSelect} />
-          </ProgressStep>
-          <ProgressStep label="How" {...progressStepStyle}>
-            <View style={{ alignItems: "center" }}>
-              {/* Content for step 2 */}
-            </View>
-          </ProgressStep>
-          <ProgressStep label="Create" {...progressStepStyle}>
-            <View style={{ alignItems: "center" }}>
-              {/* Content for step 3 */}
-            </View>
-          </ProgressStep>
+        <ProgressSteps
+          {...progressStepsStyle}
+          ref={progressStepsRef}
+          activeStep={currentStep}
+        >
+          <ProgressStep
+            label="Want"
+            {...progressStepStyle}
+            removeBtnRow={true}
+          />
+          <ProgressStep
+            label="How"
+            {...progressStepStyle}
+            removeBtnRow={true}
+          />
+          <ProgressStep
+            label="Info"
+            {...progressStepStyle}
+            removeBtnRow={true}
+          />
         </ProgressSteps>
+        {currentStep === 0 && (
+          <FirstStep onOptionSelect={handleFirstStepSelect} />
+        )}
+        {currentStep === 1 && (
+          <SecondStep onOptionSelect={handleSecondStepSelect} />
+        )}
+        {currentStep === 2 && (
+          <View style={{ alignItems: "center" }}>
+            {/* Content for step 3 */}
+          </View>
+        )}
       </View>
     </BottomSheet>
   );
