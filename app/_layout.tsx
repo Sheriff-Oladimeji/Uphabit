@@ -49,7 +49,7 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen
+        {/* <Stack.Screen
           name="createHabit"
           options={({ navigation }) => ({
             headerShown: true,
@@ -76,7 +76,7 @@ export default function RootLayout() {
               </TouchableOpacity>
             ),
           })}
-        />
+        /> */}
         <Stack.Screen 
           name="habit/[id]" 
           options={{ 
