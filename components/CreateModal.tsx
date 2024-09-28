@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 import BottomSheet from "./BottomSheet";
 import { BottomSheetProps } from "@/@types/bottomSheet";
 import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
@@ -9,7 +9,7 @@ import SecondStep, { TrackingOptionType } from "./SecondStep";
 import CreateGoal from "./CreateGoal";
 import CreateTodo from "./CreateTodo";
 import CreateNewHabit from "./CreateNewHabit";
-
+import useCreateStore from "@/store/useCreateStore";
 type ProgressStepsRef = {
   setActiveStep: (step: number) => void;
 };
@@ -18,16 +18,22 @@ type OptionType = "build" | "quit" | "goal" | "task";
 
 const CreateModal: React.FC<BottomSheetProps> = ({ isVisible, onClose }) => {
   const [currentStep, setCurrentStep] = useState<number>(0);
-  const [selectedOption, setSelectedOption] = useState<OptionType | null>(null);
-  const [selectedTrackingOption, setSelectedTrackingOption] =
-    useState<TrackingOptionType | null>(null);
+  // const [selectedOption, setSelectedOption] = useState<OptionType | null>(null);
+  // const [selectedTrackingOption, setSelectedTrackingOption] =
+  //   useState<TrackingOptionType | null>(null);
   const progressStepsRef = useRef<ProgressStepsRef | null>(null);
 
+const {
+  selectedOption,
+  selectedTrackingOption,
+  setSelectedOption,
+  setSelectedTrackingOption,
+  resetSelections,
+} = useCreateStore();
   // Reset state when modal is closed
   const handleClose = () => {
+    resetSelections(); // Reset selections in the store
     setCurrentStep(0);
-    setSelectedOption(null);
-    setSelectedTrackingOption(null);
     onClose();
   };
 
@@ -55,20 +61,18 @@ const CreateModal: React.FC<BottomSheetProps> = ({ isVisible, onClose }) => {
   };
 
   const handleFirstStepSelect = (option: OptionType) => {
-    setSelectedOption(option); // Store the selected option
+    setSelectedOption(option); // Store the selected option in Zustand
     if (progressStepsRef.current && currentStep < 2) {
       progressStepsRef.current.setActiveStep(currentStep + 1);
       setCurrentStep(currentStep + 1);
-      console.log("Selected option:", option);
     }
   };
 
   const handleSecondStepSelect = (option: TrackingOptionType) => {
-    setSelectedTrackingOption(option); // Store the selected tracking option
+    setSelectedTrackingOption(option); // Store the selected tracking option in Zustand
     if (progressStepsRef.current && currentStep < 2) {
       progressStepsRef.current.setActiveStep(currentStep + 1);
       setCurrentStep(currentStep + 1);
-      console.log("Selected tracking option:", option);
     }
   };
 
@@ -108,7 +112,11 @@ const CreateModal: React.FC<BottomSheetProps> = ({ isVisible, onClose }) => {
           <SecondStep onOptionSelect={handleSecondStepSelect} />
         )}
         {currentStep === 2 && (
-          <View>
+          <ScrollView
+            className="w-full"
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 70 }}
+          >
             {selectedOption === "build" || selectedOption === "quit" ? (
               <CreateNewHabit />
             ) : selectedOption === "goal" ? (
@@ -116,7 +124,7 @@ const CreateModal: React.FC<BottomSheetProps> = ({ isVisible, onClose }) => {
             ) : selectedOption === "task" ? (
               <CreateTodo />
             ) : null}
-          </View>
+          </ScrollView>
         )}
       </View>
     </BottomSheet>

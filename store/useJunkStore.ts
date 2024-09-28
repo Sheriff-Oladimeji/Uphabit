@@ -45,7 +45,7 @@ const sendCompletionNotification = () => {
   // Implementation of the notification logic
 };
 
-const useHabitStore = create<HabitStore>((set, get) => ({
+const useJunkStore = create<HabitStore>((set, get) => ({
   habits: [],
   addHabit: async (habit) => {
     const newHabit: Habit = {
@@ -150,4 +150,4 @@ const useHabitStore = create<HabitStore>((set, get) => ({
   },
 }));
 
-export default useHabitStore;
+export default useJunkStore;

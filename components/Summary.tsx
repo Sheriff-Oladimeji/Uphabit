@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
-import useHabitStore from "../store/useHabitStore";
+import useHabitStore from "../store/useJunkStore";
 import useDateStore from "@/store/useDateStore";
 import { format } from "date-fns";
 
@@ -9,7 +9,11 @@ const Summary: React.FC = () => {
   const { habits, getHabitsForDate } = useHabitStore();
   const { currentDate } = useDateStore();
   const [currentTime, setCurrentTime] = useState("");
-  const [habitStats, setHabitStats] = useState({ done: 0, total: 0, percentage: 0 });
+  const [habitStats, setHabitStats] = useState({
+    done: 0,
+    total: 0,
+    percentage: 0,
+  });
   const [points, setPoints] = useState(0);
 
   useEffect(() => {
@@ -24,16 +28,20 @@ const Summary: React.FC = () => {
 
   const updateCurrentTime = () => {
     const now = new Date();
-    setCurrentTime(now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
+    setCurrentTime(
+      now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    );
   };
 
   const updateHabitStats = () => {
     const habitsForDate = getHabitsForDate(currentDate);
-    const dateKey = format(currentDate, 'yyyy-MM-dd');
+    const dateKey = format(currentDate, "yyyy-MM-dd");
     const total = habitsForDate.length;
-    const done = habitsForDate.filter(habit => habit.completionDates?.[dateKey] ?? false).length;
+    const done = habitsForDate.filter(
+      (habit) => habit.completionDates?.[dateKey] ?? false
+    ).length;
     const percentage = total > 0 ? Math.round((done / total) * 100) : 0;
-    
+
     // Calculate points (you can adjust this calculation as needed)
     const calculatedPoints = done * 10; // For example, 10 points per completed habit
 
@@ -67,9 +75,7 @@ const Summary: React.FC = () => {
               <Text className="text-gray-400 text-sm">Habits</Text>
             </View>
             <View>
-              <Text className="text-white text-2xl font-bold">
-                {points}
-              </Text>
+              <Text className="text-white text-2xl font-bold">{points}</Text>
               <Text className="text-gray-400 text-sm">Points</Text>
             </View>
           </View>

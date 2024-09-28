@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { View, Text, FlatList, ListRenderItem } from "react-native";
 import { MaterialCommunityIcons, Feather } from "@expo/vector-icons";
-import useHabitStore, { Habit } from "../store/useHabitStore";
+import useHabitStore, { Habit } from "../store/useJunkStore";
 import useDateStore from "@/store/useDateStore";
 import HabitItem from "./HabitItem";
 import { router } from "expo-router";
@@ -27,7 +27,9 @@ const Habits = () => {
   }, []);
 
   const renderItem: ListRenderItem<Habit> = useCallback(
-    ({ item }) => <HabitItem item={item} onDelete={handleDelete} onEdit={handleEdit} />,
+    ({ item }) => (
+      <HabitItem item={item} onDelete={handleDelete} onEdit={handleEdit} />
+    ),
     [handleDelete, handleEdit]
   );
 

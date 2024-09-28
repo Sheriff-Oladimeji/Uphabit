@@ -19,6 +19,7 @@
     "@ouedraogof/react-native-progress-steps": "^1.0.3",
     "@react-native-async-storage/async-storage": "^2.0.0",
     "@react-native-community/datetimepicker": "github:react-native-community/datetimepicker",
+    "@react-native-picker/picker": "^2.8.1",
     "@react-navigation/native": "^6.0.2",
     "date-fns": "^3.6.0",
     "expo": "~51.0.28",

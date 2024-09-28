@@ -14,14 +14,18 @@ import useHabitStore, {
   RepeatFrequency,
   TimeOfDay,
   Habit,
-} from "../store/useHabitStore";
+} from "../store/useJunkStore";
 import useDateStore from "@/store/useDateStore";
 import { format, addYears, parseISO } from "date-fns";
 import Container from "@/components/Container";
 import BottomTab from "@/components/BottomTab";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
-import { AntDesign, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  AntDesign,
+  Ionicons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 
 const EditHabit = () => {
   const router = useRouter();
@@ -378,9 +382,7 @@ const EditHabit = () => {
           className="bg-blue-500 w-[90%] mx-auto rounded-lg py-3  text-center"
           onPress={handleSave}
         >
-          <Text className="text-white text-lg text-center">
-             Save Changes
-          </Text>
+          <Text className="text-white text-lg text-center">Save Changes</Text>
         </TouchableOpacity>
       </BottomTab>
     </View>

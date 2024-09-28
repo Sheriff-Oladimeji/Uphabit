@@ -13,7 +13,7 @@ import useHabitStore, {
   HabitType,
   RepeatFrequency,
   TimeOfDay,
-} from "../store/useHabitStore";
+} from "../store/useJunkStore";
 import useDateStore from "@/store/useDateStore";
 import { format, addYears } from "date-fns";
 

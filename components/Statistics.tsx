@@ -3,9 +3,13 @@ import { View, Text, ScrollView, Dimensions } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { Calendar } from "react-native-calendars";
 import { FontAwesome } from "@expo/vector-icons";
-import useHabitStore from "@/store/useHabitStore";
+import useHabitStore from "@/store/useJunkStore";
 
-const StatCard: React.FC<{ iconName: string; title: string; value: string }> = ({ iconName, title, value }) => (
+const StatCard: React.FC<{
+  iconName: string;
+  title: string;
+  value: string;
+}> = ({ iconName, title, value }) => (
   <View className="bg-gray-800 rounded-lg p-4 mb-4 flex-row items-center">
     <FontAwesome name={iconName as any} size={24} color="#60A5FA" />
     <View className="ml-4">
@@ -20,7 +24,8 @@ const Statistics = () => {
 
   const totalAwesomeDays = useMemo(() => {
     return Object.values(
-      habits.reduce((acc: { [key: string]: number }, habit) => { // Define the type of acc
+      habits.reduce((acc: { [key: string]: number }, habit) => {
+        // Define the type of acc
         Object.keys(habit.completionDates).forEach((date) => {
           if (habit.completionDates[date]) {
             acc[date] = (acc[date] || 0) + 1;
@@ -67,7 +72,11 @@ const Statistics = () => {
   }, [habits]);
 
   return (
-    <ScrollView className="flex-1 bg-gray-900  py-6" showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom: 20}}>
+    <ScrollView
+      className="flex-1 bg-gray-900  py-6"
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: 20 }}
+    >
       <Text className="text-white text-2xl font-bold mb-6">Statistics</Text>
 
       <StatCard
@@ -100,7 +109,7 @@ const Statistics = () => {
             labels: chartData.labels,
             datasets: [{ data: chartData.data }],
           }}
-          width={Dimensions.get("window").width- 60}
+          width={Dimensions.get("window").width - 60}
           height={220}
           chartConfig={{
             backgroundColor: "#1F2937",
@@ -156,17 +165,23 @@ const Statistics = () => {
           }}
           markingType={"multi-dot"}
           markedDates={{
-            ...habits.reduce((acc: Record<string, { dots: { key: string; color: string }[] }>, habit) => {
-              Object.keys(habit.completionDates).forEach((date) => {
-                if (habit.completionDates[date]) {
-                  if (!acc[date]) {
-                    acc[date] = { dots: [] };
+            ...habits.reduce(
+              (
+                acc: Record<string, { dots: { key: string; color: string }[] }>,
+                habit
+              ) => {
+                Object.keys(habit.completionDates).forEach((date) => {
+                  if (habit.completionDates[date]) {
+                    if (!acc[date]) {
+                      acc[date] = { dots: [] };
+                    }
+                    acc[date].dots.push({ key: habit.id, color: "#60A5FA" });
                   }
-                  acc[date].dots.push({ key: habit.id, color: "#60A5FA" });
-                }
-              });
-              return acc;
-            }, {} as Record<string, { dots: { key: string; color: string }[] }>) // Remove the comma and fix the syntax
+                });
+                return acc;
+              },
+              {} as Record<string, { dots: { key: string; color: string }[] }>
+            ), // Remove the comma and fix the syntax
           }}
         />
       </View>

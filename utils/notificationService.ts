@@ -1,38 +1,41 @@
-import * as Notifications from 'expo-notifications';
-import * as Device from 'expo-device';
-import { Platform } from 'react-native';
-import Constants from 'expo-constants';
-import { Habit } from '@/store/useHabitStore';
+import * as Notifications from "expo-notifications";
+import * as Device from "expo-device";
+import { Platform } from "react-native";
+import Constants from "expo-constants";
+import { Habit } from "@/store/useJunkStore";
 
 export async function registerForPushNotificationsAsync() {
   let token;
 
   if (Device.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
-    if (existingStatus !== 'granted') {
+    if (existingStatus !== "granted") {
       const { status } = await Notifications.requestPermissionsAsync();
       finalStatus = status;
     }
-    if (finalStatus !== 'granted') {
-      alert('Failed to get push token for push notification!');
+    if (finalStatus !== "granted") {
+      alert("Failed to get push token for push notification!");
       return;
     }
-    
+
     // Get the token with the project ID
-    token = (await Notifications.getExpoPushTokenAsync({
-      projectId: Constants.expoConfig?.extra?.eas?.projectId ?? undefined,
-    })).data;
+    token = (
+      await Notifications.getExpoPushTokenAsync({
+        projectId: Constants.expoConfig?.extra?.eas?.projectId ?? undefined,
+      })
+    ).data;
   } else {
-    alert('Must use physical device for Push Notifications');
+    alert("Must use physical device for Push Notifications");
   }
 
-  if (Platform.OS === 'android') {
-    Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
+  if (Platform.OS === "android") {
+    Notifications.setNotificationChannelAsync("default", {
+      name: "default",
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#FF231F7C',
+      lightColor: "#FF231F7C",
     });
   }
 
@@ -47,9 +50,9 @@ export async function scheduleNotification(habit: Habit) {
   // Schedule the initial reminder
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: 'Habit Reminder',
+      title: "Habit Reminder",
       body: `Time to work on your habit: ${habit.name}. You're almost there!`,
-      sound: 'default', // Ensure sound is set
+      sound: "default", // Ensure sound is set
     },
     trigger,
   });
@@ -58,9 +61,9 @@ export async function scheduleNotification(habit: Habit) {
 export async function sendCompletionNotification() {
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: 'Good Job!',
+      title: "Good Job!",
       body: "You've achieved all your goals for the day!",
-      sound: 'default', // Ensure sound is set
+      sound: "default", // Ensure sound is set
     },
     trigger: null, // Send immediately
   });
