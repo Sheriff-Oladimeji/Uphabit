@@ -6,6 +6,10 @@ import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
 import FirstStep from "./FirstStep";
 import SecondStep, { TrackingOptionType } from "./SecondStep";
 
+import CreateGoal from "./CreateGoal";
+import CreateTodo from "./CreateTodo";
+import CreateNewHabit from "./CreateNewHabit";
+
 type ProgressStepsRef = {
   setActiveStep: (step: number) => void;
 };
@@ -14,7 +18,18 @@ type OptionType = "build" | "quit" | "goal" | "task";
 
 const CreateModal: React.FC<BottomSheetProps> = ({ isVisible, onClose }) => {
   const [currentStep, setCurrentStep] = useState<number>(0);
+  const [selectedOption, setSelectedOption] = useState<OptionType | null>(null);
+  const [selectedTrackingOption, setSelectedTrackingOption] =
+    useState<TrackingOptionType | null>(null);
   const progressStepsRef = useRef<ProgressStepsRef | null>(null);
+
+  // Reset state when modal is closed
+  const handleClose = () => {
+    setCurrentStep(0);
+    setSelectedOption(null);
+    setSelectedTrackingOption(null);
+    onClose();
+  };
 
   const progressStepsStyle = {
     activeStepIconBorderColor: "#10B981",
@@ -40,6 +55,7 @@ const CreateModal: React.FC<BottomSheetProps> = ({ isVisible, onClose }) => {
   };
 
   const handleFirstStepSelect = (option: OptionType) => {
+    setSelectedOption(option); // Store the selected option
     if (progressStepsRef.current && currentStep < 2) {
       progressStepsRef.current.setActiveStep(currentStep + 1);
       setCurrentStep(currentStep + 1);
@@ -48,6 +64,7 @@ const CreateModal: React.FC<BottomSheetProps> = ({ isVisible, onClose }) => {
   };
 
   const handleSecondStepSelect = (option: TrackingOptionType) => {
+    setSelectedTrackingOption(option); // Store the selected tracking option
     if (progressStepsRef.current && currentStep < 2) {
       progressStepsRef.current.setActiveStep(currentStep + 1);
       setCurrentStep(currentStep + 1);
@@ -58,7 +75,7 @@ const CreateModal: React.FC<BottomSheetProps> = ({ isVisible, onClose }) => {
   return (
     <BottomSheet
       isVisible={isVisible}
-      onClose={onClose}
+      onClose={handleClose} // Use the new handleClose function
       radius={10}
       height="99%"
     >
@@ -91,8 +108,14 @@ const CreateModal: React.FC<BottomSheetProps> = ({ isVisible, onClose }) => {
           <SecondStep onOptionSelect={handleSecondStepSelect} />
         )}
         {currentStep === 2 && (
-          <View style={{ alignItems: "center" }}>
-            {/* Content for step 3 */}
+          <View>
+            {selectedOption === "build" || selectedOption === "quit" ? (
+              <CreateNewHabit />
+            ) : selectedOption === "goal" ? (
+              <CreateGoal />
+            ) : selectedOption === "task" ? (
+              <CreateTodo />
+            ) : null}
           </View>
         )}
       </View>

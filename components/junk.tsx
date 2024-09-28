@@ -25,7 +25,6 @@ import { registerForPushNotificationsAsync } from "../utils/notificationService"
 
 interface CreateHabitProps {
   type: "build" | "quit";
-  onClose: () => void;
 }
 import {
   AntDesign,
@@ -33,7 +32,7 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 
-const Create = ({ type, onClose }: CreateHabitProps) => {
+const Junk = ({ type }: CreateHabitProps) => {
   const router = useRouter();
   const navigation = useNavigation();
   const { currentDate } = useDateStore();
@@ -391,4 +390,4 @@ const Create = ({ type, onClose }: CreateHabitProps) => {
   );
 };
 
-export default Create;
+export default Junk;

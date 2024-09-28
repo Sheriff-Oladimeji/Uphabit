@@ -43,14 +43,14 @@ const Summary: React.FC = () => {
 
   return (
     <View className="mt-6 ">
-      <View className="flex flex-row justify-between items-center mb-3">
+      {/* <View className="flex flex-row justify-between items-center mb-3">
         <Text className="text-white font-bold text-2xl ">
           {format(currentDate, "MMMM d, yyyy")}
         </Text>
         <View className="bg-gray-700 px-4 py-2 rounded-full">
           <Text className="text-white font-bold text-base">{currentTime}</Text>
         </View>
-      </View>
+      </View> */}
 
       <View className="bg-gray-800 p-5 rounded-2xl flex-row justify-between items-center">
         <View className="flex-1">
