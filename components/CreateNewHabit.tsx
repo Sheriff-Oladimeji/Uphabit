@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, TouchableOpacity } from "react-native";
-import { Picker } from "@react-native-picker/picker"; // Updated import
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 import useCreateStore from "@/store/useCreateStore";
 
 const CreateNewHabit = () => {
   const { selectedOption, selectedTrackingOption } = useCreateStore();
   const [habitName, setHabitName] = useState("");
-  const [amount, setAmount] = useState(1); // Default amount as a number
-  const [timeHours, setTimeHours] = useState("0"); // Default hours
-  const [timeMinutes, setTimeMinutes] = useState("5"); // Default minutes
-  const [timeSeconds, setTimeSeconds] = useState("0"); // Default seconds
+  const [amount, setAmount] = useState(1);
+  const [timeHours, setTimeHours] = useState("0");
+  const [timeMinutes, setTimeMinutes] = useState("5");
+  const [timeSeconds, setTimeSeconds] = useState("0");
+  const [reminder, setReminder] = useState("");
 
   const handleSave = () => {
     console.log({
@@ -21,6 +22,7 @@ const CreateNewHabit = () => {
           ? { hours: timeHours, minutes: timeMinutes, seconds: timeSeconds }
           : undefined,
       selectedOption,
+      reminder,
     });
 
     // Reset fields after saving
@@ -29,88 +31,97 @@ const CreateNewHabit = () => {
     setTimeHours("0");
     setTimeMinutes("5");
     setTimeSeconds("0");
-  };
-
-  const incrementAmount = () => {
-    setAmount((prev) => prev + 1);
-  };
-
-  const decrementAmount = () => {
-    setAmount((prev) => (prev > 1 ? prev - 1 : 1)); // Prevent going below 1
+    setReminder("");
   };
 
   return (
-    <View className="p-5">
-      <Text className="text-white text-lg mb-2">
-        {selectedOption === "build" ? "Create a New Habit" : "Quit a Habit"}
+    <View className="w-full px-4 py-6 bg-gray-900 rounded-lg">
+      <Text className="text-white text-3xl font-bold text-center mb-6">
+        {selectedOption === "build" ? "Create a New Habit" : "Quit a Bad Habit"}
       </Text>
 
-      <TextInput
-        placeholder="Habit Name"
-        value={habitName}
-        onChangeText={setHabitName}
-        className="bg-white p-3 rounded-lg mb-3"
-      />
-
-
-      {/* <Text className="text-white mb-2">
-        Tracking Type: {selectedTrackingOption}
-      </Text> */}
+      <View className="mb-6">
+        <Text className="text-gray-300 font-semibold text-lg mb-2">
+          Habit Name
+        </Text>
+        <TextInput
+          placeholder="Enter habit name"
+          placeholderTextColor="#4B5563"
+          value={habitName}
+          onChangeText={setHabitName}
+          className="bg-gray-800 text-white p-4 rounded-lg text-base border border-gray-700"
+        />
+      </View>
 
       {selectedTrackingOption === "amount" && (
-        <View className="flex-row items-center mb-4">
-          <TouchableOpacity
-            onPress={decrementAmount}
-            className="p-3 bg-green-500 rounded-lg"
-          >
-            <Text className="text-white text-lg">-</Text>
-          </TouchableOpacity>
+        <View className="mb-6">
+          <Text className="text-gray-300 font-semibold text-lg mb-2">
+            Amount to track
+          </Text>
           <TextInput
-            placeholder="Amount to Track"
-            value={String(amount)} // Convert number to string for TextInput
-            onChangeText={(text) => setAmount(Number(text) || 1)} // Convert back to number
+            placeholder="Enter amount"
+            placeholderTextColor="#4B5563"
+            value={String(amount)}
+            onChangeText={(text) => setAmount(Number(text) || 1)}
             keyboardType="numeric"
-            className="bg-white p-3 rounded-lg mx-3 text-center w-24"
+            className="bg-gray-800 text-white p-4 rounded-lg text-base border border-gray-700 w-full"
           />
-          <TouchableOpacity
-            onPress={incrementAmount}
-            className="p-3 bg-green-500 rounded-lg"
-          >
-            <Text className="text-white text-lg">+</Text>
-          </TouchableOpacity>
         </View>
       )}
 
       {selectedTrackingOption === "time" && (
-        <View>
-          <Text className="text-white mb-2">Duration (HH:MM:SS):</Text>
+        <View className="mb-6">
+          <Text className="text-gray-300 font-semibold text-lg mb-2">
+            Duration (HH:MM:SS)
+          </Text>
           <View className="flex-row justify-between">
             <TextInput
-              placeholder="Hours"
+              placeholder="HH"
+              placeholderTextColor="#4B5563"
               value={timeHours}
               onChangeText={setTimeHours}
               keyboardType="numeric"
-              className="bg-white p-3 rounded-lg mb-3 w-24 text-center"
+              className="bg-gray-800 text-white p-4 rounded-lg text-base border border-gray-700 w-[30%] text-center"
             />
             <TextInput
-              placeholder="Minutes"
+              placeholder="MM"
+              placeholderTextColor="#4B5563"
               value={timeMinutes}
               onChangeText={setTimeMinutes}
               keyboardType="numeric"
-              className="bg-white p-3 rounded-lg mb-3 w-24 text-center"
+              className="bg-gray-800 text-white p-4 rounded-lg text-base border border-gray-700 w-[30%] text-center"
             />
             <TextInput
-              placeholder="Seconds"
+              placeholder="SS"
+              placeholderTextColor="#4B5563"
               value={timeSeconds}
               onChangeText={setTimeSeconds}
               keyboardType="numeric"
-              className="bg-white p-3 rounded-lg mb-3 w-24 text-center"
+              className="bg-gray-800 text-white p-4 rounded-lg text-base border border-gray-700 w-[30%] text-center"
             />
           </View>
         </View>
       )}
 
-      <Button title="Save" onPress={handleSave} color="#10B981" />
+      <View className="mb-6">
+        <Text className="text-gray-300 font-semibold text-lg mb-2">
+          Reminder
+        </Text>
+        <TextInput
+          placeholder="Set a reminder (e.g., Daily at 9 AM)"
+          placeholderTextColor="#4B5563"
+          value={reminder}
+          onChangeText={setReminder}
+          className="bg-gray-800 text-white p-4 rounded-lg text-base border border-gray-700"
+        />
+      </View>
+
+      <TouchableOpacity
+        onPress={handleSave}
+        className="bg-blue-600 p-4 rounded-lg items-center"
+      >
+        <Text className="text-white font-bold text-lg">Save Habit</Text>
+      </TouchableOpacity>
     </View>
   );
 };
