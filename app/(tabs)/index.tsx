@@ -11,8 +11,8 @@ export default function Home() {
 
   return (
     <Container>
-      <HabitHeader />
-      <Summary />
+      {/* <HabitHeader />
+      <Summary /> */}
       <InteractiveCalendar />
       <Habits/>
     </Container>

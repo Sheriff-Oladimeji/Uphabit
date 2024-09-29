@@ -12,7 +12,7 @@ const FirstStep: React.FC<FirstStepProps> = ({ onOptionSelect }) => {
   return (
     <ScrollView className="w-full">
       <View className="w-[90%] mx-auto">
-        <Text className="text-white font-bold text-2xl text-center mb-4">
+        <Text className="text-white font-bold text-2xl text-center my-4">
           What do you want to do?
         </Text>
 

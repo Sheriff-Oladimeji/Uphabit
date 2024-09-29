@@ -10,6 +10,7 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import useCreateStore from "@/store/useCreateStore";
 import { format, addYears, subYears } from "date-fns";
+import useDateStore from "@/store/useDateStore";
 const CreateNewHabit = () => {
   const {
     selectedOption,
@@ -19,10 +20,12 @@ const CreateNewHabit = () => {
   } = useCreateStore();
   const [habitName, setHabitName] = useState("");
   const [amount, setAmount] = useState(1);
+   const { currentDate } = useDateStore();
   const [timeHours, setTimeHours] = useState("0");
   const [timeMinutes, setTimeMinutes] = useState("5");
   const [timeSeconds, setTimeSeconds] = useState("0");
   const [showTimePicker, setShowTimePicker] = useState(false);
+   const [startDate, setStartDate] = useState(currentDate);
     const minDate = subYears(new Date(), 1);
     const maxDate = addYears(new Date(), 1);
 

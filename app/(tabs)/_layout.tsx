@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import {
   Feather,
   FontAwesome,
-  FontAwesome6
+  FontAwesome6,
+  MaterialCommunityIcons
 } from "@expo/vector-icons";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import CreateModal from "@/components/CreateModal";
@@ -36,24 +37,24 @@ export default function TabLayout() {
             title: "Home",
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
-                IconComponent={Feather}
-                name={focused ? "home" : "home"}
+                IconComponent={MaterialCommunityIcons}
+                name={focused ? "calendar-today" : "calendar-today"}
                 color={color}
-                size={20}
+                size={24}
               />
             ),
           }}
         />
         <Tabs.Screen
-          name="goals" 
+          name="goals"
           options={{
             title: "Goals",
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
-                IconComponent={FontAwesome}
-                name={focused ? "tasks" : "tasks"}
+                IconComponent={MaterialCommunityIcons}
+                name={focused ? "bullseye-arrow" : "bullseye-arrow"}
                 color={color}
-                size={20}
+                size={24}
               />
             ),
           }}
@@ -66,7 +67,7 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="rank" 
+          name="rank"
           options={{
             title: "Rank",
             tabBarIcon: ({ color, focused }) => (
@@ -80,7 +81,7 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="profile" 
+          name="profile"
           options={{
             title: "Profile",
             tabBarIcon: ({ color, focused }) => (
@@ -95,10 +96,7 @@ export default function TabLayout() {
         />
       </Tabs>
 
-      <CreateModal
-        isVisible={isModalVisible}
-        onClose={closeCreateModal} 
-      />
+      <CreateModal isVisible={isModalVisible} onClose={closeCreateModal} />
     </>
   );
 }
