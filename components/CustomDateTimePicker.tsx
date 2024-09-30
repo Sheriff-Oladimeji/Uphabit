@@ -11,7 +11,7 @@ interface CustomDateTimePickerProps {
   onClose: () => void;
 }
 
-const CustomDateTimePicker = ({ visible, value, onChange, mode, onClose }) => {
+const CustomDateTimePicker: React.FC<CustomDateTimePickerProps> = ({ visible, value, onChange, mode, onClose }) => {
   if (Platform.OS === "ios") {
     return (
       <Modal

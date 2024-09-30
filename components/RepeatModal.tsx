@@ -14,7 +14,7 @@ interface RepeatModalProps {
   setRepeatConfig: (config: RepeatConfig) => void;
 }
 
-const RepeatModal = ({ visible, onClose, repeatConfig, setRepeatConfig }) => {
+const RepeatModal: React.FC<RepeatModalProps> = ({ visible, onClose, repeatConfig, setRepeatConfig }) => {
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   return (

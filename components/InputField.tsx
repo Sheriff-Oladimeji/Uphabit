@@ -9,7 +9,7 @@ interface InputFieldProps {
   keyboardType?: "default" | "numeric";
 }
 
-const InputField = ({
+const InputField: React.FC<InputFieldProps> = ({
   label,
   placeholder,
   value,

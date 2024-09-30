@@ -10,7 +10,7 @@ interface TimeDurationInputProps {
   setTimeSeconds: (text: string) => void;
 }
 
-const TimeDurationInput = ({
+const TimeDurationInput: React.FC<TimeDurationInputProps> = ({
   timeHours,
   timeMinutes,
   timeSeconds,
