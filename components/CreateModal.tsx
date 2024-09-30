@@ -8,7 +8,7 @@ import SecondStep, { TrackingOptionType } from "./SecondStep";
 
 import CreateGoal from "./CreateGoal";
 import CreateTodo from "./CreateTodo";
-import CreateNewHabit from "./CreateNewHabit";
+import CreateNewHabit from "./CreateHabit";
 import useCreateStore from "@/store/useCreateStore";
 type ProgressStepsRef = {
   setActiveStep: (step: number) => void;
@@ -100,7 +100,7 @@ const {
             removeBtnRow={true}
           />
           <ProgressStep
-            label="Info"
+            label="Create"
             {...progressStepStyle}
             removeBtnRow={true}
           />
@@ -118,7 +118,7 @@ const {
             contentContainerStyle={{ paddingBottom: 70 }}
           >
             {selectedOption === "build" || selectedOption === "quit" ? (
-              <CreateNewHabit />
+              <CreateNewHabit onClose={onClose}/>
             ) : selectedOption === "goal" ? (
               <CreateGoal />
             ) : selectedOption === "task" ? (

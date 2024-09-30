@@ -1,71 +1,31 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { View, Text, FlatList, ListRenderItem } from "react-native";
-import { MaterialCommunityIcons, Feather } from "@expo/vector-icons";
-import useHabitStore, { Habit } from "../store/useJunkStore";
-import useDateStore from "@/store/useDateStore";
-import HabitItem from "./HabitItem";
-import { router } from "expo-router";
+import { View, Text } from 'react-native';
+import React, { useEffect } from 'react';
+import useHabitStore from '@/store/useHabitStore'; // Import the habit store
 
 const Habits = () => {
-  const { habits, loadHabits, getHabitsForDate, deleteHabit } = useHabitStore();
-  const { currentDate } = useDateStore();
-  const [isLoading, setIsLoading] = useState(true);
+  const { habits, loadHabits } = useHabitStore(); // Get habits and loadHabits from the store
 
+  // Fetch habits when the component mounts
   useEffect(() => {
-    loadHabits().then(() => setIsLoading(false));
-  }, []);
-
-  const handleDelete = useCallback(
-    (id: string) => {
-      deleteHabit(id);
-    },
-    [deleteHabit]
-  );
-
-  const handleEdit = useCallback((habit: Habit) => {
-    router.push(`/editHabit?id=${habit.id}`);
-  }, []);
-
-  const renderItem: ListRenderItem<Habit> = useCallback(
-    ({ item }) => (
-      <HabitItem item={item} onDelete={handleDelete} onEdit={handleEdit} />
-    ),
-    [handleDelete, handleEdit]
-  );
-
-  const keyExtractor = (item: Habit) => item.id;
-
-  if (isLoading) {
-    return (
-      <View className="flex-1 justify-center items-center">
-        <MaterialCommunityIcons name="loading" size={48} color="#60A5FA" />
-        <Text className="text-blue-400 text-lg mt-4">Loading habits...</Text>
-      </View>
-    );
-  }
-
-  const habitsForDate = getHabitsForDate(currentDate);
+    const fetchHabits = async () => {
+      await loadHabits(); // Load habits from AsyncStorage
+    };
+    fetchHabits();
+  }, [loadHabits]);
 
   return (
-    <FlatList
-      data={habitsForDate}
-      renderItem={renderItem}
-      keyExtractor={keyExtractor}
-      ListEmptyComponent={
-        <View className="flex-1 justify-center items-center ">
-          <Feather name="inbox" size={64} color="#4B5563" />
-          <Text className="text-gray-500 text-lg mt-4 text-center">
-            No habits for this date.{"\n"}Start by adding a new habit!
+    <View>
+      <Text>Habits</Text>
+      {habits.length > 0 ? (
+        habits.map((habit) => (
+          <Text key={habit.id} className="text-gray-300">
+            {habit.name}
           </Text>
-        </View>
-      }
-      contentContainerStyle={{
-        paddingBottom: 20,
-      }}
-      className="mt-6 "
-      showsVerticalScrollIndicator={false}
-      scrollEnabled={true}
-    />
+        ))
+      ) : (
+        <Text className="text-gray-300">No habits created yet.</Text>
+      )}
+    </View>
   );
 };
 
