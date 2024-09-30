@@ -15,7 +15,8 @@ import useDateStore from "@/store/useDateStore";
 import InputField from "./InputField";
 import TimeDurationInput from "./TimeDurationInput";
 import CustomDateTimePicker from "./CustomDateTimePicker";
-import RepeatModal from "./RepeatModal";
+import RepeatBottomSheet, { RepeatConfig } from "./RepeatBottomSheet";
+
 import useHabitStore from "@/store/useHabitStore"; 
 
 import { Habit } from "@/store/useHabitStore";
@@ -43,7 +44,8 @@ const CreateHabit: React.FC<BottomSheetProps> = ({ onClose }) => {
   const [timeSeconds, setTimeSeconds] = useState("0");
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [showRepeatModal, setShowRepeatModal] = useState(false);
+const [showRepeatBottomSheet, setShowRepeatBottomSheet] = useState(false);
+
 
   const handleSave = async () => {
     const newHabit: Habit = {
@@ -158,7 +160,7 @@ const CreateHabit: React.FC<BottomSheetProps> = ({ onClose }) => {
       <View className="mb-6">
         <Text className="text-gray-300 font-semibold text-lg mb-2">Repeat</Text>
         <TouchableOpacity
-          onPress={() => setShowRepeatModal(true)}
+          onPress={() => setShowRepeatBottomSheet(true)}
           className="bg-gray-800 p-4 rounded-lg border border-gray-700"
         >
           <Text className="text-white text-base">
@@ -196,11 +198,11 @@ const CreateHabit: React.FC<BottomSheetProps> = ({ onClose }) => {
         onClose={() => setShowDatePicker(false)}
       />
 
-      <RepeatModal
-        visible={showRepeatModal}
-        onClose={() => setShowRepeatModal(false)}
+      <RepeatBottomSheet
+        isVisible={showRepeatBottomSheet}
+        onClose={() => setShowRepeatBottomSheet(false)}
         repeatConfig={repeatConfig}
-        setRepeatConfig={setRepeatConfig}
+        setRepeatConfig={(config) => setRepeatConfig(config)}
       />
     </View>
   );

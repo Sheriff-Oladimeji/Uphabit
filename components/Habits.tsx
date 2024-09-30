@@ -1,14 +1,14 @@
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import React, { useEffect } from 'react';
-import useHabitStore from '@/store/useHabitStore'; // Import the habit store
+import useHabitStore from '@/store/useHabitStore'; 
 
 const Habits = () => {
-  const { habits, loadHabits } = useHabitStore(); // Get habits and loadHabits from the store
+  const { habits, loadHabits } = useHabitStore(); 
 
-  // Fetch habits when the component mounts
+  
   useEffect(() => {
     const fetchHabits = async () => {
-      await loadHabits(); // Load habits from AsyncStorage
+      await loadHabits(); 
     };
     fetchHabits();
   }, [loadHabits]);
@@ -18,9 +18,12 @@ const Habits = () => {
       <Text>Habits</Text>
       {habits.length > 0 ? (
         habits.map((habit) => (
-          <Text key={habit.id} className="text-gray-300">
-            {habit.name}
-          </Text>
+          <TouchableOpacity
+            className="bg-gray-800 rounded-full p-2 mb-4 flex flex-row justify-between items-center"
+            key={habit.id}
+          >
+            <Text className="text-gray-300">{habit.name}</Text>
+          </TouchableOpacity>
         ))
       ) : (
         <Text className="text-gray-300">No habits created yet.</Text>
