@@ -6,12 +6,20 @@ import {
   TouchableOpacity,
   Platform,
   Modal,
+  ScrollView,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import useCreateStore from "@/store/useCreateStore";
 import { format, addYears, subYears } from "date-fns";
 import useDateStore from "@/store/useDateStore";
+import InputField from "./InputField";
+import TimeDurationInput from "./TimeDurationInput";
+import CustomDateTimePicker from "./CustomDateTimePicker";
+import RepeatModal from "./RepeatModal";
 
+
+
+// Main CreateNewHabit Component
 const CreateNewHabit = () => {
   const {
     selectedOption,
@@ -20,6 +28,8 @@ const CreateNewHabit = () => {
     setReminderTime,
     startDate,
     setStartDate,
+    repeatConfig,
+    setRepeatConfig,
   } = useCreateStore();
   const [habitName, setHabitName] = useState("");
   const [amount, setAmount] = useState(1);
@@ -29,9 +39,7 @@ const CreateNewHabit = () => {
   const [timeSeconds, setTimeSeconds] = useState("0");
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
-
-  const minDate = subYears(new Date(), 1);
-  const maxDate = addYears(new Date(), 1);
+  const [showRepeatModal, setShowRepeatModal] = useState(false);
 
   const handleSave = () => {
     console.log({
@@ -45,6 +53,7 @@ const CreateNewHabit = () => {
       selectedOption,
       reminderTime,
       startDate,
+      repeatConfig,
     });
 
     // Reset fields after saving
@@ -55,6 +64,7 @@ const CreateNewHabit = () => {
     setTimeSeconds("0");
     setReminderTime(new Date(new Date().getTime() + 10 * 60000));
     setStartDate(new Date());
+    setRepeatConfig({ type: "daily" });
   };
 
   const onChangeTime = (event: any, selectedTime: Date | undefined) => {
@@ -63,10 +73,6 @@ const CreateNewHabit = () => {
     if (currentTime instanceof Date && !isNaN(currentTime.getTime())) {
       setReminderTime(currentTime);
     }
-  };
-
-  const showTimepicker = () => {
-    setShowTimePicker(true);
   };
 
   const onChangeStartDate = (event: any, selectedDate: Date | undefined) => {
@@ -81,189 +87,124 @@ const CreateNewHabit = () => {
     }
   };
 
-  const showDatepicker = () => {
-    setShowDatePicker(true);
-  };
-
-  const renderDateTimePicker = (
-    visible: boolean,
-    value: Date,
-    onChange: any,
-    mode: "date" | "time"
-  ) => {
-    if (Platform.OS === "ios") {
-      return (
-        <Modal
-          transparent={true}
-          animationType="slide"
-          visible={visible}
-          onRequestClose={() =>
-            mode === "date"
-              ? setShowDatePicker(false)
-              : setShowTimePicker(false)
-          }
-        >
-          <View className="flex-1 justify-center items-center bg-[rgba(0, 0, 0, 0.7)]">
-            <View className="bg-gray-700 p-4 rounded-lg w-4/5">
-              <DateTimePicker
-                testID={`ios${mode === "date" ? "Date" : "Time"}Picker`}
-                value={value}
-                mode={mode}
-                is24Hour={false}
-                display="spinner"
-                onChange={onChange}
-                textColor="white"
-                minimumDate={minDate}
-                maximumDate={maxDate}
-              />
-              <TouchableOpacity
-                onPress={() =>
-                  mode === "date"
-                    ? setShowDatePicker(false)
-                    : setShowTimePicker(false)
-                }
-                className="mt-4 bg-blue-500 p-2 rounded-full"
-              >
-                <Text className="text-white text-center">Done</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-      );
-    } else {
-      return visible ? (
-        <DateTimePicker
-          testID={`android${mode === "date" ? "Date" : "Time"}Picker`}
-          value={value}
-          mode={mode}
-          is24Hour={false}
-          display="default"
-          onChange={onChange}
-          minimumDate={minDate}
-          maximumDate={maxDate}
-        />
-      ) : null;
-    }
-  };
-
   return (
-    <View className="w-full px-4 py-6 bg-gray-900 rounded-lg">
-      <Text className="text-white text-3xl font-bold text-center mb-6">
-        {selectedOption === "build" ? "Create a New Habit" : "Quit a Bad Habit"}
-      </Text>
-
-      <View className="mb-6">
-        <Text className="text-gray-300 font-semibold text-lg mb-2">
-          Habit Name
+    <ScrollView className="bg-gray-900">
+      <View className="w-full px-4 py-6 bg-gray-900 rounded-lg">
+        <Text className="text-white text-3xl font-bold text-center mb-6">
+          {selectedOption === "build"
+            ? "Create a New Habit"
+            : "Quit a Bad Habit"}
         </Text>
-        <TextInput
+
+        <InputField
+          label="Habit Name"
           placeholder="Enter habit name"
-          placeholderTextColor="#4B5563"
           value={habitName}
           onChangeText={setHabitName}
-          className="bg-gray-800 text-white p-4 rounded-lg text-base border border-gray-700"
         />
-      </View>
 
-      {selectedTrackingOption === "amount" && (
-        <View className="mb-6">
-          <Text className="text-gray-300 font-semibold text-lg mb-2">
-            Amount to track
-          </Text>
-          <TextInput
+        {selectedTrackingOption === "amount" && (
+          <InputField
+            label="Amount to track"
             placeholder="Enter amount"
-            placeholderTextColor="#4B5563"
             value={String(amount)}
             onChangeText={(text) => setAmount(Number(text) || 1)}
             keyboardType="numeric"
-            className="bg-gray-800 text-white p-4 rounded-lg text-base border border-gray-700 w-full"
           />
-        </View>
-      )}
+        )}
 
-      {selectedTrackingOption === "time" && (
+        {selectedTrackingOption === "time" && (
+          <TimeDurationInput
+            timeHours={timeHours}
+            timeMinutes={timeMinutes}
+            timeSeconds={timeSeconds}
+            setTimeHours={setTimeHours}
+            setTimeMinutes={setTimeMinutes}
+            setTimeSeconds={setTimeSeconds}
+          />
+        )}
+
         <View className="mb-6">
           <Text className="text-gray-300 font-semibold text-lg mb-2">
-            Duration (HH:MM:SS)
+            Reminder Time
           </Text>
-          <View className="flex-row justify-between">
-            <TextInput
-              placeholder="HH"
-              placeholderTextColor="#4B5563"
-              value={timeHours}
-              onChangeText={setTimeHours}
-              keyboardType="numeric"
-              className="bg-gray-800 text-white p-4 rounded-lg text-base border border-gray-700 w-[30%] text-center"
-            />
-            <TextInput
-              placeholder="MM"
-              placeholderTextColor="#4B5563"
-              value={timeMinutes}
-              onChangeText={setTimeMinutes}
-              keyboardType="numeric"
-              className="bg-gray-800 text-white p-4 rounded-lg text-base border border-gray-700 w-[30%] text-center"
-            />
-            <TextInput
-              placeholder="SS"
-              placeholderTextColor="#4B5563"
-              value={timeSeconds}
-              onChangeText={setTimeSeconds}
-              keyboardType="numeric"
-              className="bg-gray-800 text-white p-4 rounded-lg text-base border border-gray-700 w-[30%] text-center"
-            />
-          </View>
+          <TouchableOpacity
+            onPress={() => setShowTimePicker(true)}
+            className="bg-gray-800 p-4 rounded-lg border border-gray-700"
+          >
+            <Text className="text-white text-base">
+              {reminderTime
+                ? format(reminderTime, "hh:mm a")
+                : "Set Reminder Time"}
+            </Text>
+          </TouchableOpacity>
         </View>
-      )}
 
-      <View className="mb-6">
-        <Text className="text-gray-300 font-semibold text-lg mb-2">
-          Reminder Time
-        </Text>
-        <TouchableOpacity
-          onPress={showTimepicker}
-          className="bg-gray-800 p-4 rounded-lg border border-gray-700"
-        >
-          <Text className="text-white text-base">
-            {reminderTime
-              ? format(reminderTime, "hh:mm a")
-              : "Set Reminder Time"}
+        <View className="mb-6">
+          <Text className="text-gray-300 font-semibold text-lg mb-2">
+            Start Date
           </Text>
-        </TouchableOpacity>
-        {renderDateTimePicker(
-          showTimePicker,
-          reminderTime,
-          onChangeTime,
-          "time"
-        )}
-      </View>
+          <TouchableOpacity
+            onPress={() => setShowDatePicker(true)}
+            className="bg-gray-800 p-4 rounded-lg border border-gray-700"
+          >
+            <Text className="text-white text-base">
+              {format(startDate, "MMMM dd, yyyy")}
+            </Text>
+          </TouchableOpacity>
+        </View>
 
-      <View className="mb-6">
-        <Text className="text-gray-300 font-semibold text-lg mb-2">
-          Start Date
-        </Text>
-        <TouchableOpacity
-          onPress={showDatepicker}
-          className="bg-gray-800 p-4 rounded-lg border border-gray-700"
-        >
-          <Text className="text-white text-base">
-            {format(startDate, "MMMM dd, yyyy")}
+        <View className="mb-6">
+          <Text className="text-gray-300 font-semibold text-lg mb-2">
+            Repeat
           </Text>
-        </TouchableOpacity>
-        {renderDateTimePicker(
-          showDatePicker,
-          startDate,
-          onChangeStartDate,
-          "date"
-        )}
-      </View>
+          <TouchableOpacity
+            onPress={() => setShowRepeatModal(true)}
+            className="bg-gray-800 p-4 rounded-lg border border-gray-700"
+          >
+            <Text className="text-white text-base">
+              {repeatConfig.type === "daily" && "Daily"}
+              {repeatConfig.type === "weekly" &&
+                `Weekly (${repeatConfig.weekDays
+                  ?.map((d) => ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"][d])
+                  .join(", ")})`}
+              {repeatConfig.type === "monthly" &&
+                `Monthly (Day ${repeatConfig.monthDay})`}
+            </Text>
+          </TouchableOpacity>
+        </View>
 
-      <TouchableOpacity
-        onPress={handleSave}
-        className="bg-blue-600 p-4 rounded-lg items-center"
-      >
-        <Text className="text-white font-bold text-lg">Save Habit</Text>
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity
+          onPress={handleSave}
+          className="bg-blue-600 p-4 rounded-lg items-center"
+        >
+          <Text className="text-white font-bold text-lg">Save Habit</Text>
+        </TouchableOpacity>
+
+        <CustomDateTimePicker
+          visible={showTimePicker}
+          value={reminderTime}
+          onChange={onChangeTime}
+          mode="time"
+          onClose={() => setShowTimePicker(false)}
+        />
+
+        <CustomDateTimePicker
+          visible={showDatePicker}
+          value={startDate}
+          onChange={onChangeStartDate}
+          mode="date"
+          onClose={() => setShowDatePicker(false)}
+        />
+
+        <RepeatModal
+          visible={showRepeatModal}
+          onClose={() => setShowRepeatModal(false)}
+          repeatConfig={repeatConfig}
+          setRepeatConfig={setRepeatConfig}
+        />
+      </View>
+    </ScrollView>
   );
 };
 
