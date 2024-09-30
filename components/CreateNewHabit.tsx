@@ -5,29 +5,33 @@ import {
   TextInput,
   TouchableOpacity,
   Platform,
-  Modal
+  Modal,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import useCreateStore from "@/store/useCreateStore";
 import { format, addYears, subYears } from "date-fns";
 import useDateStore from "@/store/useDateStore";
+
 const CreateNewHabit = () => {
   const {
     selectedOption,
     selectedTrackingOption,
     reminderTime,
     setReminderTime,
+    startDate,
+    setStartDate,
   } = useCreateStore();
   const [habitName, setHabitName] = useState("");
   const [amount, setAmount] = useState(1);
-   const { currentDate } = useDateStore();
+  const { currentDate } = useDateStore();
   const [timeHours, setTimeHours] = useState("0");
   const [timeMinutes, setTimeMinutes] = useState("5");
   const [timeSeconds, setTimeSeconds] = useState("0");
   const [showTimePicker, setShowTimePicker] = useState(false);
-   const [startDate, setStartDate] = useState(currentDate);
-    const minDate = subYears(new Date(), 1);
-    const maxDate = addYears(new Date(), 1);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const minDate = subYears(new Date(), 1);
+  const maxDate = addYears(new Date(), 1);
 
   const handleSave = () => {
     console.log({
@@ -40,6 +44,7 @@ const CreateNewHabit = () => {
           : undefined,
       selectedOption,
       reminderTime,
+      startDate,
     });
 
     // Reset fields after saving
@@ -49,16 +54,96 @@ const CreateNewHabit = () => {
     setTimeMinutes("5");
     setTimeSeconds("0");
     setReminderTime(new Date(new Date().getTime() + 10 * 60000));
+    setStartDate(new Date());
   };
 
-  const onChangeTime = ( selectedTime: any) => {
+  const onChangeTime = (event: any, selectedTime: Date | undefined) => {
     const currentTime = selectedTime || reminderTime;
     setShowTimePicker(Platform.OS === "ios");
-    setReminderTime(currentTime);
+    if (currentTime instanceof Date && !isNaN(currentTime.getTime())) {
+      setReminderTime(currentTime);
+    }
   };
 
   const showTimepicker = () => {
     setShowTimePicker(true);
+  };
+
+  const onChangeStartDate = (event: any, selectedDate: Date | undefined) => {
+    if (event.type === "set" || Platform.OS === "android") {
+      const currentDate = selectedDate || startDate;
+      if (currentDate instanceof Date && !isNaN(currentDate.getTime())) {
+        setStartDate(currentDate);
+        setShowDatePicker(Platform.OS === "ios");
+      }
+    } else if (event.type === "dismissed") {
+      setShowDatePicker(false);
+    }
+  };
+
+  const showDatepicker = () => {
+    setShowDatePicker(true);
+  };
+
+  const renderDateTimePicker = (
+    visible: boolean,
+    value: Date,
+    onChange: any,
+    mode: "date" | "time"
+  ) => {
+    if (Platform.OS === "ios") {
+      return (
+        <Modal
+          transparent={true}
+          animationType="slide"
+          visible={visible}
+          onRequestClose={() =>
+            mode === "date"
+              ? setShowDatePicker(false)
+              : setShowTimePicker(false)
+          }
+        >
+          <View className="flex-1 justify-center items-center bg-[rgba(0, 0, 0, 0.7)]">
+            <View className="bg-gray-700 p-4 rounded-lg w-4/5">
+              <DateTimePicker
+                testID={`ios${mode === "date" ? "Date" : "Time"}Picker`}
+                value={value}
+                mode={mode}
+                is24Hour={false}
+                display="spinner"
+                onChange={onChange}
+                textColor="white"
+                minimumDate={minDate}
+                maximumDate={maxDate}
+              />
+              <TouchableOpacity
+                onPress={() =>
+                  mode === "date"
+                    ? setShowDatePicker(false)
+                    : setShowTimePicker(false)
+                }
+                className="mt-4 bg-blue-500 p-2 rounded-full"
+              >
+                <Text className="text-white text-center">Done</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      );
+    } else {
+      return visible ? (
+        <DateTimePicker
+          testID={`android${mode === "date" ? "Date" : "Time"}Picker`}
+          value={value}
+          mode={mode}
+          is24Hour={false}
+          display="default"
+          onChange={onChange}
+          minimumDate={minDate}
+          maximumDate={maxDate}
+        />
+      ) : null;
+    }
   };
 
   return (
@@ -144,47 +229,31 @@ const CreateNewHabit = () => {
               : "Set Reminder Time"}
           </Text>
         </TouchableOpacity>
-        {Platform.OS === "ios" && (
-          <Modal
-            transparent={true}
-            animationType="slide"
-            visible={showTimePicker}
-            onRequestClose={() => setShowTimePicker(false)}
-          >
-            <View className="flex-1 justify-center items-center bg-[rgba(0, 0, 0, 0.7)]">
-              <View className="bg-gray-700 p-4 rounded-lg w-4/5">
-                <DateTimePicker
-                  testID="iosTimePicker"
-                  value={reminderTime || new Date()}
-                  mode="time"
-                  is24Hour={false}
-                  display="spinner"
-                  onChange={onChangeTime}
-                  textColor="white"
-                  minimumDate={minDate}
-                  maximumDate={maxDate}
-                />
-                <TouchableOpacity
-                  onPress={() => setShowTimePicker(false)}
-                  className="mt-4 bg-blue-500 p-2 rounded-full"
-                >
-                  <Text className="text-white text-center">Done</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Modal>
+        {renderDateTimePicker(
+          showTimePicker,
+          reminderTime,
+          onChangeTime,
+          "time"
         )}
-        {Platform.OS === "android" && showTimePicker && (
-          <DateTimePicker
-            testID="androidTimePicker"
-            value={reminderTime || new Date()}
-            mode="time"
-            is24Hour={false}
-            display="default"
-            onChange={onChangeTime}
-            minimumDate={minDate}
-            maximumDate={maxDate}
-          />
+      </View>
+
+      <View className="mb-6">
+        <Text className="text-gray-300 font-semibold text-lg mb-2">
+          Start Date
+        </Text>
+        <TouchableOpacity
+          onPress={showDatepicker}
+          className="bg-gray-800 p-4 rounded-lg border border-gray-700"
+        >
+          <Text className="text-white text-base">
+            {format(startDate, "MMMM dd, yyyy")}
+          </Text>
+        </TouchableOpacity>
+        {renderDateTimePicker(
+          showDatePicker,
+          startDate,
+          onChangeStartDate,
+          "date"
         )}
       </View>
 
