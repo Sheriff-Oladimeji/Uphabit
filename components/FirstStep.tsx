@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-type OptionType = "build" | "quit" | "goal" | "task";
+type OptionType = "build" | "quit" | "goal" ;
 
 interface FirstStepProps {
   onOptionSelect: (option: OptionType) => void;
@@ -60,7 +60,7 @@ const FirstStep: React.FC<FirstStepProps> = ({ onOptionSelect }) => {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
+        {/* <TouchableOpacity
           className="bg-purple-600 p-5 rounded-xl w-full"
           onPress={() => onOptionSelect("task")}
         >
@@ -74,7 +74,7 @@ const FirstStep: React.FC<FirstStepProps> = ({ onOptionSelect }) => {
             Complete a specific task or challenge, like decluttering your space
             or writing a short story.
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </ScrollView>
   );

@@ -14,7 +14,7 @@ type ProgressStepsRef = {
   setActiveStep: (step: number) => void;
 };
 
-type OptionType = "build" | "quit" | "goal" | "task";
+type OptionType = "build" | "quit" | "goal";
 
 const CreateModal: React.FC<BottomSheetProps> = ({ isVisible, onClose }) => {
   const [currentStep, setCurrentStep] = useState<number>(0);
@@ -61,7 +61,7 @@ const {
   };
 
   const handleFirstStepSelect = (option: OptionType) => {
-    setSelectedOption(option); // Store the selected option in Zustand
+    setSelectedOption(option); 
     if (progressStepsRef.current && currentStep < 2) {
       progressStepsRef.current.setActiveStep(currentStep + 1);
       setCurrentStep(currentStep + 1);
@@ -83,7 +83,11 @@ const {
       radius={10}
       height="99%"
     >
-      <View style={{ flex: 1, backgroundColor: "#111827" }}>
+      <ScrollView
+        // style={{ flex: 1, backgroundColor: "#111827" }}
+        showsVerticalScrollIndicator={false}
+      className="flex-1 bg-gray-900  pb-20"
+      >
         <ProgressSteps
           {...progressStepsStyle}
           ref={progressStepsRef}
@@ -112,21 +116,15 @@ const {
           <SecondStep onOptionSelect={handleSecondStepSelect} />
         )}
         {currentStep === 2 && (
-          <ScrollView
-            className="w-full"
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: 70 }}
-          >
+          <View className="w-full">
             {selectedOption === "build" || selectedOption === "quit" ? (
-              <CreateNewHabit onClose={onClose}/>
+              <CreateNewHabit onClose={onClose} />
             ) : selectedOption === "goal" ? (
               <CreateGoal />
-            ) : selectedOption === "task" ? (
-              <CreateTodo />
             ) : null}
-          </ScrollView>
+          </View>
         )}
-      </View>
+      </ScrollView>
     </BottomSheet>
   );
 };

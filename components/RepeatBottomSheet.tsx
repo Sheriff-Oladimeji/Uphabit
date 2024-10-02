@@ -9,7 +9,7 @@ export interface RepeatConfig {
   xTimesPerY?: { x: string; y: string };
 }
 
-interface RepeatBottomSheetProps {
+export interface RepeatBottomSheetProps {
   isVisible: boolean;
   onClose: () => void;
   repeatConfig: RepeatConfig;
@@ -31,6 +31,7 @@ const RepeatBottomSheet: React.FC<RepeatBottomSheetProps> = ({
 
   const options = [
     { label: "Every day", value: "daily" },
+    {label: "One time task", value: "once"},
     { label: "Every week", value: "weekly" },
     { label: "Every month", value: "monthly" },
     { label: "Every year", value: "yearly" },

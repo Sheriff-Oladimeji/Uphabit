@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type OptionType = "build" | "quit" | "goal" | "task";
+export type OptionType = "build" | "quit" | "goal"   ;
 export type TrackingOptionType = "dosDonts" | "amount" | "time";
 export type RepeatType = "daily" | "weekly" | "monthly";
 

@@ -94,7 +94,7 @@ const [showRepeatBottomSheet, setShowRepeatBottomSheet] = useState(false);
   };
 
   return (
-    <View className="w-full px-4  bg-gray-900 rounded-lg">
+    <View className="w-[90%] mx-auto">
       <Text className="text-white text-3xl font-bold text-center mb-6">
         {selectedOption === "build" ? "Create a New Habit" : "Quit a Bad Habit"}
       </Text>
