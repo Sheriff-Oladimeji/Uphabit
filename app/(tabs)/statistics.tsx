@@ -2,12 +2,14 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import Container from '@/components/Container'
 
-const rank = () => {
+const statistics = () => {
   return (
     <Container>
-      <Text>rank</Text>
+      <View>
+        <Text>statistics</Text>
+      </View>
     </Container>
   );
 }
 
-export default rank
+export default statistics

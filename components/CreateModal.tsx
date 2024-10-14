@@ -23,13 +23,13 @@ const CreateModal: React.FC<BottomSheetProps> = ({ isVisible, onClose }) => {
   //   useState<TrackingOptionType | null>(null);
   const progressStepsRef = useRef<ProgressStepsRef | null>(null);
 
-const {
-  selectedOption,
-  selectedTrackingOption,
-  setSelectedOption,
-  setSelectedTrackingOption,
-  resetSelections,
-} = useCreateStore();
+  const {
+    selectedOption,
+    selectedTrackingOption,
+    setSelectedOption,
+    setSelectedTrackingOption,
+    resetSelections,
+  } = useCreateStore();
   // Reset state when modal is closed
   const handleClose = () => {
     resetSelections(); // Reset selections in the store
@@ -61,7 +61,7 @@ const {
   };
 
   const handleFirstStepSelect = (option: OptionType) => {
-    setSelectedOption(option); 
+    setSelectedOption(option);
     if (progressStepsRef.current && currentStep < 2) {
       progressStepsRef.current.setActiveStep(currentStep + 1);
       setCurrentStep(currentStep + 1);
@@ -86,11 +86,11 @@ const {
       <ScrollView
         // style={{ flex: 1, backgroundColor: "#111827" }}
         showsVerticalScrollIndicator={false}
-      className="flex-1 bg-gray-900  pb-20"
+        className="flex-1 bg-gray-900  pb-20"
       >
         <ProgressSteps
           {...progressStepsStyle}
-          ref={progressStepsRef}
+          ref={progressStepsRef as any}
           activeStep={currentStep}
         >
           <ProgressStep

@@ -17,7 +17,7 @@ import TimeDurationInput from "./TimeDurationInput";
 import CustomDateTimePicker from "./CustomDateTimePicker";
 import RepeatBottomSheet, { RepeatConfig } from "./RepeatBottomSheet";
 
-import useHabitStore from "@/store/useHabitStore"; 
+import useHabitStore from "@/store/useHabitStore";
 
 import { Habit } from "@/store/useHabitStore";
 import { BottomSheetProps } from "@/@types/bottomSheet";
@@ -34,7 +34,7 @@ const CreateHabit: React.FC<BottomSheetProps> = ({ onClose }) => {
     setRepeatConfig,
   } = useCreateStore();
 
-  const { addHabit } = useHabitStore(); 
+  const { addHabit } = useHabitStore();
 
   const [habitName, setHabitName] = useState("");
   const [amount, setAmount] = useState(1);
@@ -44,14 +44,13 @@ const CreateHabit: React.FC<BottomSheetProps> = ({ onClose }) => {
   const [timeSeconds, setTimeSeconds] = useState("0");
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
-const [showRepeatBottomSheet, setShowRepeatBottomSheet] = useState(false);
-
+  const [showRepeatBottomSheet, setShowRepeatBottomSheet] = useState(false);
 
   const handleSave = async () => {
     const newHabit: Habit = {
-      id: Date.now().toString(), 
+      id: Date.now().toString(),
       name: habitName,
-      trackingType: selectedTrackingOption || "", 
+      trackingType: selectedTrackingOption || "",
       amount: selectedTrackingOption === "amount" ? amount : undefined,
       time:
         selectedTrackingOption === "time"
@@ -59,9 +58,8 @@ const [showRepeatBottomSheet, setShowRepeatBottomSheet] = useState(false);
           : undefined,
     };
 
-    await addHabit(newHabit); 
+    await addHabit(newHabit);
 
-    
     setHabitName("");
     setAmount(1);
     setTimeHours("0");
@@ -201,8 +199,12 @@ const [showRepeatBottomSheet, setShowRepeatBottomSheet] = useState(false);
       <RepeatBottomSheet
         isVisible={showRepeatBottomSheet}
         onClose={() => setShowRepeatBottomSheet(false)}
-        repeatConfig={repeatConfig}
-        setRepeatConfig={(config) => setRepeatConfig(config)}
+        repeatConfig={{
+          type: repeatConfig.type,
+          weekDays: repeatConfig.weekDays?.map((day) => String(day)),
+          // monthDay: repeatConfig.monthDay ? String(repeatConfig.monthDay) : undefined,
+        }}
+        setRepeatConfig={(config: RepeatConfig) => setRepeatConfig(config)}
       />
     </View>
   );
