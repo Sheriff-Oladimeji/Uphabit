@@ -49,34 +49,7 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        {/* <Stack.Screen
-          name="createHabit"
-          options={({ navigation }) => ({
-            headerShown: true,
-            presentation: "card",
-            headerStyle: {
-              backgroundColor: "#050a15",
-            },
-            headerTintColor: "#fff",
-            headerTitleStyle: {
-              fontWeight: "bold",
-            },
-            headerTitle: "New Habit",
-            headerTitleAlign: "center",
-            headerRight: () => (
-              <TouchableOpacity
-                onPress={() => {
-                  if (navigation.canGoBack()) {
-                    navigation.goBack();
-                  }
-                }}
-                style={{ marginRight: 15 }}
-              >
-                <Text style={{ color: "#fff", fontSize: 16 }}>Save</Text>
-              </TouchableOpacity>
-            ),
-          })}
-        /> */}
+ 
         <Stack.Screen 
           name="habit/[id]" 
           options={{ 
