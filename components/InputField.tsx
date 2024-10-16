@@ -17,14 +17,14 @@ const InputField: React.FC<InputFieldProps> = ({
   keyboardType = "default",
 }) => (
   <View className="mb-6">
-    <Text className="text-gray-300 font-semibold text-lg mb-2">{label}</Text>
+    <Text className="text-gray-300 font-semibold text-base mb-2">{label}</Text>
     <TextInput
       placeholder={placeholder}
       placeholderTextColor="#4B5563"
       value={value}
       onChangeText={onChangeText}
       keyboardType={keyboardType}
-      className="bg-gray-800 text-white p-4 rounded-lg text-base border border-gray-700"
+      className="bg-gray-800 text-white p-2 rounded-lg text-base border border-gray-700"
     />
   </View>
 );

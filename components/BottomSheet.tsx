@@ -31,7 +31,6 @@ const BottomSheet = ({
       ref={refRBSheet}
       closeOnPressMask={true}
       onClose={handleClose}
-      draggable={true}
       dragOnContent={true}
       closeOnPressBack={true}
       customStyles={{
@@ -48,6 +47,13 @@ const BottomSheet = ({
         draggableIcon: {
           backgroundColor: "#fff",
         },
+      }}
+      customModalProps={{
+        animationType: "slide",
+        statusBarTranslucent: true,
+      }}
+      customAvoidingViewProps={{
+        enabled: false,
       }}
     >
       {children}
