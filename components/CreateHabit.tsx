@@ -13,8 +13,8 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
     <BottomSheet onClose={onClose} isVisible={isVisible} height="100%">
       <View className="w-[90%] mx-auto flex-1 pb-20">
         <View className="flex flex-row items-center justify-between mb-4 pt-10">
-          <Text className="text-white text-lg">Create Habit</Text>
-          <TouchableOpacity>
+          <Text className="text-white text-lg font-bold">Create Habit</Text>
+          <TouchableOpacity onPress={onClose}>
             <AntDesign name="closecircleo" size={24} color="white" />
           </TouchableOpacity>
         </View>
