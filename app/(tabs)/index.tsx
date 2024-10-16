@@ -1,19 +1,20 @@
 import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Container from "@/components/Container";
-import InteractiveCalendar from "@/components/InteractiveCalender";
-import HabitHeader from "@/components/HabitHeader";
-import Summary from "@/components/Summary";
-import Habits from "@/components/Habits";
-
+import { Alert, Text, View } from "react-native";
+import FloatingButton from "@/components/FloatingButton";
 
 export default function Home() {
   const insets = useSafeAreaInsets();
 
   return (
     <Container>
-      <InteractiveCalendar />
-      <Habits/>
+      <View>
+        <Text className="text-white text-3xl font-bold  text-center">
+          Hello
+        </Text>
+      </View>
+    <FloatingButton/>
     </Container>
   );
 }
