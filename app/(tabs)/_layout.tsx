@@ -1,30 +1,32 @@
 import { Tabs } from "expo-router";
 import React, { useState } from "react";
 import {
-  Ionicons,
-  AntDesign,
-  FontAwesome,
-  Entypo,
-  FontAwesome6,
   Feather,
-  MaterialIcons,
+  FontAwesome,
+  FontAwesome6,
+  MaterialCommunityIcons
 } from "@expo/vector-icons";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
-import SelectHabitType from "@/components/SelectHabitType";
-import { TouchableOpacity } from "react-native";
+import CreateModal from "@/components/CreateModal";
 import { CustomTabBar } from "@/components/navigation/CustomTabBar";
+
 export default function TabLayout() {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const handleCreateHabit = (type: "break" | "build") => {
-    console.log(`Creating a ${type} habit`);
-    setIsModalVisible(false);
-    // Add your logic here to navigate to the appropriate screen or perform an action
+  const openCreateModal = () => {
+    setIsModalVisible(true);
   };
+
+  const closeCreateModal = () => {
+    setIsModalVisible(false);
+  };
+
   return (
     <>
       <Tabs
-        tabBar={(props) => <CustomTabBar {...props} />}
+        tabBar={(props) => (
+          <CustomTabBar {...props} openCreateModal={openCreateModal} />
+        )}
         screenOptions={{
           headerShown: false,
         }}
@@ -35,39 +37,35 @@ export default function TabLayout() {
             title: "Home",
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
-                IconComponent={Ionicons}
-                name={focused ? "home" : "home-outline"}
+                IconComponent={MaterialCommunityIcons}
+                name={focused ? "calendar-today" : "calendar-today"}
                 color={color}
+                size={24}
               />
             ),
           }}
         />
         <Tabs.Screen
-          name="history"
+          name="goals"
           options={{
-            title: "History",
+            title: "Goals",
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
-                IconComponent={Feather}
-                name={focused ? "pie-chart" : "pie-chart"}
+                IconComponent={MaterialCommunityIcons}
+                name={focused ? "bullseye-arrow" : "bullseye-arrow"}
                 color={color}
+                size={24}
               />
             ),
           }}
         />
+
         <Tabs.Screen
           name="create"
           options={{
             title: "Create",
           }}
-          listeners={{
-            tabPress: (e) => {
-              e.preventDefault();
-              setIsModalVisible(true);
-            },
-          }}
         />
-
         <Tabs.Screen
           name="rank"
           options={{
@@ -77,30 +75,28 @@ export default function TabLayout() {
                 IconComponent={FontAwesome6}
                 name={focused ? "ranking-star" : "ranking-star"}
                 color={color}
+                size={20}
               />
             ),
           }}
         />
         <Tabs.Screen
-          name="focus"
+          name="profile"
           options={{
-            title: "Focus",
+            title: "Profile",
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
-                IconComponent={MaterialIcons}
-                name={focused ? "timer" : "timer"}
+                IconComponent={FontAwesome}
+                name={focused ? "user-circle" : "user-circle"}
                 color={color}
+                size={20}
               />
             ),
           }}
         />
       </Tabs>
 
-      <SelectHabitType
-        isVisible={isModalVisible}
-        onClose={() => setIsModalVisible(false)}
-      
-      />
+      <CreateModal isVisible={isModalVisible} onClose={closeCreateModal} />
     </>
   );
 }

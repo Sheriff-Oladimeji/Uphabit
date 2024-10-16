@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { View, Text, ScrollView, Dimensions } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import Container from "@/components/Container";
-import useHabitStore from "@/store/useHabitStore";
+import useHabitStore from "@/store/useJunkStore";
 import { format, eachDayOfInterval, subDays, isWithinInterval } from "date-fns";
 import { LineChart } from "react-native-chart-kit";
 import { Feather } from "@expo/vector-icons";

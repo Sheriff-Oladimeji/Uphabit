@@ -3,7 +3,7 @@ import { ScrollView, View } from 'react-native';
 import Statistics from '@/components/Statistics';
 import Container from '@/components/Container';
 
-const History = () => {
+const Profile = () => {
   return (
     <Container>
       
@@ -13,4 +13,4 @@ const History = () => {
   );
 };
 
-export default History;
+export default Profile;

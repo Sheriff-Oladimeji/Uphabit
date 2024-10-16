@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import React, { useEffect, useRef } from "react";
 import RBSheet from "react-native-raw-bottom-sheet";
-import { BottomSheetProps } from "@/types/bottomSheet";
+import { BottomSheetProps } from "@/@types/bottomSheet";
 
 const BottomSheet = ({
   isVisible,
@@ -40,7 +40,7 @@ const BottomSheet = ({
           flex: 1,
         },
         container: {
-          backgroundColor: "#1f2937",
+          backgroundColor: "#111827",
           borderTopLeftRadius: radius,
           borderTopRightRadius: radius,
           height: height,
