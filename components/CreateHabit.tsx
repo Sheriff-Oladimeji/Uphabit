@@ -1,5 +1,3 @@
-// components/CreateHabit.tsx
-
 import {
   View,
   Text,
@@ -11,12 +9,15 @@ import React, { useState } from "react";
 import BottomSheet from "./BottomSheet";
 import { BottomSheetProps } from "@/@types/bottomSheet";
 import { AntDesign } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import BottomTab from "./BottomTab";
 import { format } from "date-fns";
 import InputField from "./InputField";
 import CustomDateTimePicker from "./CustomDateTimePicker";
 import RepeatBottomSheet from "./RepeatBottomSheet";
+import CategoryBottomSheet from "./CategoryBottomSheet";
 import useCreateStore from "../store/useCreateStore";
+import { CategoryType } from "@/@types/habitTypes";
 
 const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
   const {
@@ -26,13 +27,28 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
     setRepeatConfig,
     motivation,
     setMotivation,
+    category,
+    setCategory,
     addHabit,
   } = useCreateStore();
 
   const [habitName, setHabitName] = useState("");
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [showRepeatBottomSheet, setShowRepeatBottomSheet] = useState(false);
+  const [showCategoryBottomSheet, setShowCategoryBottomSheet] = useState(false);
 
+  const getCategoryIcon = (category: CategoryType): React.ComponentProps<typeof MaterialCommunityIcons>['name'] => {
+    const icons: Record<CategoryType, React.ComponentProps<typeof MaterialCommunityIcons>['name']> = {
+      sport: "basketball",
+      health: "heart-pulse",
+      work: "briefcase",
+      finance: "cash",
+      social: "account-group",
+      fun: "gamepad-variant",
+      other: "dots-horizontal",
+    };
+    return icons[category];
+  };
 
   const handleSave = async () => {
     const newHabit = {
@@ -41,11 +57,13 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
       motivation,
       reminderTime,
       repeatConfig,
+      category,
     };
 
     await addHabit(newHabit);
     setHabitName("");
     setMotivation("");
+    setCategory("other");
     setReminderTime(new Date(new Date().getTime() + 10 * 60000));
     setRepeatConfig({ type: "daily" });
     onClose();
@@ -65,7 +83,6 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
       isVisible={isVisible}
       height="100%"
       radius={25}
-      
     >
       <View className="w-[90%] mx-auto flex-1 pb-20">
         <View className="flex flex-row items-center justify-between mb-4 pt-12">
@@ -82,6 +99,26 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
             onChangeText={setHabitName}
           />
 
+          <View className="mb-6">
+            <Text className="text-gray-300 font-semibold text-lg mb-2">
+              Category
+            </Text>
+            <TouchableOpacity
+              onPress={() => setShowCategoryBottomSheet(true)}
+              className="bg-gray-800 p-4 rounded-lg border border-gray-700 flex-row items-center"
+            >
+              <View className="w-8 h-8 rounded-full bg-gray-700 items-center justify-center mr-2">
+                <MaterialCommunityIcons
+                  name={getCategoryIcon(category)}
+                  size={20}
+                  color="white"
+                />
+              </View>
+              <Text className="text-white text-base capitalize">
+                {category}
+              </Text>
+            </TouchableOpacity>
+          </View>
           <InputField
             label="Motivation"
             placeholder="Why do you want to build this habit?"
@@ -90,7 +127,6 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
             multiline={true}
             numberOfLines={4}
           />
-
           <View className="mb-6">
             <Text className="text-gray-300 font-semibold text-lg mb-2">
               Reminder
@@ -140,6 +176,13 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
             onClose={() => setShowRepeatBottomSheet(false)}
             repeatConfig={repeatConfig}
             setRepeatConfig={setRepeatConfig}
+          />
+
+          <CategoryBottomSheet
+            isVisible={showCategoryBottomSheet}
+            onClose={() => setShowCategoryBottomSheet(false)}
+            selectedCategory={category}
+            setSelectedCategory={setCategory}
           />
         </ScrollView>
       </View>
