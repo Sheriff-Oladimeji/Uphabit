@@ -3,10 +3,9 @@ import { View, Text, TouchableOpacity, TextInput } from "react-native";
 import BottomSheet from "./BottomSheet";
 
 export interface RepeatConfig {
-  type: string;
-  weekDays?: string[];
-  everyXDays?: string;
-  xTimesPerY?: { x: string; y: string };
+  type: "daily" | "weekly" | "monthly";
+  weekDays?: number[]; // Change this from string[] to number[]
+  monthDay?: number;
 }
 
 export interface RepeatBottomSheetProps {
@@ -25,40 +24,35 @@ const RepeatBottomSheet: React.FC<RepeatBottomSheetProps> = ({
   const [selectedOption, setSelectedOption] = useState<string>(
     repeatConfig.type
   );
-  const [weekDays, setWeekDays] = useState<string[]>(
+  const [weekDays, setWeekDays] = useState<number[]>(
     repeatConfig.weekDays || []
   );
-  const [everyXDays, setEveryXDays] = useState<string>(
-    repeatConfig.everyXDays || ""
-  );
-  const [xTimesPerY, setXTimesPerY] = useState<{ x: string; y: string }>(
-    repeatConfig.xTimesPerY || { x: "", y: "" }
-  );
 
-  const options = [
+
+  const options: { label: string; value: "daily" | "weekly" | "monthly" | "selectWeekDays" }[] = [
     { label: "Every day", value: "daily" },
     { label: "Every week", value: "weekly" },
     { label: "Every month", value: "monthly" },
     { label: "Select week days", value: "selectWeekDays" },
   ];
 
-  const weekDayOptions = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const weekDayOptions = [0, 1, 2, 3, 4, 5, 6];
 
-  const handleOptionSelect = (value: string) => {
-    // Specify the type of 'value'
+  const handleOptionSelect = (value: "daily" | "weekly" | "monthly" | "selectWeekDays") => {
     setSelectedOption(value);
-    setRepeatConfig({ ...repeatConfig, type: value });
+    if (value !== "selectWeekDays") {
+      setRepeatConfig({ ...repeatConfig, type: value });
+    }
   };
 
-  const handleWeekDayToggle = (day: string) => {
-    // Specify the type of 'day'
+  const handleWeekDayToggle = (day: number) => {
     const updatedWeekDays = weekDays.includes(day)
       ? weekDays.filter((d) => d !== day)
       : [...weekDays, day];
     setWeekDays(updatedWeekDays);
     setRepeatConfig({
       ...repeatConfig,
-      type: "selectWeekDays",
+      type: "weekly",
       weekDays: updatedWeekDays,
     });
   };
@@ -96,7 +90,7 @@ const RepeatBottomSheet: React.FC<RepeatBottomSheetProps> = ({
                     <TouchableOpacity
                       key={day}
                       onPress={() => handleWeekDayToggle(day)}
-                      className={`m-2 px-4 py-2  rounded-lg ${
+                      className={`m-2 px-4 py-2 rounded-lg ${
                         weekDays.includes(day) ? "bg-cyan-400" : "bg-gray-700"
                       }`}
                     >
@@ -107,7 +101,7 @@ const RepeatBottomSheet: React.FC<RepeatBottomSheetProps> = ({
                             : "text-white"
                         }`}
                       >
-                        {day}
+                        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][day]}
                       </Text>
                     </TouchableOpacity>
                   ))}

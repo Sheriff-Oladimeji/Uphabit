@@ -1,3 +1,5 @@
+// components/CreateHabit.tsx
+
 import {
   View,
   Text,
@@ -14,7 +16,7 @@ import { format } from "date-fns";
 import InputField from "./InputField";
 import CustomDateTimePicker from "./CustomDateTimePicker";
 import RepeatBottomSheet from "./RepeatBottomSheet";
-import useCreateStore from "@/store/useCreateStore";
+import useCreateStore from "../store/useCreateStore";
 
 const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
   const {
@@ -22,6 +24,8 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
     setReminderTime,
     repeatConfig,
     setRepeatConfig,
+    motivation,
+    setMotivation,
     addHabit,
   } = useCreateStore();
 
@@ -29,16 +33,19 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [showRepeatBottomSheet, setShowRepeatBottomSheet] = useState(false);
 
+
   const handleSave = async () => {
     const newHabit = {
       id: Date.now().toString(),
       name: habitName,
+      motivation,
       reminderTime,
       repeatConfig,
     };
 
     await addHabit(newHabit);
     setHabitName("");
+    setMotivation("");
     setReminderTime(new Date(new Date().getTime() + 10 * 60000));
     setRepeatConfig({ type: "daily" });
     onClose();
@@ -60,8 +67,8 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
       radius={25}
     >
       <View className="w-[90%] mx-auto flex-1 pb-20">
-        <View className="flex flex-row items-center justify-between mb-4 pt-10">
-          <Text className="text-white text-lg font-bold">Create Habit</Text>
+        <View className="flex flex-row items-center justify-between mb-4 pt-12">
+          <Text className="text-white text-xl font-bold">Create Habit</Text>
           <TouchableOpacity onPress={onClose}>
             <AntDesign name="closecircleo" size={24} color="white" />
           </TouchableOpacity>
@@ -76,16 +83,16 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
 
           <InputField
             label="Motivation"
-            placeholder=""
-            value={habitName}
-            onChangeText={setHabitName}
+            placeholder="Why do you want to build this habit?"
+            value={motivation}
+            onChangeText={setMotivation}
             multiline={true}
-            numberOfLines={5}
+            numberOfLines={4}
           />
 
           <View className="mb-6">
             <Text className="text-gray-300 font-semibold text-lg mb-2">
-              Reminder Time
+              Reminder
             </Text>
             <TouchableOpacity
               onPress={() => setShowTimePicker(true)}
