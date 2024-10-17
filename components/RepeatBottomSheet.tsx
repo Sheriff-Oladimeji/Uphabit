@@ -63,6 +63,7 @@ const RepeatBottomSheet: React.FC<RepeatBottomSheetProps> = ({
       onClose={onClose}
       radius={16}
       height={"50%"}
+     draggable={true}
     >
       <View className="p-4">
         <Text className="text-white text-2xl font-bold mb-4">

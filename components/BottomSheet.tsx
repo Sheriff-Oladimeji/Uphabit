@@ -10,6 +10,7 @@ const BottomSheet = ({
   radius,
   height,
   handler,
+  draggable = false
 }: BottomSheetProps) => {
   const refRBSheet = useRef<any>(null);
   useEffect(() => {
@@ -33,6 +34,7 @@ const BottomSheet = ({
       onClose={handleClose}
       dragOnContent={true}
       closeOnPressBack={true}
+      draggable={draggable? true: false}
       customStyles={{
         wrapper: {
           backgroundColor: "rgba(0, 0, 0, 0.6)",

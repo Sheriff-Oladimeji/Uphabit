@@ -6,7 +6,8 @@ export type BottomSheetProps = {
   children?: React.ReactNode;
   radius?: number;
   height?: any
-  handler?: () => void
+  handler?: () => void,
+  draggable? : boolean
   
 };
 

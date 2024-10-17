@@ -65,6 +65,7 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
       isVisible={isVisible}
       height="100%"
       radius={25}
+      
     >
       <View className="w-[90%] mx-auto flex-1 pb-20">
         <View className="flex flex-row items-center justify-between mb-4 pt-12">
