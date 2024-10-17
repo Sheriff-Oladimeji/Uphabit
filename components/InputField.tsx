@@ -7,6 +7,8 @@ interface InputFieldProps {
   value: string;
   onChangeText: (text: string) => void;
   keyboardType?: "default" | "numeric";
+  multiline?: boolean; 
+  numberOfLines?: number; 
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -15,6 +17,8 @@ const InputField: React.FC<InputFieldProps> = ({
   value,
   onChangeText,
   keyboardType = "default",
+  multiline = false, 
+  numberOfLines = 1, 
 }) => (
   <View className="mb-6">
     <Text className="text-gray-300 font-semibold text-base mb-2">{label}</Text>
@@ -24,7 +28,9 @@ const InputField: React.FC<InputFieldProps> = ({
       value={value}
       onChangeText={onChangeText}
       keyboardType={keyboardType}
-      className="bg-gray-800 text-white p-2 rounded-lg text-base border border-gray-700"
+      multiline={multiline} 
+      numberOfLines={multiline ? numberOfLines : 1} 
+      className="bg-gray-800 text-white p-3 rounded-lg text-base border border-gray-700"
     />
   </View>
 );

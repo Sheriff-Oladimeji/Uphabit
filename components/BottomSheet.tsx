@@ -53,7 +53,7 @@ const BottomSheet = ({
         statusBarTranslucent: true,
       }}
       customAvoidingViewProps={{
-        enabled: false,
+        enabled: true,
       }}
     >
       {children}

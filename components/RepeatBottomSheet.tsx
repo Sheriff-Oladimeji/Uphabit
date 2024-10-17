@@ -22,32 +22,36 @@ const RepeatBottomSheet: React.FC<RepeatBottomSheetProps> = ({
   repeatConfig,
   setRepeatConfig,
 }) => {
-  const [selectedOption, setSelectedOption] = useState<string>(repeatConfig.type);
-  const [weekDays, setWeekDays] = useState<string[]>(repeatConfig.weekDays || []);
-  const [everyXDays, setEveryXDays] = useState<string>(repeatConfig.everyXDays || "");
+  const [selectedOption, setSelectedOption] = useState<string>(
+    repeatConfig.type
+  );
+  const [weekDays, setWeekDays] = useState<string[]>(
+    repeatConfig.weekDays || []
+  );
+  const [everyXDays, setEveryXDays] = useState<string>(
+    repeatConfig.everyXDays || ""
+  );
   const [xTimesPerY, setXTimesPerY] = useState<{ x: string; y: string }>(
     repeatConfig.xTimesPerY || { x: "", y: "" }
   );
 
   const options = [
     { label: "Every day", value: "daily" },
-    {label: "One time task", value: "once"},
     { label: "Every week", value: "weekly" },
     { label: "Every month", value: "monthly" },
-    { label: "Every year", value: "yearly" },
     { label: "Select week days", value: "selectWeekDays" },
-    { label: "Every X days", value: "everyXDays" },
-    { label: "X times per Y", value: "xTimesPerY" },
   ];
 
   const weekDayOptions = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-  const handleOptionSelect = (value: string) => { // Specify the type of 'value'
+  const handleOptionSelect = (value: string) => {
+    // Specify the type of 'value'
     setSelectedOption(value);
     setRepeatConfig({ ...repeatConfig, type: value });
   };
 
-  const handleWeekDayToggle = (day: string) => { // Specify the type of 'day'
+  const handleWeekDayToggle = (day: string) => {
+    // Specify the type of 'day'
     const updatedWeekDays = weekDays.includes(day)
       ? weekDays.filter((d) => d !== day)
       : [...weekDays, day];
@@ -59,30 +63,17 @@ const RepeatBottomSheet: React.FC<RepeatBottomSheetProps> = ({
     });
   };
 
-  const handleEveryXDaysChange = (value: string) => {
-    setEveryXDays(value);
-    setRepeatConfig({ ...repeatConfig, type: "everyXDays", everyXDays: value });
-  };
-
-  const handleXTimesPerYChange = (key: string, value: string) => { // Specify 'key' type
-    const updatedXTimesPerY = { ...xTimesPerY, [key]: value };
-    setXTimesPerY(updatedXTimesPerY);
-    setRepeatConfig({
-      ...repeatConfig,
-      type: "xTimesPerY",
-      xTimesPerY: updatedXTimesPerY,
-    });
-  };
-
   return (
     <BottomSheet
       isVisible={isVisible}
       onClose={onClose}
       radius={16}
-      height={500}
+      height={"50%"}
     >
       <View className="p-4">
-        <Text className="text-white text-2xl font-bold mb-4">Period</Text>
+        <Text className="text-white text-2xl font-bold mb-4">
+          Select Period
+        </Text>
         {options.map((option) => (
           <View key={option.value}>
             <TouchableOpacity
@@ -100,12 +91,12 @@ const RepeatBottomSheet: React.FC<RepeatBottomSheetProps> = ({
             </TouchableOpacity>
             {selectedOption === "selectWeekDays" &&
               option.value === "selectWeekDays" && (
-                <View className="flex-row flex-wrap ml-9 mb-3">
+                <View className="flex-row flex-wrap  mb-3 items-center">
                   {weekDayOptions.map((day) => (
                     <TouchableOpacity
                       key={day}
                       onPress={() => handleWeekDayToggle(day)}
-                      className={`m-1 px-3 py-1 rounded-full ${
+                      className={`m-2 px-4 py-2  rounded-lg ${
                         weekDays.includes(day) ? "bg-cyan-400" : "bg-gray-700"
                       }`}
                     >
@@ -120,37 +111,6 @@ const RepeatBottomSheet: React.FC<RepeatBottomSheetProps> = ({
                       </Text>
                     </TouchableOpacity>
                   ))}
-                </View>
-              )}
-            {selectedOption === "everyXDays" &&
-              option.value === "everyXDays" && (
-                <View className="flex-row items-center ml-9 mb-3">
-                  <Text className="text-white mr-2">Every</Text>
-                  <TextInput
-                    value={everyXDays}
-                    onChangeText={handleEveryXDaysChange}
-                    keyboardType="numeric"
-                    className="bg-gray-700 text-white px-2 py-1 rounded w-16"
-                  />
-                  <Text className="text-white ml-2">days</Text>
-                </View>
-              )}
-            {selectedOption === "xTimesPerY" &&
-              option.value === "xTimesPerY" && (
-                <View className="flex-row items-center ml-9 mb-3">
-                  <TextInput
-                    value={xTimesPerY.x}
-                    onChangeText={(value) => handleXTimesPerYChange("x", value)}
-                    keyboardType="numeric"
-                    className="bg-gray-700 text-white px-2 py-1 rounded w-16 mr-2"
-                  />
-                  <Text className="text-white mr-2">times per</Text>
-                  <TextInput
-                    value={xTimesPerY.y}
-                    onChangeText={(value) => handleXTimesPerYChange("y", value)}
-                    keyboardType="numeric"
-                    className="bg-gray-700 text-white px-2 py-1 rounded w-16"
-                  />
                 </View>
               )}
           </View>

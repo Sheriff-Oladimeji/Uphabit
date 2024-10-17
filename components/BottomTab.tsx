@@ -8,7 +8,7 @@ const BottomTab = ({ children, styles }: Props) => {
   return (
     <View
      
-      className={`absolute bottom-0 left-0 right-0 py-2  flex  justify-center  items-center bg-darkBg ${styles} `}
+      className={`absolute bottom-0 left-0 right-0 py-1  flex  justify-center  items-center bg-darkBg ${styles} `}
     >
       {children}
     </View>
