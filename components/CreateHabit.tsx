@@ -145,7 +145,7 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
 
           <View className="mb-6">
             <Text className="text-gray-300 font-semibold text-lg mb-2">
-              Repeat
+              Frequency
             </Text>
             <TouchableOpacity
               onPress={() => setShowRepeatBottomSheet(true)}
@@ -188,10 +188,10 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
       </View>
       <BottomTab>
         <TouchableOpacity
-          className="bg-blue-600 w-[90%] rounded-md p-4"
+          className="bg-blue-600 w-[90%] rounded-md py-4"
           onPress={handleSave}
         >
-          <Text className="text-white font-bold text-base text-center">
+          <Text className="text-white font-bold text-lg text-center ">
             Save Habit
           </Text>
         </TouchableOpacity>
