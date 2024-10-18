@@ -8,7 +8,7 @@ import {
 import React, { useState } from "react";
 import BottomSheet from "./BottomSheet";
 import { BottomSheetProps } from "@/@types/bottomSheet";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import BottomTab from "./BottomTab";
 import { format } from "date-fns";
@@ -81,11 +81,11 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
     <BottomSheet
       onClose={onClose}
       isVisible={isVisible}
-      height="100%"
+      height={Platform.OS === "ios"?"75%":"80%"}
       radius={25}
     >
       <View className="w-[90%] mx-auto flex-1 pb-20">
-        <View className="flex flex-row items-center justify-between mb-4 pt-12">
+        <View className="flex flex-row items-center justify-between mb-4 pt-10">
           <Text className="text-white text-xl font-bold">Create Habit</Text>
           <TouchableOpacity onPress={onClose}>
             <AntDesign name="closecircleo" size={24} color="white" />
@@ -119,27 +119,28 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
               </Text>
             </TouchableOpacity>
           </View>
-          <InputField
+          {/* <InputField
             label="Motivation"
             placeholder="Why do you want to build this habit?"
             value={motivation}
             onChangeText={setMotivation}
             multiline={true}
             numberOfLines={4}
-          />
+          /> */}
           <View className="mb-6">
-            <Text className="text-gray-300 font-semibold text-lg mb-2">
+            <Text className="text-gray-300 font-semibold text-lg mb-2 flex-row items-center">
               Reminder
             </Text>
             <TouchableOpacity
               onPress={() => setShowTimePicker(true)}
-              className="bg-gray-800 p-4 rounded-lg border border-gray-700"
+              className="bg-gray-800 p-4 rounded-lg border border-gray-700 flex-row items-center justify-between"
             >
               <Text className="text-white text-base">
                 {reminderTime
                   ? format(reminderTime, "hh:mm a")
                   : "Set Reminder Time"}
               </Text>
+              <Ionicons name="notifications-outline" size={24} color="white" />
             </TouchableOpacity>
           </View>
 
@@ -149,7 +150,7 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
             </Text>
             <TouchableOpacity
               onPress={() => setShowRepeatBottomSheet(true)}
-              className="bg-gray-800 p-4 rounded-lg border border-gray-700"
+              className="bg-gray-800 p-4 rounded-lg border border-gray-700 flex-row items-center justify-between"
             >
               <Text className="text-white text-base">
                 {repeatConfig.type === "daily" && "Daily"}
@@ -160,6 +161,7 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
                 {repeatConfig.type === "monthly" &&
                   `Monthly (Day ${repeatConfig.monthDay})`}
               </Text>
+              <Feather name="repeat" size={24} color="white" />
             </TouchableOpacity>
           </View>
 
@@ -188,7 +190,7 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
       </View>
       <BottomTab>
         <TouchableOpacity
-          className="bg-blue-600 w-[90%] rounded-md py-4"
+          className={`bg-blue-600 w-[90%] rounded-md py-4 ${Platform.OS === "ios"? "mb-4": "mb-2"}`}
           onPress={handleSave}
         >
           <Text className="text-white font-bold text-lg text-center ">

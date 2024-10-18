@@ -85,7 +85,7 @@ const CategoryBottomSheet: React.FC<CategoryBottomSheetProps> = ({
       isVisible={isVisible}
       onClose={onClose}
       radius={16}
-      height={"60%"}
+      height={"65%"}
       draggable={true}
     >
       <ScrollView className="px-4 pb-12 flex-1">
