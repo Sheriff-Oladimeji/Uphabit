@@ -72,7 +72,12 @@ const RepeatBottomSheet: React.FC<RepeatBottomSheetProps> = ({
         {options.map((option) => (
           <View key={option.value}>
             <TouchableOpacity
-              onPress={() => handleOptionSelect(option.value)}
+              onPress={() => {
+                handleOptionSelect(option.value) 
+                if (option.value !== "selectWeekDays") {
+                  onClose()
+                }
+              }}
               className="flex-row items-center py-3"
             >
               <View
