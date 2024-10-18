@@ -4,10 +4,8 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { TouchableOpacity, Text } from "react-native";
-import * as Notifications from 'expo-notifications';
-import { registerForPushNotificationsAsync } from '../utils/notificationService';
-
+import * as Notifications from "expo-notifications";
+import { registerForPushNotificationsAsync } from "../utils/notificationService";
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -20,7 +18,6 @@ Notifications.setNotificationHandler({
 });
 
 export default function RootLayout() {
-
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
@@ -34,9 +31,11 @@ export default function RootLayout() {
   useEffect(() => {
     registerForPushNotificationsAsync();
 
-    const subscription = Notifications.addNotificationReceivedListener(notification => {
-      console.log('Notification received:', notification);
-    });
+    const subscription = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        console.log("Notification received:", notification);
+      }
+    );
 
     return () => subscription.remove();
   }, []);
@@ -49,41 +48,6 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
- 
-        <Stack.Screen 
-          name="habit/[id]" 
-          options={{ 
-            headerShown: false,
-            animation: 'slide_from_right'
-          }} 
-        />
-        <Stack.Screen
-          name="editHabit"
-          options={({ navigation }) => ({
-            headerShown: true,
-            headerStyle: {
-              backgroundColor: "#050a15",
-            },
-            headerTintColor: "#fff",
-            headerTitleStyle: {
-              fontWeight: "bold",
-            },
-            headerTitle: "Edit Habit",
-            headerTitleAlign: "center",
-            headerRight: () => (
-              <TouchableOpacity
-                onPress={() => {
-                  if (navigation.canGoBack()) {
-                    navigation.goBack();
-                  }
-                }}
-                style={{ marginRight: 15 }}
-              >
-                <Text style={{ color: "#fff", fontSize: 16 }}>Save</Text>
-              </TouchableOpacity>
-            ),
-          })}
-        />
       </Stack>
     </GestureHandlerRootView>
   );

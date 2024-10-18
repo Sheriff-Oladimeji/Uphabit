@@ -18,6 +18,11 @@ import RepeatBottomSheet from "./RepeatBottomSheet";
 import CategoryBottomSheet from "./CategoryBottomSheet";
 import useCreateStore from "../store/useCreateStore";
 import { CategoryType } from "@/@types/habitTypes";
+import {
+  ALERT_TYPE,
+  Dialog,
+  AlertNotificationRoot
+} from "react-native-alert-notification";
 
 const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
   const {
@@ -31,7 +36,6 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
     setCategory,
     addHabit,
   } = useCreateStore();
-
   const [habitName, setHabitName] = useState("");
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [showRepeatBottomSheet, setShowRepeatBottomSheet] = useState(false);
@@ -52,7 +56,7 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
 
   const handleSave = async () => {
     if (!habitName) {
-      alert("Please enter a habit name");
+  
       return;
     }
     const newHabit = {
@@ -65,7 +69,13 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
     };
 
     await addHabit(newHabit);
-    alert("Habit Created Successfully")
+   Dialog.show({
+     type: ALERT_TYPE.SUCCESS,
+     title: "Success",
+     textBody: "Your habit has been saved",
+     button: "close",
+     autoClose: 100
+   });
     setHabitName("");
     setMotivation("");
     setCategory("other");
@@ -82,49 +92,52 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
     }
   };
 
-  return (
-    <BottomSheet
-      onClose={onClose}
-      isVisible={isVisible}
-      height={Platform.OS === "ios"?"75%":"80%"}
-      radius={25}
-    >
-      <View className="w-[90%] mx-auto flex-1 pb-20">
-        <View className="flex flex-row items-center justify-between mb-4 pt-10">
-          <Text className="text-white text-xl font-bold">Create Habit</Text>
-          <TouchableOpacity onPress={onClose}>
-            <AntDesign name="closecircleo" size={24} color="white" />
-          </TouchableOpacity>
-        </View>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <InputField
-            label="Habit Name"
-            placeholder="Enter habit name"
-            value={habitName}
-            onChangeText={setHabitName}
-          />
+  const isButtonDisabled = habitName.trim() === '';
 
-          <View className="mb-6">
-            <Text className="text-gray-300 font-semibold text-lg mb-2">
-              Category
-            </Text>
-            <TouchableOpacity
-              onPress={() => setShowCategoryBottomSheet(true)}
-              className="bg-gray-800 p-4 rounded-lg border border-gray-700 flex-row items-center"
-            >
-              <View className="w-8 h-8 rounded-full bg-gray-700 items-center justify-center mr-2">
-                <MaterialCommunityIcons
-                  name={getCategoryIcon(category)}
-                  size={20}
-                  color="white"
-                />
-              </View>
-              <Text className="text-white text-base capitalize">
-                {category}
-              </Text>
+  return (
+    <AlertNotificationRoot>
+      <BottomSheet
+        onClose={onClose}
+        isVisible={isVisible}
+        height={Platform.OS === "ios" ? "75%" : "80%"}
+        radius={25}
+      >
+        <View className="w-[90%] mx-auto flex-1 pb-20">
+          <View className="flex flex-row items-center justify-between mb-4 pt-10">
+            <Text className="text-white text-xl font-bold">Create Habit</Text>
+            <TouchableOpacity onPress={onClose}>
+              <AntDesign name="closecircleo" size={24} color="white" />
             </TouchableOpacity>
           </View>
-          {/* <InputField
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <InputField
+              label="Habit Name"
+              placeholder="Enter habit name"
+              value={habitName}
+              onChangeText={setHabitName}
+            />
+
+            <View className="mb-6">
+              <Text className="text-gray-300 font-semibold text-lg mb-2">
+                Category
+              </Text>
+              <TouchableOpacity
+                onPress={() => setShowCategoryBottomSheet(true)}
+                className="bg-gray-800 p-4 rounded-lg border border-gray-700 flex-row items-center"
+              >
+                <View className="w-8 h-8 rounded-full bg-gray-700 items-center justify-center mr-2">
+                  <MaterialCommunityIcons
+                    name={getCategoryIcon(category)}
+                    size={20}
+                    color="white"
+                  />
+                </View>
+                <Text className="text-white text-base capitalize">
+                  {category}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            {/* <InputField
             label="Motivation"
             placeholder="Why do you want to build this habit?"
             value={motivation}
@@ -132,78 +145,92 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
             multiline={true}
             numberOfLines={4}
           /> */}
-          <View className="mb-6">
-            <Text className="text-gray-300 font-semibold text-lg mb-2 flex-row items-center">
-              Reminder
-            </Text>
-            <TouchableOpacity
-              onPress={() => setShowTimePicker(true)}
-              className="bg-gray-800 p-4 rounded-lg border border-gray-700 flex-row items-center justify-between"
-            >
-              <Text className="text-white text-base">
-                {reminderTime
-                  ? format(reminderTime, "hh:mm a")
-                  : "Set Reminder Time"}
+            <View className="mb-6">
+              <Text className="text-gray-300 font-semibold text-lg mb-2 flex-row items-center">
+                Reminder
               </Text>
-              <Ionicons name="notifications-outline" size={24} color="white" />
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity
+                onPress={() => setShowTimePicker(true)}
+                className="bg-gray-800 p-4 rounded-lg border border-gray-700 flex-row items-center justify-between"
+              >
+                <Text className="text-white text-base">
+                  {reminderTime
+                    ? format(reminderTime, "hh:mm a")
+                    : "Set Reminder Time"}
+                </Text>
+                <Ionicons
+                  name="notifications-outline"
+                  size={24}
+                  color="white"
+                />
+              </TouchableOpacity>
+            </View>
 
-          <View className="mb-6">
-            <Text className="text-gray-300 font-semibold text-lg mb-2">
-              Frequency
-            </Text>
-            <TouchableOpacity
-              onPress={() => setShowRepeatBottomSheet(true)}
-              className="bg-gray-800 p-4 rounded-lg border border-gray-700 flex-row items-center justify-between"
-            >
-              <Text className="text-white text-base">
-                {repeatConfig.type === "daily" && "Daily"}
-                {repeatConfig.type === "weekly" &&
-                  `Weekly (${repeatConfig.weekDays
-                    ?.map((d) => ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"][d])
-                    .join(", ")})`}
-                {repeatConfig.type === "monthly" &&
-                  `Monthly (Day ${repeatConfig.monthDay})`}
+            <View className="mb-6">
+              <Text className="text-gray-300 font-semibold text-lg mb-2">
+                Frequency
               </Text>
-              <Feather name="repeat" size={24} color="white" />
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity
+                onPress={() => setShowRepeatBottomSheet(true)}
+                className="bg-gray-800 p-4 rounded-lg border border-gray-700 flex-row items-center justify-between"
+              >
+                <Text className="text-white text-base">
+                  {repeatConfig.type === "daily" && "Daily"}
+                  {repeatConfig.type === "weekly" &&
+                    `Weekly (${repeatConfig.weekDays
+                      ?.map(
+                        (d) => ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"][d]
+                      )
+                      .join(", ")})`}
+                  {repeatConfig.type === "monthly" &&
+                    `Monthly (Day ${repeatConfig.monthDay})`}
+                </Text>
+                <Feather name="repeat" size={24} color="white" />
+              </TouchableOpacity>
+            </View>
 
-          <CustomDateTimePicker
-            visible={showTimePicker}
-            value={reminderTime}
-            onChange={onChangeTime}
-            mode="time"
-            onClose={() => setShowTimePicker(false)}
-          />
+            <CustomDateTimePicker
+              visible={showTimePicker}
+              value={reminderTime}
+              onChange={onChangeTime}
+              mode="time"
+              onClose={() => setShowTimePicker(false)}
+            />
 
-          <RepeatBottomSheet
-            isVisible={showRepeatBottomSheet}
-            onClose={() => setShowRepeatBottomSheet(false)}
-            repeatConfig={repeatConfig}
-            setRepeatConfig={setRepeatConfig}
-          />
+            <RepeatBottomSheet
+              isVisible={showRepeatBottomSheet}
+              onClose={() => setShowRepeatBottomSheet(false)}
+              repeatConfig={repeatConfig}
+              setRepeatConfig={setRepeatConfig}
+            />
 
-          <CategoryBottomSheet
-            isVisible={showCategoryBottomSheet}
-            onClose={() => setShowCategoryBottomSheet(false)}
-            selectedCategory={category}
-            setSelectedCategory={setCategory}
-          />
-        </ScrollView>
-      </View>
-      <BottomTab>
-        <TouchableOpacity
-          className={`bg-blue-600 w-[90%] rounded-md py-4 ${Platform.OS === "ios"? "mb-4": "mb-2"}`}
-          onPress={handleSave}
-        >
-          <Text className="text-white font-bold text-lg text-center ">
-            Save Habit
-          </Text>
-        </TouchableOpacity>
-      </BottomTab>
-    </BottomSheet>
+            <CategoryBottomSheet
+              isVisible={showCategoryBottomSheet}
+              onClose={() => setShowCategoryBottomSheet(false)}
+              selectedCategory={category}
+              setSelectedCategory={setCategory}
+            />
+          </ScrollView>
+        </View>
+        <BottomTab>
+          <TouchableOpacity
+            className={`w-[90%] rounded-md py-4 ${
+              Platform.OS === "ios" ? "mb-4" : "mb-2"
+            } ${isButtonDisabled ? "bg-gray-600" : "bg-blue-600"}`}
+            onPress={handleSave}
+            disabled={isButtonDisabled}
+          >
+            <Text
+              className={`font-bold text-lg text-center ${
+                isButtonDisabled ? "text-gray-400" : "text-white"
+              }`}
+            >
+              Save Habit
+            </Text>
+          </TouchableOpacity>
+        </BottomTab>
+      </BottomSheet>
+    </AlertNotificationRoot>
   );
 };
 
