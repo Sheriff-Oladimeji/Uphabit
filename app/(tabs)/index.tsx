@@ -5,6 +5,7 @@ import { Alert, Text, View } from "react-native";
 import FloatingButton from "@/components/FloatingButton";
 import { FA5Style } from "@expo/vector-icons/build/FontAwesome5";
 import CreateHabit from "@/components/CreateHabit";
+import Habits from "@/components/Habits";
 
 export default function Home() {
   const insets = useSafeAreaInsets();
@@ -21,6 +22,7 @@ export default function Home() {
         <Text className="text-white text-3xl font-bold  text-center">
           Hello
         </Text>
+        <Habits/>
       </View>
       <FloatingButton onPress={handlePress} />
       <CreateHabit isVisible={isModalVisible}  onClose={handleClose} />

@@ -3,7 +3,7 @@ import React from "react";
 import {
   FontAwesome,
   FontAwesome6,
-  MaterialCommunityIcons
+  MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 
@@ -14,15 +14,16 @@ export default function TabLayout() {
         screenOptions={{
           headerShown: false,
           tabBarStyle: {
-            backgroundColor: "#050a15",
+            backgroundColor: "#0A101F", 
             height: 60,
-            borderTopWidth: 0,
             paddingBottom: 8,
             paddingTop: 8,
+            borderTopWidth: 0,
+            borderColor: "#9CA3AF",
           },
           tabBarShowLabel: false,
-          tabBarActiveTintColor: "#3b82f6", // Blue color for active icons
-          tabBarInactiveTintColor: "#ffffff", // White color for inactive icons
+          tabBarActiveTintColor: "#1D4ED8", 
+          tabBarInactiveTintColor: "#9CA3AF", 
         }}
       >
         <Tabs.Screen
@@ -33,7 +34,7 @@ export default function TabLayout() {
                 IconComponent={MaterialCommunityIcons}
                 name="calendar-today"
                 color={color}
-                size={24}
+                size={22} 
               />
             ),
           }}
@@ -46,12 +47,11 @@ export default function TabLayout() {
                 IconComponent={FontAwesome6}
                 name="ranking-star"
                 color={color}
-                size={20}
+                size={22} 
               />
             ),
           }}
         />
-  
         <Tabs.Screen
           name="statistics"
           options={{
@@ -60,7 +60,7 @@ export default function TabLayout() {
                 IconComponent={MaterialCommunityIcons}
                 name="bullseye-arrow"
                 color={color}
-                size={24}
+                size={22} 
               />
             ),
           }}
@@ -73,13 +73,12 @@ export default function TabLayout() {
                 IconComponent={FontAwesome}
                 name="user-circle"
                 color={color}
-                size={20}
+                size={22} 
               />
             ),
           }}
         />
       </Tabs>
-
     </>
   );
 }
