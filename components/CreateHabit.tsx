@@ -51,6 +51,10 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
   };
 
   const handleSave = async () => {
+    if (!habitName) {
+      alert("Please enter a habit name");
+      return;
+    }
     const newHabit = {
       id: Date.now().toString(),
       name: habitName,
@@ -61,6 +65,7 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
     };
 
     await addHabit(newHabit);
+    alert("Habit Created Successfully")
     setHabitName("");
     setMotivation("");
     setCategory("other");
