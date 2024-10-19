@@ -1,4 +1,4 @@
-// components/CreateHabit.tsx
+
 import {
   View,
   Text,
@@ -69,6 +69,7 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
       streakGoal: hasStreakGoal ? streakGoal : null,
       currentStreak: 0,
       startDate: new Date(),
+      progress: [], 
     };
 
     await addHabit(newHabit);
