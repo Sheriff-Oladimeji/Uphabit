@@ -4,15 +4,10 @@ export interface Habit {
   name: string;
   motivation: string;
   reminderTime: Date;
-  repeatConfig: RepeatConfig;
   category: CategoryType;
 }
 
-export interface RepeatConfig {
-  type: "daily" | "weekly" | "monthly";
-  weekDays?: number[];
-  monthDay?: number;
-}
+
 
 export type CategoryType =
   | "sport"

@@ -1,18 +1,16 @@
 import { create } from "zustand";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Habit, RepeatConfig } from "@/@types/habitTypes";
+import { Habit } from "@/@types/habitTypes";
 import { CategoryType } from "../components/CategoryBottomSheet";
 
 interface StoreState {
   habits: Habit[];
   reminderTime: Date;
-  repeatConfig: RepeatConfig;
   motivation: string;
   category: CategoryType;
   setCategory: (category: CategoryType) => void;
   setMotivation: (motivation: string) => void;
   setReminderTime: (time: Date) => void;
-  setRepeatConfig: (config: RepeatConfig) => void;
   addHabit: (habit: Habit) => Promise<void>;
   loadHabits: () => Promise<void>;
 }
@@ -27,11 +25,10 @@ const useCreateStore = create<StoreState>((set) => ({
   motivation: "",
   category: "other",
   reminderTime: getDefaultReminderTime(),
-  repeatConfig: { type: "daily" },
   setCategory: (category) => set({ category }),
   setMotivation: (motivation) => set({ motivation }),
   setReminderTime: (time) => set({ reminderTime: time }),
-  setRepeatConfig: (config) => set({ repeatConfig: config }),
+ 
   addHabit: async (habit) => {
     set((state) => {
       const updatedHabits = [...state.habits, habit];

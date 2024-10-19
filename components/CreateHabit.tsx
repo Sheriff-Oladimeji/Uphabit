@@ -8,13 +8,12 @@ import {
 import React, { useState } from "react";
 import BottomSheet from "./BottomSheet";
 import { BottomSheetProps } from "@/@types/bottomSheet";
-import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import BottomTab from "./BottomTab";
 import { format } from "date-fns";
 import InputField from "./InputField";
 import CustomDateTimePicker from "./CustomDateTimePicker";
-import RepeatBottomSheet from "./RepeatBottomSheet";
 import CategoryBottomSheet from "./CategoryBottomSheet";
 import useCreateStore from "../store/useCreateStore";
 import { CategoryType } from "@/@types/habitTypes";
@@ -23,8 +22,6 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
   const {
     reminderTime,
     setReminderTime,
-    repeatConfig,
-    setRepeatConfig,
     motivation,
     setMotivation,
     category,
@@ -33,7 +30,6 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
   } = useCreateStore();
   const [habitName, setHabitName] = useState("");
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [showRepeatBottomSheet, setShowRepeatBottomSheet] = useState(false);
   const [showCategoryBottomSheet, setShowCategoryBottomSheet] = useState(false);
 
   const getCategoryIcon = (
@@ -63,7 +59,6 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
       name: habitName,
       motivation,
       reminderTime,
-      repeatConfig,
       category,
     };
 
@@ -73,7 +68,6 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
     setMotivation("");
     setCategory("other");
     setReminderTime(new Date(new Date().getTime() + 10 * 60000));
-    setRepeatConfig({ type: "daily" });
     onClose();
   };
 
@@ -91,7 +85,7 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
     <BottomSheet
       onClose={onClose}
       isVisible={isVisible}
-      height={Platform.OS === "ios" ? "75%" : "80%"}
+      height={Platform.OS === "ios" ? "75%" : "70%"}
       radius={25}
     >
       <View className="w-[90%] mx-auto flex-1 pb-20">
@@ -129,14 +123,7 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
               </Text>
             </TouchableOpacity>
           </View>
-          {/* <InputField
-            label="Motivation"
-            placeholder="Why do you want to build this habit?"
-            value={motivation}
-            onChangeText={setMotivation}
-            multiline={true}
-            numberOfLines={4}
-          /> */}
+
           <View className="mb-6">
             <Text className="text-gray-300 font-semibold text-lg mb-2 flex-row items-center">
               Reminder
@@ -154,40 +141,12 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
             </TouchableOpacity>
           </View>
 
-          <View className="mb-6">
-            <Text className="text-gray-300 font-semibold text-lg mb-2">
-              Frequency
-            </Text>
-            <TouchableOpacity
-              onPress={() => setShowRepeatBottomSheet(true)}
-              className="bg-gray-800 p-4 rounded-lg border border-gray-700 flex-row items-center justify-between"
-            >
-              <Text className="text-white text-base">
-                {repeatConfig.type === "daily" && "Daily"}
-                {repeatConfig.type === "weekly" &&
-                  `Weekly (${repeatConfig.weekDays
-                    ?.map((d) => ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"][d])
-                    .join(", ")})`}
-                {repeatConfig.type === "monthly" &&
-                  `Monthly (Day ${repeatConfig.monthDay})`}
-              </Text>
-              <Feather name="repeat" size={24} color="white" />
-            </TouchableOpacity>
-          </View>
-
           <CustomDateTimePicker
             visible={showTimePicker}
             value={reminderTime}
             onChange={onChangeTime}
             mode="time"
             onClose={() => setShowTimePicker(false)}
-          />
-
-          <RepeatBottomSheet
-            isVisible={showRepeatBottomSheet}
-            onClose={() => setShowRepeatBottomSheet(false)}
-            repeatConfig={repeatConfig}
-            setRepeatConfig={setRepeatConfig}
           />
 
           <CategoryBottomSheet
@@ -202,14 +161,12 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
         <TouchableOpacity
           className={`w-[90%] rounded-md py-4 ${
             Platform.OS === "ios" ? "mb-4" : "mb-2"
-          } ${isButtonDisabled ? "bg-gray-600" : "bg-blue-600"}`}
+          }  bg-blue-600`}
           onPress={handleSave}
           disabled={isButtonDisabled}
         >
           <Text
-            className={`font-bold text-lg text-center ${
-              isButtonDisabled ? "text-gray-400" : "text-white"
-            }`}
+            className={`font-bold text-lg text-center text-white`}
           >
             Save Habit
           </Text>

@@ -2,7 +2,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import BottomSheet from "./BottomSheet";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -36,11 +36,20 @@ const CategoryBottomSheet: React.FC<CategoryBottomSheetProps> = ({
 }) => {
   const categoryOptions: CategoryOption[] = [
     {
+      label: "Other",
+      value: "other",
+      icon: (
+        <MaterialCommunityIcons
+          name="dots-horizontal"
+          size={24}
+          color="white"
+        />
+      ),
+    },
+    {
       label: "Sport",
       value: "sport",
-      icon: (
-        <MaterialCommunityIcons name="basketball" size={24} color="white" />
-      ),
+      icon: <FontAwesome5 name="running" size={24} color="white" />,
     },
     {
       label: "Health",
@@ -67,17 +76,6 @@ const CategoryBottomSheet: React.FC<CategoryBottomSheetProps> = ({
       value: "fun",
       icon: <Ionicons name="game-controller" size={24} color="white" />,
     },
-    {
-      label: "Other",
-      value: "other",
-      icon: (
-        <MaterialCommunityIcons
-          name="dots-horizontal"
-          size={24}
-          color="white"
-        />
-      ),
-    },
   ];
 
   return (
@@ -85,7 +83,7 @@ const CategoryBottomSheet: React.FC<CategoryBottomSheetProps> = ({
       isVisible={isVisible}
       onClose={onClose}
       radius={16}
-      height={"65%"}
+      height={"70%"}
       draggable={true}
     >
       <ScrollView className="px-4 pb-12 flex-1">
