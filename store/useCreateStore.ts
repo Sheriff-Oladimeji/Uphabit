@@ -1,13 +1,16 @@
+// store/useCreateStore.ts
 import { create } from "zustand";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Habit } from "@/@types/habitTypes";
-import { CategoryType } from "../components/CategoryBottomSheet";
+import { CategoryType } from "@/@types/habitTypes";
 
 interface StoreState {
   habits: Habit[];
   reminderTime: Date;
   motivation: string;
   category: CategoryType;
+  streakGoal: number | null;
+  setStreakGoal: (goal: number | null) => void;
   setCategory: (category: CategoryType) => void;
   setMotivation: (motivation: string) => void;
   setReminderTime: (time: Date) => void;
@@ -25,17 +28,26 @@ const useCreateStore = create<StoreState>((set) => ({
   motivation: "",
   category: "other",
   reminderTime: getDefaultReminderTime(),
+  streakGoal: null,
+
+  setStreakGoal: (goal) => set({ streakGoal: goal }),
   setCategory: (category) => set({ category }),
   setMotivation: (motivation) => set({ motivation }),
   setReminderTime: (time) => set({ reminderTime: time }),
- 
+
   addHabit: async (habit) => {
     set((state) => {
-      const updatedHabits = [...state.habits, habit];
+      const newHabit = {
+        ...habit,
+        currentStreak: 0,
+        startDate: new Date(),
+      };
+      const updatedHabits = [...state.habits, newHabit];
       AsyncStorage.setItem("habits", JSON.stringify(updatedHabits));
       return { habits: updatedHabits };
     });
   },
+
   loadHabits: async () => {
     const storedHabits = await AsyncStorage.getItem("habits");
     if (storedHabits) {

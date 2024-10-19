@@ -1,3 +1,4 @@
+// components/CreateHabit.tsx
 import {
   View,
   Text,
@@ -17,6 +18,7 @@ import CustomDateTimePicker from "./CustomDateTimePicker";
 import CategoryBottomSheet from "./CategoryBottomSheet";
 import useCreateStore from "../store/useCreateStore";
 import { CategoryType } from "@/@types/habitTypes";
+import StreakGoal from "./StreakGoal";
 
 const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
   const {
@@ -26,9 +28,13 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
     setMotivation,
     category,
     setCategory,
+    streakGoal,
+    setStreakGoal,
     addHabit,
   } = useCreateStore();
+
   const [habitName, setHabitName] = useState("");
+  const [hasStreakGoal, setHasStreakGoal] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [showCategoryBottomSheet, setShowCategoryBottomSheet] = useState(false);
 
@@ -60,6 +66,9 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
       motivation,
       reminderTime,
       category,
+      streakGoal: hasStreakGoal ? streakGoal : null,
+      currentStreak: 0,
+      startDate: new Date(),
     };
 
     await addHabit(newHabit);
@@ -67,6 +76,8 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
     setHabitName("");
     setMotivation("");
     setCategory("other");
+    setStreakGoal(null);
+    setHasStreakGoal(false);
     setReminderTime(new Date(new Date().getTime() + 10 * 60000));
     onClose();
   };
@@ -85,7 +96,7 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
     <BottomSheet
       onClose={onClose}
       isVisible={isVisible}
-      height={Platform.OS === "ios" ? "75%" : "70%"}
+      height={Platform.OS === "ios" ? "80%" : "95%"}
       radius={25}
     >
       <View className="w-[90%] mx-auto flex-1 pb-20">
@@ -101,6 +112,15 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
             placeholder="Enter habit name"
             value={habitName}
             onChangeText={setHabitName}
+          />
+
+          <InputField
+            label="Motivation (Optional)"
+            placeholder="Why do you want to build this habit?"
+            value={motivation}
+            onChangeText={setMotivation}
+            multiline
+            numberOfLines={3}
           />
 
           <View className="mb-6">
@@ -125,7 +145,7 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
           </View>
 
           <View className="mb-6">
-            <Text className="text-gray-300 font-semibold text-lg mb-2 flex-row items-center">
+            <Text className="text-gray-300 font-semibold text-lg mb-2">
               Reminder
             </Text>
             <TouchableOpacity
@@ -140,6 +160,13 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
               <Ionicons name="notifications-outline" size={24} color="white" />
             </TouchableOpacity>
           </View>
+
+          <StreakGoal
+            hasStreakGoal={hasStreakGoal}
+            setHasStreakGoal={setHasStreakGoal}
+            streakGoal={streakGoal}
+            setStreakGoal={setStreakGoal}
+          />
 
           <CustomDateTimePicker
             visible={showTimePicker}
@@ -165,9 +192,7 @@ const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
           onPress={handleSave}
           disabled={isButtonDisabled}
         >
-          <Text
-            className={`font-bold text-lg text-center text-white`}
-          >
+          <Text className="font-bold text-lg text-center text-white">
             Save Habit
           </Text>
         </TouchableOpacity>

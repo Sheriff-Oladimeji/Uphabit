@@ -5,9 +5,10 @@ export interface Habit {
   motivation: string;
   reminderTime: Date;
   category: CategoryType;
+  streakGoal: number | null; // null means indefinite/forever
+  currentStreak: number;
+  startDate: Date;
 }
-
-
 
 export type CategoryType =
   | "sport"
