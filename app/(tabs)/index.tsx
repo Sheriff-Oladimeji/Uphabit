@@ -14,18 +14,15 @@ export default function Home() {
     setIsModalVisible(true);
   };
   const handleClose = () => {
-    setIsModalVisible(false)
-  }
+    setIsModalVisible(false);
+  };
   return (
     <Container>
-      <View>
-        <Text className="text-white text-3xl font-bold  text-center">
-          Hello
-        </Text>
-        <Habits/>
+      <View className="flex-1">
+        <Habits />
       </View>
       <FloatingButton onPress={handlePress} />
-      <CreateHabit isVisible={isModalVisible}  onClose={handleClose} />
+      <CreateHabit isVisible={isModalVisible} onClose={handleClose} />
     </Container>
   );
 }
