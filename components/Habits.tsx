@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, Text, ScrollView, SafeAreaView } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import useCreateStore from "../store/useCreateStore";
 import HabitTracker from "./HabitTracker";
 
@@ -25,35 +25,33 @@ const Habits = () => {
     }
   }, []);
 
-  console.log("Current habits:", habits); // Debug log
-
   const handleToggle = (habitId: string, date: string) => {
     toggleHabitCompletion(habitId, date);
   };
 
   return (
-    
-      <ScrollView className="pb-12 flex-1" showsVerticalScrollIndicator={false}>
-        <View className="pt-4">
-          {habits.length === 0 ? (
-            <Text className="text-white text-center py-4">
-              No habits yet. Try adding one!
-            </Text>
-          ) : (
-            habits.map((habit) => (
-              <HabitTracker
-                key={habit.id}
-                id={habit.id}
-                name={habit.name}
-                category={habit.category}
-                progress={getHabitProgress(habit.id)}
-                onToggle={(date) => handleToggle(habit.id, date)}
-              />
-            ))
-          )}
-        </View>
-      </ScrollView>
-   
+    <ScrollView className="pb-12 flex-1" showsVerticalScrollIndicator={false}>
+      <View className="pt-4">
+        {habits.length === 0 ? (
+          <Text className="text-white text-center py-4">
+            No habits yet. Try adding one!
+          </Text>
+        ) : (
+          habits.map((habit) => (
+            <HabitTracker
+              key={habit.id}
+              id={habit.id}
+              name={habit.name}
+              category={habit.category}
+              progress={getHabitProgress(habit.id)}
+              streakGoal={habit.streakGoal}
+              onToggle={(date) => handleToggle(habit.id, date)}
+              startDate={habit.startDate}
+            />
+          ))
+        )}
+      </View>
+    </ScrollView>
   );
 };
 

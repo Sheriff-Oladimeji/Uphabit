@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CategoryType } from "@/@types/habitTypes";
 
 interface HabitProgress {
-  date: string; // ISO string
+  date: string;
   completed: boolean;
 }
 
