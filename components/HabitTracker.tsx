@@ -8,7 +8,7 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { CategoryType } from "@/@types/habitTypes";
 import {
   format,
@@ -106,8 +106,9 @@ const HabitTracker: React.FC<HabitTrackerProps> = ({
   startDate,
 }) => {
   const scrollViewRef = useRef<ScrollView>(null);
-  const today = new Date();
   const [futureDays, setFutureDays] = useState(INITIAL_FUTURE_DAYS);
+  const today = format(new Date(), 'yyyy-MM-dd');
+  const isCompletedToday = progress.some(p => p.date === today && p.completed);
 
   // Generate dates based on streak goal or infinite scrolling
   const getDates = () => {
@@ -118,7 +119,7 @@ const HabitTracker: React.FC<HabitTrackerProps> = ({
       );
     } else {
       // For habits without streak goals, show all days from start date plus future days
-      const daysFromStart = differenceInDays(today, startDate);
+      const daysFromStart = differenceInDays(new Date(), startDate);
       const totalDays = daysFromStart + futureDays;
       return [...Array(totalDays)].map((_, index) => addDays(startDate, index));
     }
@@ -189,6 +190,18 @@ const HabitTracker: React.FC<HabitTrackerProps> = ({
             </Text>
           </View>
         </View>
+        <TouchableOpacity 
+          onPress={() => onToggle(today)}
+          className={`rounded-md p-2 ${
+            isCompletedToday ? 'bg-green-500' : 'bg-gray-700'
+          }`}
+        >
+          <AntDesign 
+            name={isCompletedToday ? "check" : "plus"} 
+            size={18} 
+            color="white" 
+          />
+        </TouchableOpacity>
       </View>
 
       {/* Scrollable Days View */}
@@ -213,8 +226,8 @@ const HabitTracker: React.FC<HabitTrackerProps> = ({
               key={dateStr}
               date={date}
               isCompleted={isCompleted}
-              onPress={() => onToggle(dateStr)}
-              disabled={isFuture(date) || (!isToday(date) && !isCompleted)}
+              onPress={() => {}} // Remove onPress functionality
+              disabled={true} // Disable all WeekDay components
               startDate={startDate}
             />
           );
