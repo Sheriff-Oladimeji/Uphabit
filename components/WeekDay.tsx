@@ -32,7 +32,7 @@ const WeekDay: React.FC<WeekDayProps> = ({
     <TouchableOpacity
       onPress={onPress}
       disabled={finalDisabled}
-      className={`items-center px-1 ${finalDisabled ? "opacity-50" : ""}`}
+      className={`items-center px-1`}
     >
       <Text className="text-gray-400 text-xs mb-1">{dayName}</Text>
       <View
