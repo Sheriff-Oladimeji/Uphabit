@@ -14,10 +14,9 @@ import {
   format,
   addDays,
   isToday,
-  isFuture,
   differenceInDays,
-  isBefore,
 } from "date-fns";
+import WeekDay from "./WeekDay"; // Add this import
 
 interface HabitTrackerProps {
   id: string;
@@ -51,50 +50,6 @@ const DAY_WIDTH = 48;
 const WINDOW_WIDTH = Dimensions.get("window").width;
 const INITIAL_FUTURE_DAYS = 30; // Initial number of future days to show
 const LOAD_MORE_THRESHOLD = 1000; // Pixels from the end to trigger loading more days
-
-const WeekDay: React.FC<{
-  date: Date;
-  isCompleted: boolean;
-  onPress: () => void;
-  disabled: boolean;
-  startDate: Date;
-}> = ({ date, isCompleted, onPress, disabled, startDate }) => {
-  const dayColor = isCompleted ? "bg-green-500" : "bg-gray-800";
-  const dayName = format(date, "EEE");
-  const dayNumber = format(date, "d");
-  const monthName = format(date, "MMM");
-  const isCurrentDay = isToday(date);
-
-  // Disable dates before start date
-  const isBeforeStart = isBefore(date, startDate);
-  const finalDisabled = disabled || isBeforeStart;
-
-  return (
-    <TouchableOpacity
-      onPress={onPress}
-      disabled={finalDisabled}
-      className={`items-center px-1 ${finalDisabled ? "opacity-50" : ""}`}
-    >
-      <Text className="text-gray-400 text-xs mb-1">{dayName}</Text>
-      <View
-        className={`w-9 h-9 rounded-full ${dayColor} items-center justify-center
-          ${isCurrentDay ? "border-2 border-purple-500" : ""}`}
-      >
-        <Text className="text-white text-sm">{dayNumber}</Text>
-        {isCompleted && (
-          <View className="absolute bottom-0 right-0">
-            <MaterialCommunityIcons
-              name="check-circle"
-              size={12}
-              color="#fff"
-            />
-          </View>
-        )}
-      </View>
-      <Text className="text-gray-400 text-xs mt-1">{monthName}</Text>
-    </TouchableOpacity>
-  );
-};
 
 const HabitTracker: React.FC<HabitTrackerProps> = ({
   id,
