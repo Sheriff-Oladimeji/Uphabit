@@ -79,7 +79,6 @@ const useCreateStore = create<StoreState>((set, get) => ({
         if (habit.id === habitId) {
           const existingProgress = habit.progress.find((p) => p.date === date);
           let newProgress;
-
           if (existingProgress) {
             newProgress = habit.progress.map((p) =>
               p.date === date ? { ...p, completed: !p.completed } : p
@@ -87,7 +86,6 @@ const useCreateStore = create<StoreState>((set, get) => ({
           } else {
             newProgress = [...habit.progress, { date, completed: true }];
           }
-
           return {
             ...habit,
             progress: newProgress,
@@ -95,7 +93,6 @@ const useCreateStore = create<StoreState>((set, get) => ({
         }
         return habit;
       });
-
       AsyncStorage.setItem("streaks", JSON.stringify(updatedHabits));
       return { habits: updatedHabits };
     });

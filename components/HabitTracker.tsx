@@ -85,8 +85,8 @@ const HabitTracker: React.FC<HabitTrackerProps> = ({
         {days.map((date, index) => (
           <TouchableOpacity
             key={index}
-            onPress={() => onToggle(format(date, "yyyy-MM-dd"))}
-            className={`w-6 h-6 rounded-sm ${getSquareColor(date)} 
+         
+            className={`w-4 h-4 rounded-sm ${getSquareColor(date)} 
               ${isToday(date) ? "border border-gray-500" : ""}`}
           />
         ))}
