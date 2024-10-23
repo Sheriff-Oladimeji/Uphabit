@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CategoryType } from "@/@types/habitTypes";
+import * as Notifications from 'expo-notifications';
 
 interface HabitProgress {
   date: string;
@@ -62,6 +63,22 @@ const useCreateStore = create<StoreState>((set, get) => ({
       };
       const updatedHabits = [...state.habits, newHabit];
       AsyncStorage.setItem("streaks", JSON.stringify(updatedHabits));
+
+      // Schedule notification
+      const notificationTime = habit.reminderTime || getDefaultReminderTime();
+      Notifications.scheduleNotificationAsync({
+        content: {
+          title: `Time to ${habit.name}!`,
+          body: `Don't forget to complete your habit: ${habit.name}`,
+          sound: 'default', // This will play the default notification sound
+        },
+        trigger: {
+          hour: notificationTime.getHours(),
+          minute: notificationTime.getMinutes(),
+          repeats: true, // Repeat daily
+        },
+      });
+
       return { habits: updatedHabits };
     });
   },
