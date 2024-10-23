@@ -2,7 +2,7 @@ import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import { Platform } from "react-native";
 import Constants from "expo-constants";
-import { Habit } from "@/store/useJunkStore";
+import { Habit } from "@/@types/habitTypes";
 
 export async function registerForPushNotificationsAsync() {
   let token;
@@ -72,3 +72,25 @@ export async function sendCompletionNotification() {
 export async function cancelNotification(habitId: string) {
   await Notifications.cancelScheduledNotificationAsync(habitId);
 }
+
+export async function scheduleHabitNotification(habit: Habit) {
+  const notificationTime = habit.reminderTime || getDefaultReminderTime();
+
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: `Time to ${habit.name}!`,
+      body: `Don't forget to complete your habit: ${habit.name}`,
+      sound: 'default', // This will play the default notification sound
+    },
+    trigger: {
+      hour: notificationTime.getHours(),
+      minute: notificationTime.getMinutes(),
+      repeats: true, // Repeat daily
+    },
+  });
+}
+
+const getDefaultReminderTime = () => {
+  const now = new Date();
+  return new Date(now.getTime() + 10 * 60000); // 10 minutes from now
+};

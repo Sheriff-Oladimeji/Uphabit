@@ -2,6 +2,7 @@ import { create } from "zustand";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CategoryType } from "@/@types/habitTypes";
 import * as Notifications from 'expo-notifications';
+import { scheduleHabitNotification } from "../utils/notificationService"; // Adjust the path as necessary
 
 interface HabitProgress {
   date: string;
@@ -34,6 +35,7 @@ interface StoreState {
   loadHabits: () => Promise<void>;
   toggleHabitCompletion: (habitId: string, date: string) => Promise<void>;
   getHabitProgress: (habitId: string) => HabitProgress[];
+  deleteHabit: (habitId: string) => Promise<void>;
 }
 
 const getDefaultReminderTime = () => {
@@ -62,21 +64,11 @@ const useCreateStore = create<StoreState>((set, get) => ({
         progress: [],
       };
       const updatedHabits = [...state.habits, newHabit];
-      AsyncStorage.setItem("streaks", JSON.stringify(updatedHabits));
-
-      // Schedule notification
-      const notificationTime = habit.reminderTime || getDefaultReminderTime();
-      Notifications.scheduleNotificationAsync({
-        content: {
-          title: `Time to ${habit.name}!`,
-          body: `Don't forget to complete your habit: ${habit.name}`,
-          sound: 'default', // This will play the default notification sound
-        },
-        trigger: {
-          hour: notificationTime.getHours(),
-          minute: notificationTime.getMinutes(),
-          repeats: true, // Repeat daily
-        },
+      
+      // Use setImmediate to allow UI to update
+      setImmediate(() => {
+        AsyncStorage.setItem("streaks", JSON.stringify(updatedHabits));
+        scheduleHabitNotification(newHabit);
       });
 
       return { habits: updatedHabits };
@@ -118,6 +110,14 @@ const useCreateStore = create<StoreState>((set, get) => ({
   getHabitProgress: (habitId: string) => {
     const habit = get().habits.find((h) => h.id === habitId);
     return habit?.progress || [];
+  },
+
+  deleteHabit: async (habitId: string) => {
+    set((state) => {
+      const updatedHabits = state.habits.filter(habit => habit.id !== habitId);
+      AsyncStorage.setItem("streaks", JSON.stringify(updatedHabits));
+      return { habits: updatedHabits };
+    });
   },
 }));
 

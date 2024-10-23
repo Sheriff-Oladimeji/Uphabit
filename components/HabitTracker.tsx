@@ -17,6 +17,7 @@ import {
   differenceInDays,
 } from "date-fns";
 import WeekDay from "./WeekDay"; // Add this import
+import useCreateStore from "../store/useCreateStore"; // Import the store
 
 interface HabitTrackerProps {
   id: string;
@@ -64,6 +65,8 @@ const HabitTracker: React.FC<HabitTrackerProps> = ({
   const [futureDays, setFutureDays] = useState(INITIAL_FUTURE_DAYS);
   const today = format(new Date(), 'yyyy-MM-dd');
   const isCompletedToday = progress.some(p => p.date === today && p.completed);
+  
+  const { deleteHabit } = useCreateStore(); // Get deleteHabit from the store
 
   // Generate dates based on streak goal or infinite scrolling
   const getDates = () => {
@@ -124,6 +127,10 @@ const HabitTracker: React.FC<HabitTrackerProps> = ({
     }, 100);
   }, []);
 
+  const handleDelete = async () => {
+    await deleteHabit(id); // Call deleteHabit with the current habit's id
+  };
+
   return (
     <View className="mb-6 p-4 rounded-xl bg-gray-900/80 border border-gray-800">
       {/* Header */}
@@ -145,18 +152,30 @@ const HabitTracker: React.FC<HabitTrackerProps> = ({
             </Text>
           </View>
         </View>
-        <TouchableOpacity 
-          onPress={() => onToggle(today)}
-          className={`rounded-md p-2 ${
-            isCompletedToday ? 'bg-green-500' : 'bg-gray-700'
-          }`}
-        >
-          <AntDesign 
-            name={isCompletedToday ? "check" : "plus"} 
-            size={18} 
-            color="white" 
-          />
-        </TouchableOpacity>
+        <View className="flex-row">
+          <TouchableOpacity 
+            onPress={() => onToggle(today)}
+            className={`rounded-md p-2 ${
+              isCompletedToday ? 'bg-green-500' : 'bg-gray-700'
+            }`}
+          >
+            <AntDesign 
+              name={isCompletedToday ? "check" : "plus"} 
+              size={18} 
+              color="white" 
+            />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            onPress={handleDelete} // Call handleDelete on press
+            className="rounded-md p-2 bg-red-500 ml-2" // Add margin for spacing
+          >
+            <AntDesign 
+              name="delete" 
+              size={18} 
+              color="white" 
+            />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Scrollable Days View */}
