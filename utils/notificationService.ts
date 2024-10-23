@@ -4,6 +4,24 @@ import { Platform } from "react-native";
 import Constants from "expo-constants";
 import { Habit } from "@/@types/habitTypes";
 
+// Function to configure notification channels for Android
+const configureNotificationChannel = async () => {
+  if (Platform.OS === "android") {
+    await Notifications.setNotificationChannelAsync("default", {
+      name: "Default",
+      importance: Notifications.AndroidImportance.MAX, // High importance
+      sound: "default", // Ensure sound is set
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: "#FF231F7C",
+    });
+  }
+};
+
+// Call this function when your app starts
+export const initializeNotifications = async () => {
+  await configureNotificationChannel();
+};
+
 export async function registerForPushNotificationsAsync() {
   let token;
 
@@ -73,6 +91,7 @@ export async function cancelNotification(habitId: string) {
   await Notifications.cancelScheduledNotificationAsync(habitId);
 }
 
+// Function to schedule notifications
 export async function scheduleHabitNotification(habit: Habit) {
   const notificationTime = habit.reminderTime || getDefaultReminderTime();
 
@@ -80,7 +99,8 @@ export async function scheduleHabitNotification(habit: Habit) {
     content: {
       title: `Time to ${habit.name}!`,
       body: `Don't forget to complete your habit: ${habit.name}`,
-      sound: 'default', // This will play the default notification sound
+      sound: "default", // This will play the default notification sound
+      priority: Notifications.AndroidNotificationPriority.HIGH, // High priority for Android
     },
     trigger: {
       hour: notificationTime.getHours(),

@@ -6,18 +6,14 @@ import "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as Notifications from "expo-notifications";
 import { registerForPushNotificationsAsync } from "../utils/notificationService";
-// Prevent the splash screen from auto-hiding before asset loading is complete.
+import useCreateStore from "../store/useCreateStore";
+import { initializeNotifications } from "../utils/notificationService";
+
+// Prevent splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
-
 export default function RootLayout() {
+  const { loadHabits } = useCreateStore();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
@@ -29,8 +25,16 @@ export default function RootLayout() {
   }, [loaded]);
 
   useEffect(() => {
-    registerForPushNotificationsAsync();
+    const setupApp = async () => {
+      await initializeNotifications();
+      await registerForPushNotificationsAsync();
+      await loadHabits();
+    };
 
+    setupApp();
+  }, []);
+
+  useEffect(() => {
     const subscription = Notifications.addNotificationReceivedListener(
       (notification) => {
         console.log("Notification received:", notification);

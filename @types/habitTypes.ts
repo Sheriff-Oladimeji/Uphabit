@@ -8,7 +8,7 @@ export interface Habit {
   streakGoal: number | null; // null means indefinite/forever
   currentStreak: number;
   startDate: Date;
-    progress: boolean[];
+  progress: HabitProgress[]; // Ensure this is correctly defined
 }
 
 export type CategoryType =
@@ -19,3 +19,8 @@ export type CategoryType =
   | "social"
   | "fun"
   | "other";
+
+export interface HabitProgress {
+  date: Date;
+  completed: boolean;
+}

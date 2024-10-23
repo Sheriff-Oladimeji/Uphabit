@@ -20,7 +20,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#000509"
       },
-      "package": "com.devsheriff.uphabit"
+      "package": "com.devsheriff.uphabit",
+      "permissions": ["NOTIFICATIONS", "VIBRATE", "WAKE_LOCK"]
     },
     "web": {
       "bundler": "metro",
@@ -28,7 +29,15 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-notifications",
+        {
+          "icon": "./local/path/to/your/app-icon.png",
+          "color": "#ffffff",
+          "sounds": ["./local/path/to/your/custom-sound.wav"]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

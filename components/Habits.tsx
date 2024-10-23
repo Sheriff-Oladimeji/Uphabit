@@ -31,6 +31,10 @@ const Habits = () => {
 
   return (
     <ScrollView className="pb-12 flex-1" showsVerticalScrollIndicator={false}>
+      <View>
+        <Text className="text-white text-2xl font-bold mt-4 text-center">Your Habits</Text>
+      
+      </View>
       <View className="pt-4">
         {habits.length === 0 ? (
           <Text className="text-white text-center py-4">
