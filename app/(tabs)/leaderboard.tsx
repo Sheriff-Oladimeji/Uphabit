@@ -2,14 +2,12 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import Container from '@/components/Container'
 
-const goals = () => {
+const leaderboard = () => {
   return (
     <Container>
-      <View>
-        <Text>goals</Text>
-      </View>
+      <Text className='text-white font-bold text-center text-3xl'>leaderboard</Text>
     </Container>
-  );
+  )
 }
 
-export default goals
+export default leaderboard

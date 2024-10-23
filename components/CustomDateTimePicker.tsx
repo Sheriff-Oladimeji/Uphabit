@@ -21,7 +21,7 @@ const CustomDateTimePicker: React.FC<CustomDateTimePickerProps> = ({ visible, va
         onRequestClose={onClose}
       >
         <View className="flex-1 justify-center items-center bg-[rgba(0, 0, 0, 0.7)]">
-          <View className="bg-gray-700 p-4 rounded-lg w-4/5">
+          <View className="bg-gray-800 p-4 rounded-lg w-4/5">
             <DateTimePicker
               testID={`ios${mode === "date" ? "Date" : "Time"}Picker`}
               value={value}

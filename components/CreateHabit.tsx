@@ -1,75 +1,85 @@
-import React, { useState } from "react";
+
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
-  Platform,
-  Modal,
   ScrollView,
+  Platform,
 } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import useCreateStore from "@/store/useCreateStore";
-import { format, addYears, subYears } from "date-fns";
-import useDateStore from "@/store/useDateStore";
-import InputField from "./InputField";
-import TimeDurationInput from "./TimeDurationInput";
-import CustomDateTimePicker from "./CustomDateTimePicker";
-import RepeatBottomSheet, { RepeatConfig } from "./RepeatBottomSheet";
-
-import useHabitStore from "@/store/useHabitStore"; 
-
-import { Habit } from "@/store/useHabitStore";
+import React, { useState } from "react";
+import BottomSheet from "./BottomSheet";
 import { BottomSheetProps } from "@/@types/bottomSheet";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import BottomTab from "./BottomTab";
+import { format } from "date-fns";
+import InputField from "./InputField";
+import CustomDateTimePicker from "./CustomDateTimePicker";
+import CategoryBottomSheet from "./CategoryBottomSheet";
+import useCreateStore from "../store/useCreateStore";
+import { CategoryType } from "@/@types/habitTypes";
+import StreakGoal from "./StreakGoal";
 
-const CreateHabit: React.FC<BottomSheetProps> = ({ onClose }) => {
+const CreateHabit = ({ isVisible, onClose }: BottomSheetProps) => {
   const {
-    selectedOption,
-    selectedTrackingOption,
     reminderTime,
     setReminderTime,
-    startDate,
-    setStartDate,
-    repeatConfig,
-    setRepeatConfig,
+    motivation,
+    setMotivation,
+    category,
+    setCategory,
+    streakGoal,
+    setStreakGoal,
+    addHabit,
   } = useCreateStore();
 
-  const { addHabit } = useHabitStore(); 
-
   const [habitName, setHabitName] = useState("");
-  const [amount, setAmount] = useState(1);
-  const { currentDate } = useDateStore();
-  const [timeHours, setTimeHours] = useState("0");
-  const [timeMinutes, setTimeMinutes] = useState("5");
-  const [timeSeconds, setTimeSeconds] = useState("0");
+  const [hasStreakGoal, setHasStreakGoal] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [showDatePicker, setShowDatePicker] = useState(false);
-const [showRepeatBottomSheet, setShowRepeatBottomSheet] = useState(false);
+  const [showCategoryBottomSheet, setShowCategoryBottomSheet] = useState(false);
 
+  const getCategoryIcon = (
+    category: CategoryType
+  ): React.ComponentProps<typeof MaterialCommunityIcons>["name"] => {
+    const icons: Record<
+      CategoryType,
+      React.ComponentProps<typeof MaterialCommunityIcons>["name"]
+    > = {
+      sport: "basketball",
+      health: "heart-pulse",
+      work: "briefcase",
+      finance: "cash",
+      social: "account-group",
+      fun: "gamepad-variant",
+      other: "dots-horizontal",
+    };
+    return icons[category];
+  };
 
   const handleSave = async () => {
-    const newHabit: Habit = {
-      id: Date.now().toString(), 
+    if (!habitName) {
+      return;
+    }
+    const newHabit = {
+      id: Date.now().toString(),
       name: habitName,
-      trackingType: selectedTrackingOption || "", 
-      amount: selectedTrackingOption === "amount" ? amount : undefined,
-      time:
-        selectedTrackingOption === "time"
-          ? { hours: timeHours, minutes: timeMinutes, seconds: timeSeconds }
-          : undefined,
+      motivation,
+      reminderTime,
+      category,
+      streakGoal: hasStreakGoal ? streakGoal : null,
+      currentStreak: 0,
+      startDate: new Date(),
+      progress: [], 
     };
 
-    await addHabit(newHabit); 
+    await addHabit(newHabit);
 
-    
     setHabitName("");
-    setAmount(1);
-    setTimeHours("0");
-    setTimeMinutes("5");
-    setTimeSeconds("0");
+    setMotivation("");
+    setCategory("other");
+    setStreakGoal(null);
+    setHasStreakGoal(false);
     setReminderTime(new Date(new Date().getTime() + 10 * 60000));
-    setStartDate(new Date());
-    setRepeatConfig({ type: "daily" });
     onClose();
   };
 
@@ -81,130 +91,114 @@ const [showRepeatBottomSheet, setShowRepeatBottomSheet] = useState(false);
     }
   };
 
-  const onChangeStartDate = (event: any, selectedDate: Date | undefined) => {
-    if (event.type === "set" || Platform.OS === "android") {
-      const currentDate = selectedDate || startDate;
-      if (currentDate instanceof Date && !isNaN(currentDate.getTime())) {
-        setStartDate(currentDate);
-        setShowDatePicker(Platform.OS === "ios");
-      }
-    } else if (event.type === "dismissed") {
-      setShowDatePicker(false);
-    }
-  };
+  const isButtonDisabled = habitName.trim() === "";
 
   return (
-    <View className="w-[90%] mx-auto">
-      <Text className="text-white text-3xl font-bold text-center mb-6">
-        {selectedOption === "build" ? "Create a New Habit" : "Quit a Bad Habit"}
-      </Text>
+    <BottomSheet
+      onClose={onClose}
+      isVisible={isVisible}
+      height={Platform.OS === "ios" ? "80%" : "95%"}
+      radius={25}
+    >
+      <View className="w-[90%] mx-auto flex-1 pb-20">
+        <View className="flex flex-row items-center justify-between mb-4 pt-10">
+          <Text className="text-white text-xl font-bold">Create Habit</Text>
+          <TouchableOpacity onPress={onClose}>
+            <AntDesign name="closecircleo" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <InputField
+            label="Habit Name"
+            placeholder="Enter habit name"
+            value={habitName}
+            onChangeText={setHabitName}
+          />
 
-      <InputField
-        label="Habit Name"
-        placeholder="Enter habit name"
-        value={habitName}
-        onChangeText={setHabitName}
-      />
+          <InputField
+            label="Motivation (Optional)"
+            placeholder="Why do you want to build this habit?"
+            value={motivation}
+            onChangeText={setMotivation}
+            multiline
+            numberOfLines={3}
+          />
 
-      {selectedTrackingOption === "amount" && (
-        <InputField
-          label="Amount to track"
-          placeholder="Enter amount"
-          value={String(amount)}
-          onChangeText={(text) => setAmount(Number(text) || 1)}
-          keyboardType="numeric"
-        />
-      )}
+          <View className="mb-6">
+            <Text className="text-gray-300 font-semibold text-lg mb-2">
+              Category
+            </Text>
+            <TouchableOpacity
+              onPress={() => setShowCategoryBottomSheet(true)}
+              className="bg-gray-800 p-4 rounded-lg border border-gray-700 flex-row items-center"
+            >
+              <View className="w-8 h-8 rounded-full bg-gray-700 items-center justify-center mr-2">
+                <MaterialCommunityIcons
+                  name={getCategoryIcon(category)}
+                  size={20}
+                  color="white"
+                />
+              </View>
+              <Text className="text-white text-base capitalize">
+                {category}
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-      {selectedTrackingOption === "time" && (
-        <TimeDurationInput
-          timeHours={timeHours}
-          timeMinutes={timeMinutes}
-          timeSeconds={timeSeconds}
-          setTimeHours={setTimeHours}
-          setTimeMinutes={setTimeMinutes}
-          setTimeSeconds={setTimeSeconds}
-        />
-      )}
+          <View className="mb-6">
+            <Text className="text-gray-300 font-semibold text-lg mb-2">
+              Reminder
+            </Text>
+            <TouchableOpacity
+              onPress={() => setShowTimePicker(true)}
+              className="bg-gray-800 p-4 rounded-lg border border-gray-700 flex-row items-center justify-between"
+            >
+              <Text className="text-white text-base">
+                {reminderTime
+                  ? format(reminderTime, "hh:mm a")
+                  : "Set Reminder Time"}
+              </Text>
+              <Ionicons name="notifications-outline" size={24} color="white" />
+            </TouchableOpacity>
+          </View>
 
-      <View className="mb-6">
-        <Text className="text-gray-300 font-semibold text-lg mb-2">
-          Reminder Time
-        </Text>
+          <StreakGoal
+            hasStreakGoal={hasStreakGoal}
+            setHasStreakGoal={setHasStreakGoal}
+            streakGoal={streakGoal}
+            setStreakGoal={setStreakGoal}
+          />
+
+          <CustomDateTimePicker
+            visible={showTimePicker}
+            value={reminderTime}
+            onChange={onChangeTime}
+            mode="time"
+            onClose={() => setShowTimePicker(false)}
+          />
+
+          <CategoryBottomSheet
+            isVisible={showCategoryBottomSheet}
+            onClose={() => setShowCategoryBottomSheet(false)}
+            selectedCategory={category}
+            setSelectedCategory={setCategory}
+          />
+        </ScrollView>
+      </View>
+      <BottomTab>
         <TouchableOpacity
-          onPress={() => setShowTimePicker(true)}
-          className="bg-gray-800 p-4 rounded-lg border border-gray-700"
+          className={`w-[90%] rounded-md py-4 ${
+            Platform.OS === "ios" ? "mb-4" : "mb-2"
+          }  bg-blue-600`}
+          onPress={handleSave}
+          disabled={isButtonDisabled}
         >
-          <Text className="text-white text-base">
-            {reminderTime
-              ? format(reminderTime, "hh:mm a")
-              : "Set Reminder Time"}
+          <Text className="font-bold text-lg text-center text-white">
+            Save Habit
           </Text>
         </TouchableOpacity>
-      </View>
-
-      <View className="mb-6">
-        <Text className="text-gray-300 font-semibold text-lg mb-2">
-          Start Date
-        </Text>
-        <TouchableOpacity
-          onPress={() => setShowDatePicker(true)}
-          className="bg-gray-800 p-4 rounded-lg border border-gray-700"
-        >
-          <Text className="text-white text-base">
-            {format(startDate, "MMMM dd, yyyy")}
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      <View className="mb-6">
-        <Text className="text-gray-300 font-semibold text-lg mb-2">Repeat</Text>
-        <TouchableOpacity
-          onPress={() => setShowRepeatBottomSheet(true)}
-          className="bg-gray-800 p-4 rounded-lg border border-gray-700"
-        >
-          <Text className="text-white text-base">
-            {repeatConfig.type === "daily" && "Daily"}
-            {repeatConfig.type === "weekly" &&
-              `Weekly (${repeatConfig.weekDays
-                ?.map((d) => ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"][d])
-                .join(", ")})`}
-            {repeatConfig.type === "monthly" &&
-              `Monthly (Day ${repeatConfig.monthDay})`}
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      <TouchableOpacity
-        onPress={handleSave}
-        className="bg-blue-600 p-4 rounded-lg items-center"
-      >
-        <Text className="text-white font-bold text-lg">Save Habit</Text>
-      </TouchableOpacity>
-
-      <CustomDateTimePicker
-        visible={showTimePicker}
-        value={reminderTime}
-        onChange={onChangeTime}
-        mode="time"
-        onClose={() => setShowTimePicker(false)}
-      />
-
-      <CustomDateTimePicker
-        visible={showDatePicker}
-        value={startDate}
-        onChange={onChangeStartDate}
-        mode="date"
-        onClose={() => setShowDatePicker(false)}
-      />
-
-      <RepeatBottomSheet
-        isVisible={showRepeatBottomSheet}
-        onClose={() => setShowRepeatBottomSheet(false)}
-        repeatConfig={repeatConfig}
-        setRepeatConfig={(config) => setRepeatConfig(config)}
-      />
-    </View>
+      </BottomTab>
+    </BottomSheet>
   );
 };
 

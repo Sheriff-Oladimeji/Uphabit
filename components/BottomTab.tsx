@@ -7,10 +7,8 @@ interface Props {
 const BottomTab = ({ children, styles }: Props) => {
   return (
     <View
-      style={{
-        gap: 10,
-      }}
-      className={`absolute bottom-0 left-0 right-0 py-3  flex  justify-center  items-center bg-darkBg ${styles}  `}
+     
+      className={`absolute bottom-0 left-0 right-0 py-1  flex  justify-center  items-center bg-darkBg ${styles} `}
     >
       {children}
     </View>

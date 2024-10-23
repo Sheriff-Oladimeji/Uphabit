@@ -1,12 +1,13 @@
 import React from "react";
 
 export type BottomSheetProps = {
-  isVisible?: boolean;
+  isVisible: boolean;
   onClose: () => void;
   children?: React.ReactNode;
   radius?: number;
   height?: any
-  handler?: () => void
+  handler?: () => void,
+  draggable? : boolean
   
 };
 

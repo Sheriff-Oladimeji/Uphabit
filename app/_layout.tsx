@@ -4,23 +4,16 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { TouchableOpacity, Text } from "react-native";
-import * as Notifications from 'expo-notifications';
-import { registerForPushNotificationsAsync } from '../utils/notificationService';
+import * as Notifications from "expo-notifications";
+import { registerForPushNotificationsAsync } from "../utils/notificationService";
+import useCreateStore from "../store/useCreateStore";
+import { initializeNotifications } from "../utils/notificationService";
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
+// Prevent splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
-
 export default function RootLayout() {
-
+  const { loadHabits } = useCreateStore();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
@@ -32,11 +25,21 @@ export default function RootLayout() {
   }, [loaded]);
 
   useEffect(() => {
-    registerForPushNotificationsAsync();
+    const setupApp = async () => {
+      await initializeNotifications();
+      await registerForPushNotificationsAsync();
+      await loadHabits();
+    };
 
-    const subscription = Notifications.addNotificationReceivedListener(notification => {
-      console.log('Notification received:', notification);
-    });
+    setupApp();
+  }, []);
+
+  useEffect(() => {
+    const subscription = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        console.log("Notification received:", notification);
+      }
+    );
 
     return () => subscription.remove();
   }, []);
@@ -49,68 +52,6 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        {/* <Stack.Screen
-          name="createHabit"
-          options={({ navigation }) => ({
-            headerShown: true,
-            presentation: "card",
-            headerStyle: {
-              backgroundColor: "#050a15",
-            },
-            headerTintColor: "#fff",
-            headerTitleStyle: {
-              fontWeight: "bold",
-            },
-            headerTitle: "New Habit",
-            headerTitleAlign: "center",
-            headerRight: () => (
-              <TouchableOpacity
-                onPress={() => {
-                  if (navigation.canGoBack()) {
-                    navigation.goBack();
-                  }
-                }}
-                style={{ marginRight: 15 }}
-              >
-                <Text style={{ color: "#fff", fontSize: 16 }}>Save</Text>
-              </TouchableOpacity>
-            ),
-          })}
-        /> */}
-        <Stack.Screen 
-          name="habit/[id]" 
-          options={{ 
-            headerShown: false,
-            animation: 'slide_from_right'
-          }} 
-        />
-        <Stack.Screen
-          name="editHabit"
-          options={({ navigation }) => ({
-            headerShown: true,
-            headerStyle: {
-              backgroundColor: "#050a15",
-            },
-            headerTintColor: "#fff",
-            headerTitleStyle: {
-              fontWeight: "bold",
-            },
-            headerTitle: "Edit Habit",
-            headerTitleAlign: "center",
-            headerRight: () => (
-              <TouchableOpacity
-                onPress={() => {
-                  if (navigation.canGoBack()) {
-                    navigation.goBack();
-                  }
-                }}
-                style={{ marginRight: 15 }}
-              >
-                <Text style={{ color: "#fff", fontSize: 16 }}>Save</Text>
-              </TouchableOpacity>
-            ),
-          })}
-        />
       </Stack>
     </GestureHandlerRootView>
   );

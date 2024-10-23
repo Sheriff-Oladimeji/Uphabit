@@ -1,81 +1,66 @@
 import { Tabs } from "expo-router";
-import React, { useState } from "react";
+import React from "react";
 import {
-  Feather,
   FontAwesome,
   FontAwesome6,
-  MaterialCommunityIcons
+  MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
-import CreateModal from "@/components/CreateModal";
-import { CustomTabBar } from "@/components/navigation/CustomTabBar";
 
 export default function TabLayout() {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const openCreateModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const closeCreateModal = () => {
-    setIsModalVisible(false);
-  };
-
   return (
     <>
       <Tabs
-        tabBar={(props) => (
-          <CustomTabBar {...props} openCreateModal={openCreateModal} />
-        )}
         screenOptions={{
           headerShown: false,
+          tabBarStyle: {
+            backgroundColor: "#0A101F", 
+            height: 60,
+            paddingBottom: 8,
+            paddingTop: 8,
+            borderTopWidth: 0,
+            borderColor: "#9CA3AF",
+          },
+          tabBarShowLabel: false,
+          tabBarActiveTintColor: "#1D4ED8", 
+          tabBarInactiveTintColor: "#9CA3AF", 
         }}
       >
         <Tabs.Screen
           name="index"
           options={{
-            title: "Home",
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
                 IconComponent={MaterialCommunityIcons}
-                name={focused ? "calendar-today" : "calendar-today"}
+                name="calendar-today"
                 color={color}
-                size={24}
+                size={22} 
               />
             ),
           }}
         />
         <Tabs.Screen
-          name="goals"
+          name="leaderboard"
           options={{
-            title: "Goals",
-            tabBarIcon: ({ color, focused }) => (
-              <TabBarIcon
-                IconComponent={MaterialCommunityIcons}
-                name={focused ? "bullseye-arrow" : "bullseye-arrow"}
-                color={color}
-                size={24}
-              />
-            ),
-          }}
-        />
-
-        <Tabs.Screen
-          name="create"
-          options={{
-            title: "Create",
-          }}
-        />
-        <Tabs.Screen
-          name="rank"
-          options={{
-            title: "Rank",
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
                 IconComponent={FontAwesome6}
-                name={focused ? "ranking-star" : "ranking-star"}
+                name="ranking-star"
                 color={color}
-                size={20}
+                size={22} 
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="statistics"
+          options={{
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon
+                IconComponent={MaterialCommunityIcons}
+                name="bullseye-arrow"
+                color={color}
+                size={22} 
               />
             ),
           }}
@@ -83,20 +68,17 @@ export default function TabLayout() {
         <Tabs.Screen
           name="profile"
           options={{
-            title: "Profile",
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
                 IconComponent={FontAwesome}
-                name={focused ? "user-circle" : "user-circle"}
+                name="user-circle"
                 color={color}
-                size={20}
+                size={22} 
               />
             ),
           }}
         />
       </Tabs>
-
-      <CreateModal isVisible={isModalVisible} onClose={closeCreateModal} />
     </>
   );
 }

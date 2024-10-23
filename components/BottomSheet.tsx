@@ -10,6 +10,7 @@ const BottomSheet = ({
   radius,
   height,
   handler,
+  draggable = false
 }: BottomSheetProps) => {
   const refRBSheet = useRef<any>(null);
   useEffect(() => {
@@ -31,9 +32,9 @@ const BottomSheet = ({
       ref={refRBSheet}
       closeOnPressMask={true}
       onClose={handleClose}
-      draggable={true}
       dragOnContent={true}
       closeOnPressBack={true}
+      draggable={draggable? true: false}
       customStyles={{
         wrapper: {
           backgroundColor: "rgba(0, 0, 0, 0.6)",
@@ -48,6 +49,13 @@ const BottomSheet = ({
         draggableIcon: {
           backgroundColor: "#fff",
         },
+      }}
+      customModalProps={{
+        animationType: "slide",
+        statusBarTranslucent: true,
+      }}
+      customAvoidingViewProps={{
+        enabled: true,
       }}
     >
       {children}
